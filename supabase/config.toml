@@ -1,0 +1,41 @@
+project_id = "youngcoin-local"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public"]
+extra_search_path = ["public"]
+max_rows = 1000
+
+[db]
+port = 54322
+major_version = 15
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = [
+  "http://localhost:8081",
+  "youngcoin://auth/callback"
+]
+
+[functions.create_profile_on_first_login]
+verify_jwt = true
+
+[functions.transfer_youngcoin]
+verify_jwt = true
+
+[functions.get_wallet_summary]
+verify_jwt = true
+
+[functions.reverse_transaction]
+verify_jwt = true
+
+[functions.block_wallet]
+verify_jwt = true
+
+[functions.create_organization_account]
+verify_jwt = true
+
+[functions.admin_dashboard_summary]
+verify_jwt = true

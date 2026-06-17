@@ -1,0 +1,15 @@
+export const colors = {
+  ink: "#0D1B2A",
+  muted: "#64748B",
+  border: "#E2E8F0",
+  surface: "#ffffff",
+  background: "#F0F4F8",
+  primary: "#2563EB",
+  primaryDark: "#1B3A5C",
+  accent: "#3B82F6",
+  warning: "#F59E0B",
+  danger: "#EF4444",
+  navyDeep: "#0A1628",
+  success: "#22C55E",
+  cardShadow: "rgba(13,27,42,0.08)",
+};

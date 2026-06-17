@@ -1,0 +1,45 @@
+{
+  "name": "youngcoin",
+  "private": true,
+  "version": "0.1.0",
+  "description": "YoungCoin MVP monorepo: mobile wallet, web admin, Supabase backend and audit-ready ledger.",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:mobile": "npm --workspace apps/mobile run start",
+    "dev:mobile:web": "npm --workspace apps/mobile run web",
+    "dev:web": "npm --workspace apps/web-admin run dev",
+    "supabase:start": "npx supabase start",
+    "supabase:migrate": "npx supabase db push",
+    "supabase:functions": "npx supabase functions serve",
+    "build:web": "npm --workspace apps/web-admin run build",
+    "build:android:preview": "npm --workspace apps/mobile run build:android:preview",
+    "build:ios:preview": "npm --workspace apps/mobile run build:ios:preview",
+    "lint": "npm --workspaces run lint",
+    "test": "node scripts/validate-ledger.mjs",
+    "android": "expo run:android",
+    "ios": "expo run:ios"
+  },
+  "devDependencies": {
+    "@opentelemetry/api": "^1.9.1",
+    "typescript": "^5.5.4"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "overrides": {
+    "react-native-screens": "~3.31.0",
+    "next": "14.2.33",
+    "expo-font": "~12.0.10"
+  },
+  "dependencies": {
+    "@expo/cli": "^0.18.31",
+    "expo": "~51.0.28",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-native": "0.74.5",
+    "react-native-web": "~0.19.10"
+  }
+}

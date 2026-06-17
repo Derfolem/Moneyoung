@@ -1,0 +1,42 @@
+{
+  "name": "@youngcoin/mobile",
+  "version": "0.1.0",
+  "private": true,
+  "main": "expo-router/entry",
+  "scripts": {
+    "start": "EXPO_USE_METRO_WORKSPACE_ROOT=1 DOTENV_CONFIG_PATH=../../.env node -r dotenv/config ../../node_modules/expo/bin/cli start --port 8081",
+    "web": "EXPO_USE_METRO_WORKSPACE_ROOT=1 DOTENV_CONFIG_PATH=../../.env node -r dotenv/config ../../node_modules/expo/bin/cli start --web --port 8081",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "lint": "tsc --noEmit",
+    "build:android:preview": "eas build --platform android --profile preview",
+    "build:ios:preview": "eas build --platform ios --profile preview"
+  },
+  "dependencies": {
+    "@expo/vector-icons": "^14.0.2",
+    "@react-native-async-storage/async-storage": "^1.23.1",
+    "@supabase/supabase-js": "^2.45.4",
+    "expo": "~51.0.28",
+    "expo-barcode-scanner": "~13.0.1",
+    "expo-clipboard": "~6.0.3",
+    "expo-crypto": "~13.0.2",
+    "expo-dev-client": "^56.0.20",
+    "expo-linking": "~6.3.1",
+    "expo-router": "~3.5.23",
+    "expo-secure-store": "~13.0.2",
+    "expo-status-bar": "~1.12.1",
+    "expo-web-browser": "~13.0.3",
+    "qrcode": "^1.5.4",
+    "react": "18.2.0",
+    "react-dom": "^18.2.0",
+    "react-native": "0.74.5",
+    "react-native-svg": "15.2.0",
+    "react-native-url-polyfill": "^2.0.0",
+    "react-native-web": "^0.19.13"
+  },
+  "devDependencies": {
+    "@types/qrcode": "^1.5.5",
+    "@types/react": "~18.2.79",
+    "typescript": "^5.5.4"
+  }
+}
