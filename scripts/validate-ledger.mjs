@@ -154,4 +154,4 @@ assert.equal(org.wallet.profile_id, null, "business_wallet_not_bound_to_owner_pe
 assert.equal(org.wallet.organization_id, org.organization.id, "business_wallet_bound_to_organization");
 assert(harness.organizationMembers.has(`${org.organization.id}:alice`), "owner_added_as_org_admin");
 
-console.log("YoungCoin ledger validation passed: 19 checks covered.");
+console.log("Moneyoung ledger validation passed: 19 checks covered.");

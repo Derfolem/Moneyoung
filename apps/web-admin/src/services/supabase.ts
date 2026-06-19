@@ -14,6 +14,6 @@ export const supabase = createClient(
   supabaseAnonKey || "local-development-anon-key",
   {
     auth: { persistSession: true, autoRefreshToken: true },
-    global: { headers: { "x-youngcoin-client": "web-admin" } }
+    global: { headers: { "x-moneyoung-client": "web-admin" } }
   }
 );

@@ -4,7 +4,7 @@ import { Alert, StyleSheet, Text, View } from "react-native";
 import { Button } from "../src/components/Button";
 import { PageHeader } from "../src/components/PageHeader";
 import { Screen } from "../src/components/Screen";
-import { parseYoungCoinAmount, transferYoungCoin } from "../src/services/youngcoin";
+import { parseAmount, transferMoneyoung } from "../src/services/moneyoung";
 import { colors } from "../src/theme/colors";
 
 export default function TransferConfirm() {
@@ -18,9 +18,9 @@ export default function TransferConfirm() {
   async function confirm() {
     try {
       setLoading(true);
-      await transferYoungCoin({
+      await transferMoneyoung({
         to_young_key: to ?? "",
-        amount: parseYoungCoinAmount(amount ?? "0"),
+        amount: parseAmount(amount ?? "0"),
         description,
       });
       router.replace({

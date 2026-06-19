@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "youngcoin",
-    "slug": "youngcoin",
+    "name": "moneyoung",
+    "slug": "moneyoung",
     "version": "0.1.0",
-    "description": "YoungCoin MVP monorepo: mobile wallet, web admin, Supabase backend and audit-ready ledger.",
+    "description": "Moneyoung MVP monorepo: mobile wallet, web admin, Supabase backend and audit-ready ledger.",
     "sdkVersion": "51.0.0",
     "platforms": [
       "ios",
@@ -11,7 +11,7 @@
       "web"
     ],
     "android": {
-      "package": "com.ycbank"
+      "package": "com.moneyoung"
     }
   }
 }

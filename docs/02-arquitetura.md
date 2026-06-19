@@ -9,8 +9,8 @@ Service role -> somente Edge Functions
 
 ## Camadas
 
-- Mobile: experiencia da carteira YC, sem logica financeira critica.
-- Web Admin: operacao do banco YoungCoin, sem escrita direta de saldo.
+- Mobile: experiencia da carteira Moneyoung, sem logica financeira critica.
+- Web Admin: operacao do Moneyoungbank, sem escrita direta de saldo.
 - Edge Functions: validacao, autorizacao, transacoes e audit logs.
 - PostgreSQL: RLS, ledger, wallets, limites e eventos de seguranca.
 

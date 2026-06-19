@@ -2,13 +2,13 @@ import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Alert, Pressable, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { currency, WalletSummary } from "@youngcoin/shared";
+import { currency, WalletSummary } from "@moneyoung/shared";
 import { Screen } from "../src/components/Screen";
 import { StateView } from "../src/components/StateView";
 import { TransactionRow } from "../src/components/TransactionRow";
 import { HexLogo } from "../src/components/HexLogo";
 import { Drawer } from "../src/components/Drawer";
-import { getWalletSummary } from "../src/services/youngcoin";
+import { getWalletSummary } from "../src/services/moneyoung";
 import { signOut } from "../src/services/auth";
 import { colors } from "../src/theme/colors";
 

@@ -1,6 +1,6 @@
 # Estado atual - 2026-06-16
 
-Este documento registra o ponto de retomada do projeto YoungCoin MVP.
+Este documento registra o ponto de retomada do projeto Moneyoung MVP.
 
 ## Ambiente
 
@@ -10,6 +10,14 @@ Este documento registra o ponto de retomada do projeto YoungCoin MVP.
 - Web admin: Next.js 14.2.33
 - Sistema: GuttaOS com GLIBC 2.28
 - Node.js observado: v22.x
+
+## Controle De Escopo
+
+- O Git funcional do MVP fica em `~/APPs/Fagner/ycbank/.git`.
+- O caminho `~/APPs/Fagner/.git` não deve ser usado como base do MVP.
+- Alteracoes de codigo do produto devem ficar dentro de `ycbank/`.
+- Conteudo em `Fagner_documents/` pertence a documentacao/apresentacao e nao ao app.
+- Quando outra IA continuar o trabalho, ela deve confirmar o root Git antes de editar qualquer arquivo.
 
 ## O que esta funcionando
 
@@ -53,7 +61,7 @@ Quando `EXPO_PUBLIC_SUPABASE_URL` e `EXPO_PUBLIC_SUPABASE_ANON_KEY` estao vazios
 Dados locais usados:
 
 - Usuario: `Usuario Demo`
-- Email: `demo@youngcoin.local`
+- Email: `demo@moneyoung.local`
 - Young Key: `@demo`
 - Saldo inicial: `250 YC`
 
@@ -68,7 +76,7 @@ Transferencias no modo demo ficam apenas em memoria durante a sessao do bundle.
 - `apps/mobile/metro.config.js`: resolucao de modulos da raiz do monorepo.
 - `apps/mobile/src/services/supabase.web.ts`: cliente Supabase web usando `localStorage`.
 - `apps/mobile/src/services/auth.ts`: no modo demo, login retorna sem OAuth.
-- `apps/mobile/src/services/youngcoin.ts`: dados demo quando Supabase nao esta configurado.
+- `apps/mobile/src/services/moneyoung.ts`: dados demo quando Supabase nao esta configurado.
 - `apps/mobile/app/login.tsx`: botao `Entrar no modo demo`.
 - `apps/mobile/app/_layout.tsx`: nao redireciona por auth no modo demo.
 
@@ -116,4 +124,4 @@ EAS_PROJECT_ID=
 3. Rodar migrations e Edge Functions.
 4. Testar login Google real no mobile web e no web admin.
 5. Testar `npx expo run:android` com o emulador ja aberto.
-6. Inicializar ou ajustar git do `ycbank` antes de commits, pois o projeto ainda precisa de versionamento limpo.
+6. Confirmar sempre o root Git do MVP antes de novos commits ou trabalho paralelo.

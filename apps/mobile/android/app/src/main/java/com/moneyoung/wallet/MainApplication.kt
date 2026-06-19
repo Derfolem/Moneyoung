@@ -1,4 +1,4 @@
-package com.ycbank
+package com.moneyoung.wallet
 
 import android.app.Application
 import android.content.res.Configuration

@@ -56,7 +56,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=sua-chave-anon`}</pre>
   return (
     <div className="shell">
       <aside className="sidebar">
-        <strong className="brand">YoungCoin Bank</strong>
+        <strong className="brand">Moneyoungbank</strong>
         <nav>
           {nav.map((item) => {
             const Icon = item.icon;

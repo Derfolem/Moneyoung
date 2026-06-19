@@ -1,18 +1,18 @@
 import type { ExpoConfig } from "expo/config";
 
 const config: ExpoConfig = {
-  name: "YoungCoin",
-  slug: "youngcoin",
-  scheme: "youngcoin",
+  name: "Moneyoung",
+  slug: "moneyoung",
+  scheme: "moneyoung",
   version: "0.1.0",
   orientation: "portrait",
   userInterfaceStyle: "light",
   ios: {
     supportsTablet: true,
-    bundleIdentifier: "com.youngcoin.wallet"
+    bundleIdentifier: "com.moneyoung.wallet"
   },
   android: {
-    package: "com.youngcoin.wallet",
+    package: "com.moneyoung.wallet",
     permissions: ["CAMERA"]
   },
   web: {

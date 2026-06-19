@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { currency, type Wallet, type WalletStatus } from "@youngcoin/shared";
+import { currency, type Wallet, type WalletStatus } from "@moneyoung/shared";
 import { AdminShell } from "../../src/components/AdminShell";
 import { DataTable, StatusPill, StateMessage, type Column } from "../../src/components/DataTable";
 import { changeWalletStatus, listWallets } from "../../src/services/admin";

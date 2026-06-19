@@ -10,14 +10,14 @@ Deno.serve(async (req) => {
       .select("id,email,display_name,avatar_url,young_key,account_type,role,status")
       .eq("id", user.id)
       .single();
-    if (profileError) return error("NOT_FOUND", "Profile YoungCoin nao encontrado.", 404);
+    if (profileError) return error("NOT_FOUND", "Profile Moneyoung nao encontrado.", 404);
 
     const { data: wallet, error: walletError } = await serviceClient
       .from("wallets")
       .select("id,balance,status,wallet_type")
       .eq("profile_id", user.id)
       .single();
-    if (walletError) return error("NOT_FOUND", "Wallet YoungCoin nao encontrada.", 404);
+    if (walletError) return error("NOT_FOUND", "Wallet Moneyoung nao encontrada.", 404);
 
     const { data: recent_transactions, error: txError } = await serviceClient
       .from("transactions")

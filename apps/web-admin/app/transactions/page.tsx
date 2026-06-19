@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { currency, type LedgerTransaction, type TransactionStatus, type TransactionType } from "@youngcoin/shared";
+import { currency, type LedgerTransaction, type TransactionStatus, type TransactionType } from "@moneyoung/shared";
 import { AdminShell } from "../../src/components/AdminShell";
 import { StatusPill, StateMessage } from "../../src/components/DataTable";
 import { exportCsv, listTransactions, toCsvRows } from "../../src/services/admin";
@@ -35,7 +35,7 @@ export default function TransactionsPage() {
 
   return (
     <AdminShell>
-      <div className="pageHeader"><h1>Transacoes</h1><button onClick={() => exportCsv("youngcoin-transacoes.csv", toCsvRows(rows))} disabled={!rows.length}>Exportar CSV</button></div>
+      <div className="pageHeader"><h1>Transacoes</h1><button onClick={() => exportCsv("moneyoung-transacoes.csv", toCsvRows(rows))} disabled={!rows.length}>Exportar CSV</button></div>
       <div className="filters">
         <select value={status} onChange={(e) => setStatus(e.target.value as TransactionStatus | "")}><option value="">Status</option><option>completed</option><option>failed</option><option>reversed</option><option>pending</option></select>
         <select value={type} onChange={(e) => setType(e.target.value as TransactionType | "")}><option value="">Tipo</option><option>transfer</option><option>payment</option><option>reversal</option><option>initial_credit</option><option>admin_adjustment</option></select>

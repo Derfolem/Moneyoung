@@ -1,4 +1,4 @@
-import { createIdempotencyKey, LedgerTransaction, TransferPayload, WalletSummary } from "@youngcoin/shared";
+import { createIdempotencyKey, LedgerTransaction, TransferPayload, WalletSummary } from "@moneyoung/shared";
 import { isSupabaseConfigured, supabase, supabaseConfigMessage } from "./supabase";
 
 const demoWalletId = "demo-wallet";
@@ -80,7 +80,7 @@ function getDemoSummary(): WalletSummary {
   return {
     profile: {
       id: "demo-user",
-      email: "miguel@youngcoin.edu.br",
+      email: "miguel@moneyoung.edu.br",
       display_name: "Miguel Aires",
       avatar_url: null,
       young_key: "@miguel.aires",
@@ -102,7 +102,7 @@ function validateTransferPayload(payload: Omit<TransferPayload, "idempotency_key
   const toYoungKey = payload.to_young_key.trim();
   const amount = Number(payload.amount);
 
-  if (!toYoungKey) throw new Error("Informe a chave YoungCoin de destino.");
+  if (!toYoungKey) throw new Error("Informe a chave Moneyoung de destino.");
   if (!Number.isFinite(amount) || amount <= 0) throw new Error("Informe um valor maior que zero.");
 
   return {
@@ -112,7 +112,7 @@ function validateTransferPayload(payload: Omit<TransferPayload, "idempotency_key
   };
 }
 
-export function parseYoungCoinAmount(value: string) {
+export function parseAmount(value: string) {
   const normalized = value.trim().replace(/\./g, "").replace(",", ".");
   return Number(normalized);
 }
@@ -134,7 +134,7 @@ export async function getWalletSummary(): Promise<WalletSummary> {
   return invoke<WalletSummary>("get_wallet_summary");
 }
 
-async function moveYoungCoin(payload: Omit<TransferPayload, "idempotency_key">, type: "transfer" | "payment") {
+async function moveMoneyoung(payload: Omit<TransferPayload, "idempotency_key">, type: "transfer" | "payment") {
   const nextPayload = validateTransferPayload(payload);
 
   if (!isSupabaseConfigured) {
@@ -165,10 +165,10 @@ async function moveYoungCoin(payload: Omit<TransferPayload, "idempotency_key">, 
   });
 }
 
-export async function transferYoungCoin(payload: Omit<TransferPayload, "idempotency_key">) {
-  return moveYoungCoin(payload, "transfer");
+export async function transferMoneyoung(payload: Omit<TransferPayload, "idempotency_key">) {
+  return moveMoneyoung(payload, "transfer");
 }
 
-export async function payYoungCoin(payload: Omit<TransferPayload, "idempotency_key">) {
-  return moveYoungCoin(payload, "payment");
+export async function payMoneyoung(payload: Omit<TransferPayload, "idempotency_key">) {
+  return moveMoneyoung(payload, "payment");
 }

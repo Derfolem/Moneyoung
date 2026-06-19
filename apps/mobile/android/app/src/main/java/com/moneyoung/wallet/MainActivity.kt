@@ -1,4 +1,4 @@
-package com.ycbank
+package com.moneyoung.wallet
 
 import android.os.Build
 import android.os.Bundle

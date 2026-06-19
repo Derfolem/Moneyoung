@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { Profile, ProfileRole, ProfileStatus } from "@youngcoin/shared";
+import type { Profile, ProfileRole, ProfileStatus } from "@moneyoung/shared";
 import { AdminShell } from "../../src/components/AdminShell";
 import { DataTable, StatusPill, type Column } from "../../src/components/DataTable";
 import { listAccounts } from "../../src/services/admin";

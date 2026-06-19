@@ -7,7 +7,7 @@ import { Screen } from "../src/components/Screen";
 import { PageHeader } from "../src/components/PageHeader";
 import { StateView } from "../src/components/StateView";
 import { HexLogo } from "../src/components/HexLogo";
-import { getWalletSummary } from "../src/services/youngcoin";
+import { getWalletSummary } from "../src/services/moneyoung";
 import { colors } from "../src/theme/colors";
 
 export default function Receive() {

@@ -4,7 +4,7 @@ import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
 import { Button } from "../src/components/Button";
 import { Screen } from "../src/components/Screen";
 import { HexLogo } from "../src/components/HexLogo";
-import { ensureProfile } from "../src/services/youngcoin";
+import { ensureProfile } from "../src/services/moneyoung";
 import { signInWithGoogle } from "../src/services/auth";
 import { isSupabaseConfigured } from "../src/services/supabase";
 import { colors } from "../src/theme/colors";
@@ -31,7 +31,7 @@ export default function Login() {
       <View style={styles.container}>
         <View style={styles.logoArea}>
           <HexLogo size={120} color={colors.primary} />
-          <Text style={styles.brand}>YOUNGCOIN</Text>
+          <Text style={styles.brand}>Moneyoung (MYG)</Text>
           <Text style={styles.tagline}>A MOEDA DA EDUCACAO</Text>
         </View>
 
@@ -42,7 +42,7 @@ export default function Login() {
             placeholderTextColor="rgba(255,255,255,0.4)"
             keyboardType="email-address"
             autoCapitalize="none"
-            value={isSupabaseConfigured ? "" : "demo@youngcoin.local"}
+            value={isSupabaseConfigured ? "" : "demo@moneyoung.local"}
             editable={false}
           />
           <TextInput
@@ -57,7 +57,7 @@ export default function Login() {
         </View>
 
         <Text style={styles.footer}>
-          Sua carteira YC para aprender, enviar, receber e pagar com seguranca.
+          Sua carteira Moneyoung para aprender, enviar, receber e pagar com seguranca.
         </Text>
       </View>
     </Screen>

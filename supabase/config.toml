@@ -1,4 +1,4 @@
-project_id = "youngcoin-local"
+project_id = "moneyoung-local"
 
 [api]
 enabled = true
@@ -16,7 +16,7 @@ enabled = true
 site_url = "http://localhost:3000"
 additional_redirect_urls = [
   "http://localhost:8081",
-  "youngcoin://auth/callback"
+  "moneyoung://auth/callback"
 ]
 
 [functions.create_profile_on_first_login]

@@ -4,7 +4,7 @@ Data: 2026-06-17
 
 ## Objetivo
 
-Redesign completo da interface mobile YoungCoin para apresentacao a investidores. Todas as telas seguem os mockups aprovados com identidade visual fintech dark navy blue. Este redesign e SOMENTE VISUAL. A parte funcional (Supabase real, OAuth, Edge Functions) sera implementada em fase posterior.
+Redesign completo da interface mobile Moneyoung para apresentacao a investidores. Todas as telas seguem os mockups aprovados com identidade visual fintech dark navy blue. Este redesign e SOMENTE VISUAL. A parte funcional (Supabase real, OAuth, Edge Functions) sera implementada em fase posterior.
 
 ## Modo demo
 
@@ -32,7 +32,7 @@ O app continua funcionando integralmente sem Supabase configurado. O modo demo u
 
 ### HexLogo (src/components/HexLogo.tsx)
 
-Logo hexagonal YC usando react-native-svg. Props: size, color, textColor. Usado nas telas de login, home, receive e receipt.
+Logo hexagonal MYG usando react-native-svg. Props: size, color, textColor. Usado nas telas de login, home, receive e receipt.
 
 ## Componentes alterados
 
@@ -66,7 +66,7 @@ Logo hexagonal YC usando react-native-svg. Props: size, color, textColor. Usado 
 
 - Fundo navy escuro completo
 - HexLogo grande centralizado (120px)
-- "YOUNGCOIN" + "A MOEDA DA EDUCACAO"
+- "MONEYOUNG" + "Empreendedorismo . Educacao Financeira"
 - Campos visuais de email e senha
 - Botao azul "Entrar"
 
@@ -127,7 +127,7 @@ Lista de notificacoes demo com 3 itens hardcoded: transferencia recebida, boas-v
 - Saldo: 5.000 YC (era 250)
 - Nome: Miguel Aires (era Usuario Demo)
 - Young Key: @miguel.aires (era @demo)
-- Email: miguel@youngcoin.edu.br
+- Email: miguel@moneyoung.edu.br
 - 5 transacoes variadas: premio hackathon, cantina escolar, material didatico, mesada educacional, credito inicial
 
 ## Navegacao

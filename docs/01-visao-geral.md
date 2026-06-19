@@ -1,6 +1,14 @@
 # Visao geral
 
-YoungCoin e uma carteira digital educacional com moeda YC. O MVP funciona como um banco digital simples: todos tem conta YoungCoin; escolas usam conta empresa; alunos e professores usam conta comum.
+Moneyoung e uma carteira digital educacional com moeda Youngcoin (YC). O MVP funciona como um banco digital simples: todos tem conta Moneyoung; escolas usam conta empresa; alunos e professores usam conta comum.
+
+## Controle De Escopo
+
+- O MVP vive em `~/APPs/Fagner/ycbank`.
+- O Git funcional do projeto e `~/APPs/Fagner/ycbank/.git`.
+- `~/APPs/Fagner/.git` nao deve ser usado como base do MVP.
+- Mudancas de codigo devem ficar dentro de `ycbank/`.
+- Conteudo em `Fagner_documents/` e separado e nao deve ser tratado como codigo do app.
 
 ## Objetivo do MVP
 
@@ -22,7 +30,7 @@ CPF, RG, endereco, telefone obrigatorio, KYC, biometria, reconhecimento facial, 
 
 - `common_user`: envia, recebe, paga e consulta.
 - `organization_admin`: administra vinculos de organizacao.
-- `bank_admin`: administra YoungCoin pelo painel.
+- `bank_admin`: administra Moneyoungbank pelo painel.
 - `super_admin`: acesso tecnico global.
 
 ## Fluxo geral

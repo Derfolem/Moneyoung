@@ -2,11 +2,11 @@ import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { WalletSummary } from "@youngcoin/shared";
+import { WalletSummary } from "@moneyoung/shared";
 import { Screen } from "../src/components/Screen";
 import { StateView } from "../src/components/StateView";
 import { signOut } from "../src/services/auth";
-import { getWalletSummary } from "../src/services/youngcoin";
+import { getWalletSummary } from "../src/services/moneyoung";
 import { colors } from "../src/theme/colors";
 
 type InfoItem = {
@@ -44,7 +44,7 @@ export default function Profile() {
   if (loading) return <Screen><StateView loading title="Carregando perfil" /></Screen>;
   if (error && !profile) return <Screen><StateView title="Perfil indisponivel" message={error} /></Screen>;
 
-  const name = profile?.display_name ?? "Usuario YoungCoin";
+  const name = profile?.display_name ?? "Usuário Moneyoung";
   const initial = name.charAt(0).toUpperCase();
 
   const items: InfoItem[] = [

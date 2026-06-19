@@ -101,7 +101,7 @@ export function HexLogo({
         ]}
       />
       {/* Text */}
-      <Text style={[styles.text, { fontSize, color: textColor }]}>YC</Text>
+      <Text style={[styles.text, { fontSize, color: textColor }]}>MYG</Text>
     </View>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
-import { createIdempotencyKey, currency, type LedgerTransaction } from "@youngcoin/shared";
+import { createIdempotencyKey, currency, type LedgerTransaction } from "@moneyoung/shared";
 import { AdminShell } from "../../../src/components/AdminShell";
 import { DataTable, StateMessage, StatusPill, type Column } from "../../../src/components/DataTable";
 import { getTransaction, listTransactionAuditLogs, reverseTransaction, type AuditLog } from "../../../src/services/admin";
@@ -12,7 +12,7 @@ export default function TransactionDetailPage({ params }: { params: { id: string
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [reason, setReason] = useState("Estorno via painel YoungCoin");
+  const [reason, setReason] = useState("Estorno via painel Moneyoungbank");
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState("");
 

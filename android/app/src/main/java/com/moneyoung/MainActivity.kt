@@ -1,4 +1,4 @@
-package com.youngcoin.wallet
+package com.moneyoung
 
 import android.os.Build
 import android.os.Bundle

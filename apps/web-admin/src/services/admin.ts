@@ -11,7 +11,7 @@ import type {
   TransactionType,
   Wallet,
   WalletStatus
-} from "@youngcoin/shared";
+} from "@moneyoung/shared";
 import { isSupabaseConfigured, supabase, supabaseConfigMessage } from "./supabase";
 
 export type AdminProfile = Pick<Profile, "id" | "email" | "display_name" | "role" | "status">;

@@ -27,7 +27,7 @@ export const supabase = createClient(
       detectSessionInUrl: false
     },
     global: {
-      headers: { "x-youngcoin-client": "mobile" }
+      headers: { "x-moneyoung-client": "mobile" }
     }
   }
 );

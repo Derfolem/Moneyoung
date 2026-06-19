@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 export const metadata: Metadata = {
-  title: "YoungCoin Bank Admin",
-  description: "Painel administrativo do banco YoungCoin"
+  title: "Moneyoungbank Admin",
+  description: "Painel administrativo do Moneyoungbank"
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

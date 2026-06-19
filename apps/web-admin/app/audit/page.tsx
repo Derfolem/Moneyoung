@@ -23,7 +23,7 @@ export default function AuditPage() {
 
   return (
     <AdminShell>
-      <div className="pageHeader"><h1>Auditoria</h1><button onClick={() => exportCsv("youngcoin-auditoria.csv", toCsvRows(rows))} disabled={!rows.length}>Exportar CSV</button></div>
+      <div className="pageHeader"><h1>Auditoria</h1><button onClick={() => exportCsv("moneyoung-auditoria.csv", toCsvRows(rows))} disabled={!rows.length}>Exportar CSV</button></div>
       <div className="filters">
         <input placeholder="acao" value={action} onChange={(e) => setAction(e.target.value)} />
         <input placeholder="entidade" value={entityType} onChange={(e) => setEntityType(e.target.value)} />

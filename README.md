@@ -1,6 +1,6 @@
-# YoungCoin
+# Moneyoung
 
-YoungCoin e uma carteira digital educacional com identidade propria de moeda universal. O MVP inclui app mobile Expo, painel web Next.js, Supabase Auth, PostgreSQL, Edge Functions, ledger auditavel e documentacao operacional.
+Moneyoung e uma carteira digital educacional com identidade propria de moeda universal. O MVP inclui app mobile Expo, painel web Next.js, Supabase Auth, PostgreSQL, Edge Functions, ledger auditavel e documentacao operacional.
 
 ## Estrutura
 
@@ -11,6 +11,12 @@ YoungCoin e uma carteira digital educacional com identidade propria de moeda uni
 - `supabase/functions`: Edge Functions seguras.
 - `docs`: documentacao do produto, arquitetura, seguranca e deploy.
 - `scripts`: validacoes locais.
+
+## Controle De Versao
+
+- O repositório Git funcional fica em `~/APPs/Fagner/ycbank/.git`.
+- Evite usar o caminho pai `~/APPs/Fagner/.git` para o MVP; ele não é o repo do aplicativo.
+- Ao trabalhar com agentes paralelos, limite mudanças ao escopo do MVP em `ycbank` e trate `Fagner_documents/` como documentação separada.
 
 ## Instalar
 

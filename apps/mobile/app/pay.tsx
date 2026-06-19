@@ -5,7 +5,7 @@ import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
 import { Button } from "../src/components/Button";
 import { PageHeader } from "../src/components/PageHeader";
 import { Screen } from "../src/components/Screen";
-import { parseYoungCoinAmount, payYoungCoin } from "../src/services/youngcoin";
+import { parseAmount, payMoneyoung } from "../src/services/moneyoung";
 import { colors } from "../src/theme/colors";
 
 export default function Pay() {
@@ -23,12 +23,12 @@ export default function Pay() {
 
   async function pay() {
     try {
-      const parsedAmount = parseYoungCoinAmount(amount);
-      if (!youngKey.trim()) throw new Error("Informe ou leia uma chave YoungCoin.");
+      const parsedAmount = parseAmount(amount);
+      if (!youngKey.trim()) throw new Error("Informe ou leia uma chave Moneyoung.");
       if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) throw new Error("Informe um valor maior que zero.");
 
       setLoading(true);
-      await payYoungCoin({ to_young_key: youngKey.trim(), amount: parsedAmount, description: "Pagamento via QR Code" });
+      await payMoneyoung({ to_young_key: youngKey.trim(), amount: parsedAmount, description: "Pagamento via QR Code" });
       Alert.alert("Pagamento enviado");
       router.replace("/home");
     } catch (err) {
@@ -65,7 +65,7 @@ export default function Pay() {
                 <View style={styles.overlaySide} />
               </View>
               <View style={styles.overlayBottom}>
-                <Text style={styles.scanHint}>Aponte para o QR Code YoungCoin</Text>
+                <Text style={styles.scanHint}>Aponte para o QR Code Moneyoung</Text>
               </View>
             </View>
           </View>
@@ -80,7 +80,7 @@ export default function Pay() {
               </Text>
             ) : null}
 
-            <Text style={styles.label}>Chave YoungCoin</Text>
+            <Text style={styles.label}>Chave Moneyoung</Text>
             <TextInput
               style={styles.input}
               value={youngKey}

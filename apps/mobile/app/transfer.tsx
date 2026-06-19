@@ -4,7 +4,7 @@ import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
 import { Button } from "../src/components/Button";
 import { PageHeader } from "../src/components/PageHeader";
 import { Screen } from "../src/components/Screen";
-import { parseYoungCoinAmount } from "../src/services/youngcoin";
+import { parseAmount } from "../src/services/moneyoung";
 import { colors } from "../src/theme/colors";
 
 export default function Transfer() {
@@ -13,9 +13,9 @@ export default function Transfer() {
   const [description, setDescription] = useState("");
 
   function goToConfirm() {
-    const parsedAmount = parseYoungCoinAmount(amount);
+    const parsedAmount = parseAmount(amount);
     if (!to.trim()) {
-      Alert.alert("Chave obrigatoria", "Informe a chave YoungCoin de destino.");
+      Alert.alert("Chave obrigatoria", "Informe a chave Moneyoung de destino.");
       return;
     }
     if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) {
@@ -48,7 +48,7 @@ export default function Transfer() {
       />
 
       <View style={styles.fields}>
-        <Text style={styles.label}>Chave YoungCoin</Text>
+        <Text style={styles.label}>Chave Moneyoung</Text>
         <TextInput
           style={styles.input}
           placeholder="@chaveyoung"

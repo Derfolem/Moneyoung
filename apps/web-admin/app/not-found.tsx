@@ -5,7 +5,7 @@ export default function NotFound() {
     <main className="content" style={{ maxWidth: 640, margin: "80px auto" }}>
       <section className="panel">
         <h1>Pagina nao encontrada</h1>
-        <p className="muted">O endereco acessado nao existe no painel YoungCoin.</p>
+        <p className="muted">O endereco acessado nao existe no painel Moneyoung.</p>
         <Link className="button" href="/dashboard">Voltar ao dashboard</Link>
       </section>
     </main>

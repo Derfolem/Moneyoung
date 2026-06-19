@@ -4,7 +4,7 @@ As tabelas obrigatorias estao em `supabase/migrations/202606160001_youngcoin_cor
 
 ## Tabelas
 
-- `profiles`: identidade YoungCoin, email, young_key, role, tipo e status.
+- `profiles`: identidade Moneyoung, email, young_key, role, tipo e status.
 - `organizations`: escolas/organizacoes.
 - `organization_members`: vinculos entre contas e organizacoes.
 - `wallets`: saldo cacheado e status operacional.

@@ -1,8 +1,8 @@
 {
-  "name": "youngcoin",
+  "name": "moneyoung",
   "private": true,
   "version": "0.1.0",
-  "description": "YoungCoin MVP monorepo: mobile wallet, web admin, Supabase backend and audit-ready ledger.",
+  "description": "Moneyoung MVP monorepo: mobile wallet, web admin, Supabase backend and audit-ready ledger.",
   "workspaces": [
     "apps/*",
     "packages/*"

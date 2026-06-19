@@ -1,4 +1,4 @@
-# Segurança YoungCoin
+# Segurança Moneyoung
 
 ## Politicas
 

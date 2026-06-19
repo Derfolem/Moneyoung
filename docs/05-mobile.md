@@ -18,7 +18,7 @@
 
 Login Google cria profile/wallet no primeiro acesso. Home consulta `get_wallet_summary`. Transferencia e pagamento chamam `transfer_youngcoin`. Recebimento mostra QR Code com `young_key`.
 
-Quando `EXPO_PUBLIC_SUPABASE_URL` e `EXPO_PUBLIC_SUPABASE_ANON_KEY` estao vazios, o app entra em modo demo. Nesse modo, o login nao chama OAuth, cria um usuario local `demo@youngcoin.local`, mostra a chave `@demo`, saldo inicial de `250 YC` e registra transferencias apenas em memoria.
+Quando `EXPO_PUBLIC_SUPABASE_URL` e `EXPO_PUBLIC_SUPABASE_ANON_KEY` estao vazios, o app entra em modo demo. Nesse modo, o login nao chama OAuth, cria um usuario local `demo@moneyoung.local`, mostra a chave `@demo`, saldo inicial de `250 YC` e registra transferencias apenas em memoria.
 
 ## Rodar local
 

@@ -49,7 +49,7 @@ export async function assertBankAdmin(serviceClient: ReturnType<typeof createCli
     .single();
 
   if (error || !data || data.status !== "active" || !["bank_admin", "super_admin"].includes(data.role)) {
-    throw new Response(JSON.stringify({ error: { code: "FORBIDDEN", message: "Acesso restrito ao banco YoungCoin." } }), {
+    throw new Response(JSON.stringify({ error: { code: "FORBIDDEN", message: "Acesso restrito ao Moneyoungbank." } }), {
       status: 403,
       headers: { "Content-Type": "application/json" }
     });

@@ -2,7 +2,7 @@
 
 ## 0.1.0 - 2026-06-16
 
-- Criado monorepo YoungCoin em `ycbank`.
+- Criado monorepo Moneyoung em `ycbank`.
 - Criado app mobile Expo com login Google, home, transferencia, receber QR, pagar QR, extrato e perfil.
 - Criado painel web admin Next.js com dashboard, contas, wallets, transacoes, detalhe, organizacoes, auditoria, eventos de seguranca, limites e ajustes.
 - Criado schema Supabase PostgreSQL com profiles, organizations, organization_members, wallets, transactions, audit_logs, transfer_limits e security_events.

@@ -29,7 +29,7 @@ const demoNotifications: Notification[] = [
     icon: "checkmark-circle",
     iconColor: colors.primary,
     iconBg: colors.primary + "18",
-    title: "Bem-vindo ao YoungCoin!",
+    title: "Bem-vindo ao Moneyoung!",
     message: "Sua conta foi criada com sucesso.",
     time: "Ontem",
   },

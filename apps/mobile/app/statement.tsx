@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { WalletSummary } from "@youngcoin/shared";
+import { WalletSummary } from "@moneyoung/shared";
 import { PageHeader } from "../src/components/PageHeader";
 import { Screen } from "../src/components/Screen";
 import { StateView } from "../src/components/StateView";
 import { TransactionRow } from "../src/components/TransactionRow";
-import { getWalletSummary } from "../src/services/youngcoin";
+import { getWalletSummary } from "../src/services/moneyoung";
 import { colors } from "../src/theme/colors";
 
 type Filter = "all" | "in" | "out";

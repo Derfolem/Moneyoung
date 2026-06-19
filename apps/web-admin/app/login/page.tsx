@@ -38,7 +38,7 @@ export default function LoginPage() {
   return (
     <main className="content" style={{ maxWidth: 520, margin: "80px auto" }}>
       <div className="panel">
-        <h1>YoungCoin Bank</h1>
+        <h1>Moneyoungbank</h1>
         <p className="muted">Acesso administrativo via Google OAuth. Apenas bank_admin e super_admin entram no painel.</p>
         {!isSupabaseConfigured ? <p className="muted">{supabaseConfigMessage}</p> : null}
         <button onClick={login} disabled={!isSupabaseConfigured || loading}>{loading ? "Redirecionando..." : "Entrar com Google"}</button>
