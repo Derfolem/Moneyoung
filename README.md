@@ -1,6 +1,17 @@
-# Moneyoung
+# Moneyoung (MYG)
 
-Moneyoung e uma carteira digital educacional com identidade propria de moeda universal. O MVP inclui app mobile Expo, painel web Next.js, Supabase Auth, PostgreSQL, Edge Functions, ledger auditavel e documentacao operacional.
+Moneyoung e uma plataforma bancaria digital educacional que opera com a moeda virtual Youngcoin (YC). O MVP inclui app mobile Expo, painel web Next.js (Moneyoung Bank), Supabase Auth, PostgreSQL, Edge Functions, ledger auditavel e documentacao operacional. Faz parte do projeto VemCer.
+
+## Progresso do MVP
+
+Consulte **[docs/00-checklist-mvp.md](docs/00-checklist-mvp.md)** para o checklist completo do projeto, do zero ate producao para 400 alunos. Sempre marque os itens concluidos e justifique os que nao forem realizados.
+
+## Identidade
+
+- **Moneyoung (MYG)**: nome do app e da plataforma.
+- **Youngcoin (YC)**: nome da moeda virtual. Codigo da moeda: YC.
+- **Moneyoung Bank**: nome do banco digital (painel admin).
+- **VemCer**: nome do projeto educacional.
 
 ## Estrutura
 
@@ -93,6 +104,8 @@ npm test
 O script cobre criacao de profile, wallet, transferencia, bloqueios basicos, estorno admin, audit log e idempotencia.
 
 ## Docs
+
+Comece por **`docs/00-checklist-mvp.md`** para saber o que falta fazer.
 
 Leia `docs/01-visao-geral.md` ate `docs/10-roadmap.md` para detalhes completos.
 Leia tambem `docs/11-estado-atual-2026-06-16.md` antes de retomar o trabalho.
