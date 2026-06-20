@@ -61,8 +61,9 @@ export default function LimitsPage() {
     }
   }
 
+  const accountTypeLabel: Record<string, string> = { personal: "Aluno", business: "Empresa", sub_business: "Professor", system: "Admin" };
   const columns: Column<TransferLimit>[] = [
-    { key: "account_type", header: "tipo de conta" },
+    { key: "account_type", header: "tipo de conta", render: (row) => <span className={`pill pill-${row.account_type}`}>{accountTypeLabel[row.account_type] ?? row.account_type}</span> },
     { key: "daily_limit", header: "limite diario", render: (row) => currency.format(row.daily_limit) },
     { key: "transaction_limit", header: "por transacao", render: (row) => currency.format(row.transaction_limit) },
     { key: "minute_limit", header: "por minuto" },

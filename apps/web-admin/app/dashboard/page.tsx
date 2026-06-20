@@ -54,10 +54,13 @@ export default function DashboardPage() {
   );
 }
 
+const accountTypeLabel: Record<string, string> = { personal: "Aluno", business: "Empresa", sub_business: "Professor", system: "Admin" };
+
 const transactionColumns: Column<LedgerTransaction>[] = [
-  { key: "id", header: "id" },
   { key: "type", header: "tipo" },
   { key: "status", header: "status", render: (row) => <StatusPill value={row.status} /> },
+  { key: "from_display_name", header: "origem", render: (row) => <>{row.from_display_name ?? "-"}{row.from_account_type ? <span className={`pill pill-${row.from_account_type}`} style={{ marginLeft: 4 }}>{accountTypeLabel[row.from_account_type] ?? row.from_account_type}</span> : null}</> },
+  { key: "to_display_name", header: "destino", render: (row) => <>{row.to_display_name ?? "-"}{row.to_account_type ? <span className={`pill pill-${row.to_account_type}`} style={{ marginLeft: 4 }}>{accountTypeLabel[row.to_account_type] ?? row.to_account_type}</span> : null}</> },
   { key: "amount", header: "valor", render: (row) => currency.format(row.amount) },
   { key: "created_at", header: "data", render: (row) => new Date(row.created_at).toLocaleString("pt-BR") }
 ];

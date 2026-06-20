@@ -1,3 +1,4 @@
+import { Platform } from "react-native";
 import * as Linking from "expo-linking";
 import * as WebBrowser from "expo-web-browser";
 import { isSupabaseConfigured, supabase } from "./supabase";
@@ -6,6 +7,17 @@ WebBrowser.maybeCompleteAuthSession();
 
 export async function signInWithGoogle() {
   if (!isSupabaseConfigured) return true;
+
+  if (Platform.OS === "web") {
+    const redirectTo = window.location.origin + "/login";
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo }
+    });
+    if (error) throw error;
+    return false;
+  }
+
   const redirectTo = Linking.createURL("auth/callback");
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",

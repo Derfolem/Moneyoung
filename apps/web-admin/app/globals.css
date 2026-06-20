@@ -50,6 +50,10 @@ button.danger { background: var(--danger); }
 .pill-blocked, .pill-failed, .pill-critical { background: #fff0f0; color: var(--danger); }
 .pill-frozen, .pill-pending, .pill-medium { background: #fff7df; color: var(--warning); }
 .pill-reversed, .pill-high { background: #fff3e8; color: #b64b00; }
+.pill-personal { background: #e8f0fe; color: #1a56db; }
+.pill-business { background: #fff3e0; color: #e65100; }
+.pill-sub_business { background: #f3e5f5; color: #6a1b9a; }
+.pill-system { background: #fce4ec; color: #c62828; }
 .detailGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
 .detailGrid strong { display: block; margin-top: 4px; overflow-wrap: anywhere; }
 .detailWide { grid-column: 1 / -1; }

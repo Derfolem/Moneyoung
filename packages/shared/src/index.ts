@@ -1,4 +1,4 @@
-export type AccountType = "personal" | "business" | "system";
+export type AccountType = "personal" | "business" | "sub_business" | "system";
 export type ProfileRole = "common_user" | "organization_admin" | "bank_admin" | "super_admin";
 export type ProfileStatus = "active" | "blocked" | "pending";
 export type WalletStatus = "active" | "blocked" | "frozen";
@@ -43,6 +43,21 @@ export type LedgerTransaction = {
   created_by: string | null;
   created_at: string;
   reversed_transaction_id: string | null;
+  from_display_name: string | null;
+  from_young_key: string | null;
+  from_account_type: AccountType | null;
+  from_role: string | null;
+  to_display_name: string | null;
+  to_young_key: string | null;
+  to_account_type: AccountType | null;
+  to_role: string | null;
+};
+
+export const accountTypeLabels: Record<AccountType, string> = {
+  personal: "Aluno",
+  business: "Empresa",
+  sub_business: "Professor",
+  system: "Administrador",
 };
 
 export type WalletSummary = {

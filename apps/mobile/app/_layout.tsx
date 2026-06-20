@@ -1,7 +1,9 @@
 import { Stack, router } from "expo-router";
 import { useEffect } from "react";
+import { View } from "react-native";
 import { isSupabaseConfigured, supabase } from "../src/services/supabase";
 import { hasActiveSession } from "../src/services/auth";
+import { ToastHost } from "../src/components/Toast";
 
 export default function Layout() {
   useEffect(() => {
@@ -20,5 +22,10 @@ export default function Layout() {
     return () => data.subscription.unsubscribe();
   }, []);
 
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <View style={{ flex: 1 }}>
+      <Stack screenOptions={{ headerShown: false }} />
+      <ToastHost />
+    </View>
+  );
 }

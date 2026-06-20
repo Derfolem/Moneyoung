@@ -1,10 +1,11 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { Button } from "../src/components/Button";
 import { PageHeader } from "../src/components/PageHeader";
 import { Screen } from "../src/components/Screen";
-import { parseAmount, transferMoneyoung } from "../src/services/moneyoung";
+import { getWalletSummary, parseAmount, transferMoneyoung } from "../src/services/moneyoung";
+import { toast } from "../src/services/toast";
 import { colors } from "../src/theme/colors";
 
 export default function TransferConfirm() {
@@ -18,6 +19,7 @@ export default function TransferConfirm() {
   async function confirm() {
     try {
       setLoading(true);
+      const summary = await getWalletSummary();
       await transferMoneyoung({
         to_young_key: to ?? "",
         amount: parseAmount(amount ?? "0"),
@@ -30,10 +32,11 @@ export default function TransferConfirm() {
           amount,
           description,
           date: new Date().toISOString(),
+          from: summary.profile.young_key,
         },
       });
     } catch (err) {
-      Alert.alert("Erro ao transferir", err instanceof Error ? err.message : "Tente novamente.");
+      toast.error("Erro ao transferir", err instanceof Error ? err.message : "Tente novamente.");
     } finally {
       setLoading(false);
     }

@@ -7,10 +7,11 @@ Deno.serve(async (req) => {
     const { user, serviceClient } = await requireUser(req);
     await assertBankAdmin(serviceClient, user.id);
 
-    const [profiles, wallets, transactions, blockedWallets, suspicious] = await Promise.all([
+    const [profiles, wallets, transactions, latestEnriched, blockedWallets, suspicious] = await Promise.all([
       serviceClient.from("profiles").select("id", { count: "exact", head: true }),
       serviceClient.from("wallets").select("id", { count: "exact", head: true }),
       serviceClient.from("transactions").select("id,amount,created_at,status,type").order("created_at", { ascending: false }).limit(500),
+      serviceClient.from("enriched_transactions").select("*").order("created_at", { ascending: false }).limit(10),
       serviceClient.from("wallets").select("id", { count: "exact", head: true }).in("status", ["blocked", "frozen"]),
       serviceClient.from("security_events").select("id", { count: "exact", head: true }).in("severity", ["high", "critical"])
     ]);
@@ -31,7 +32,7 @@ Deno.serve(async (req) => {
       transactions_by_day: byDay,
       blocked_wallets: blockedWallets.count ?? 0,
       suspicious_transactions: suspicious.count ?? 0,
-      latest_transactions: txs.slice(0, 10)
+      latest_transactions: latestEnriched.data ?? []
     });
   } catch (err) {
     if (err instanceof Response) return err;

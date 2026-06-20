@@ -1,10 +1,11 @@
 import { router } from "expo-router";
 import { useState } from "react";
-import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
+import { StyleSheet, Text, TextInput, View } from "react-native";
 import { Button } from "../src/components/Button";
 import { PageHeader } from "../src/components/PageHeader";
 import { Screen } from "../src/components/Screen";
 import { parseAmount } from "../src/services/moneyoung";
+import { toast } from "../src/services/toast";
 import { colors } from "../src/theme/colors";
 
 export default function Transfer() {
@@ -15,11 +16,11 @@ export default function Transfer() {
   function goToConfirm() {
     const parsedAmount = parseAmount(amount);
     if (!to.trim()) {
-      Alert.alert("Chave obrigatoria", "Informe a chave Moneyoung de destino.");
+      toast.error("Chave obrigatoria", "Informe a chave Moneyoung de destino.");
       return;
     }
     if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) {
-      Alert.alert("Valor invalido", "Informe um valor maior que zero.");
+      toast.error("Valor invalido", "Informe um valor maior que zero.");
       return;
     }
 

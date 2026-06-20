@@ -7,6 +7,8 @@ import { AdminShell } from "../../src/components/AdminShell";
 import { StatusPill, StateMessage } from "../../src/components/DataTable";
 import { exportCsv, listTransactions, toCsvRows } from "../../src/services/admin";
 
+const accountTypeLabel: Record<string, string> = { personal: "Aluno", business: "Empresa", sub_business: "Professor", system: "Admin" };
+
 export default function TransactionsPage() {
   const [rows, setRows] = useState<LedgerTransaction[]>([]);
   const [status, setStatus] = useState<TransactionStatus | "">("");
@@ -50,14 +52,13 @@ export default function TransactionsPage() {
       {!loading && !error && rows.length ? (
         <div className="tableWrap">
           <table>
-            <thead><tr><th>id</th><th>tipo</th><th>status</th><th>origem</th><th>destino</th><th>valor</th><th>data</th><th></th></tr></thead>
+            <thead><tr><th>tipo</th><th>status</th><th>origem</th><th>destino</th><th>valor</th><th>data</th><th></th></tr></thead>
             <tbody>{rows.map((tx) => (
               <tr key={tx.id}>
-                <td>{tx.id}</td>
                 <td>{tx.type}</td>
                 <td><StatusPill value={tx.status} /></td>
-                <td>{tx.from_wallet_id ?? "-"}</td>
-                <td>{tx.to_wallet_id ?? "-"}</td>
+                <td>{tx.from_display_name ?? tx.from_wallet_id ?? "-"}{tx.from_account_type ? <span className={`pill pill-${tx.from_account_type}`} style={{ marginLeft: 4 }}>{accountTypeLabel[tx.from_account_type] ?? tx.from_account_type}</span> : null}</td>
+                <td>{tx.to_display_name ?? tx.to_wallet_id ?? "-"}{tx.to_account_type ? <span className={`pill pill-${tx.to_account_type}`} style={{ marginLeft: 4 }}>{accountTypeLabel[tx.to_account_type] ?? tx.to_account_type}</span> : null}</td>
                 <td>{currency.format(tx.amount)}</td>
                 <td>{new Date(tx.created_at).toLocaleString("pt-BR")}</td>
                 <td><Link className="button" href={`/transactions/${tx.id}`}>Abrir</Link></td>

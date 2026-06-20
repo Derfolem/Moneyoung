@@ -20,6 +20,13 @@ Operacoes financeiras passam por Edge Functions e RPCs transacionais com service
 
 `transfer_youngcoin_tx` valida limite por transacao, diario e contagem por minuto.
 
+| Tipo de conta | Limite/transacao | Limite diario | Transacoes/minuto |
+|---|---|---|---|
+| personal (Aluno) | 250 YC | 1.000 YC | 10 |
+| sub_business (Sub-empresa) | 1.000 YC | 5.000 YC | 30 |
+| business (Empresa) | 2.500 YC | 10.000 YC | 60 |
+| system (Admin) | Ilimitado | Ilimitado | Ilimitado |
+
 ## Idempotency key
 
 Chave unica impede duplicidade em reenvios.
@@ -31,11 +38,16 @@ Chave unica impede duplicidade em reenvios.
 - Valor negativo e bloqueado.
 - Wallet bloqueada/frozen nao movimenta.
 - Tentativas invalidas relevantes geram `security_events`.
+- Erros do backend sao traduzidos para portugues no frontend (translateError).
+
+## Auditoria de tipo de usuario
+
+Transacoes enriquecidas incluem o tipo de conta (`account_type`) e nome de cada participante. Isso permite rastrear no extrato e notificacoes se quem transferiu foi Aluno, Empresa, Professor ou Administrador.
 
 ## Alerta de escalabilidade
 
-- A partir de 1.000 acessos simultaneos, monitorar `security_events` para detectar padroes de abuso (tentativas em massa, rate limit excedido por muitos usuarios ao mesmo tempo).
-- A partir de 10.000 acessos, considerar implementar rate limiting tambem no nivel de infraestrutura (Supabase rate limits ou API gateway externo), alem do rate limit ja existente na RPC `transfer_youngcoin_tx`.
+- A partir de 1.000 acessos simultaneos, monitorar `security_events` para detectar padroes de abuso.
+- A partir de 10.000 acessos, considerar rate limiting no nivel de infraestrutura.
 
 ## Nao implementado no MVP
 

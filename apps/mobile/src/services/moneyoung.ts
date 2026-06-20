@@ -17,6 +17,14 @@ const demoTransactions: LedgerTransaction[] = [
     created_by: "professor-user",
     created_at: new Date(Date.now() - 3600000).toISOString(),
     reversed_transaction_id: null,
+    from_display_name: "Prof. Silva",
+    from_young_key: "@SUBEMP-silva2341",
+    from_account_type: "sub_business",
+    from_role: "organization_admin",
+    to_display_name: "Miguel Aires",
+    to_young_key: "@ALN-miguel1234",
+    to_account_type: "personal",
+    to_role: "common_user",
   },
   {
     id: "demo-tx-3",
@@ -31,6 +39,14 @@ const demoTransactions: LedgerTransaction[] = [
     created_by: "demo-user",
     created_at: new Date(Date.now() - 7200000).toISOString(),
     reversed_transaction_id: null,
+    from_display_name: "Miguel Aires",
+    from_young_key: "@ALN-miguel1234",
+    from_account_type: "personal",
+    from_role: "common_user",
+    to_display_name: "Cantina Escola",
+    to_young_key: "@EMP-cantina5678",
+    to_account_type: "business",
+    to_role: "organization_admin",
   },
   {
     id: "demo-tx-2",
@@ -45,6 +61,14 @@ const demoTransactions: LedgerTransaction[] = [
     created_by: "demo-user",
     created_at: new Date(Date.now() - 86400000).toISOString(),
     reversed_transaction_id: null,
+    from_display_name: "Miguel Aires",
+    from_young_key: "@ALN-miguel1234",
+    from_account_type: "personal",
+    from_role: "common_user",
+    to_display_name: "Ana Costa",
+    to_young_key: "@ALN-anacosta9012",
+    to_account_type: "personal",
+    to_role: "common_user",
   },
   {
     id: "demo-tx-1",
@@ -59,6 +83,14 @@ const demoTransactions: LedgerTransaction[] = [
     created_by: "escola-admin",
     created_at: new Date(Date.now() - 172800000).toISOString(),
     reversed_transaction_id: null,
+    from_display_name: "Colegio VemCer",
+    from_young_key: "@EMP-vemcer3456",
+    from_account_type: "business",
+    from_role: "organization_admin",
+    to_display_name: "Miguel Aires",
+    to_young_key: "@ALN-miguel1234",
+    to_account_type: "personal",
+    to_role: "common_user",
   },
   {
     id: "demo-initial-credit",
@@ -73,6 +105,14 @@ const demoTransactions: LedgerTransaction[] = [
     created_by: "demo-user",
     created_at: new Date(Date.now() - 604800000).toISOString(),
     reversed_transaction_id: null,
+    from_display_name: null,
+    from_young_key: null,
+    from_account_type: null,
+    from_role: null,
+    to_display_name: "Miguel Aires",
+    to_young_key: "@ALN-miguel1234",
+    to_account_type: "personal",
+    to_role: "common_user",
   },
 ];
 
@@ -112,6 +152,34 @@ function validateTransferPayload(payload: Omit<TransferPayload, "idempotency_key
   };
 }
 
+const errorMessages: Record<string, string> = {
+  INSUFFICIENT_FUNDS: "Saldo insuficiente.",
+  DESTINATION_NOT_FOUND: "Destinatario nao encontrado. Verifique a chave Moneyoung.",
+  DESTINATION_WALLET_NOT_FOUND: "Carteira do destinatario nao encontrada.",
+  DESTINATION_WALLET_NOT_ACTIVE: "Carteira do destinatario esta bloqueada.",
+  ORIGIN_WALLET_NOT_FOUND: "Sua carteira nao foi encontrada.",
+  ORIGIN_WALLET_NOT_ACTIVE: "Sua carteira esta bloqueada.",
+  SELF_TRANSFER_BLOCKED: "Voce nao pode transferir para si mesmo.",
+  TRANSACTION_LIMIT_EXCEEDED: "Valor acima do limite por transacao.",
+  DAILY_LIMIT_EXCEEDED: "Limite diario de transferencias atingido.",
+  RATE_LIMITED: "Muitas transferencias em pouco tempo. Aguarde alguns segundos.",
+  INVALID_AMOUNT: "Valor invalido.",
+  PROFILE_NOT_ACTIVE: "Sua conta esta inativa.",
+  IDEMPOTENCY_KEY_CONFLICT: "Essa transacao ja foi processada.",
+  INVALID_IDEMPOTENCY_KEY: "Erro interno. Tente novamente.",
+  TRANSFER_LIMIT_NOT_CONFIGURED: "Limite de transferencia nao configurado. Contate o administrador.",
+  FORBIDDEN: "Voce nao tem permissao para esta acao.",
+};
+
+function translateError(raw: string): string {
+  const key = raw.trim().toUpperCase().replace(/\s+/g, "_");
+  if (errorMessages[key]) return errorMessages[key];
+  for (const [code, msg] of Object.entries(errorMessages)) {
+    if (raw.toUpperCase().includes(code)) return msg;
+  }
+  return raw;
+}
+
 export function parseAmount(value: string) {
   const normalized = value.trim().replace(/\./g, "").replace(",", ".");
   return Number(normalized);
@@ -119,9 +187,30 @@ export function parseAmount(value: string) {
 
 async function invoke<T>(name: string, body?: Record<string, unknown>): Promise<T> {
   if (!isSupabaseConfigured) throw new Error(supabaseConfigMessage);
-  const { data, error } = await supabase.functions.invoke<T>(name, body ? { body } : {});
-  if (error) throw new Error(error.message);
-  return data as T;
+
+  const url = process.env.EXPO_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+  const { data: sessionData } = await supabase.auth.getSession();
+  const accessToken = sessionData?.session?.access_token;
+
+  const res = await fetch(`${url}/functions/v1/${name}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "apikey": anonKey!,
+      "Authorization": `Bearer ${accessToken ?? anonKey}`,
+    },
+    ...(body ? { body: JSON.stringify(body) } : {}),
+  });
+
+  const json = await res.json();
+
+  if (!res.ok) {
+    const raw = json?.error?.message ?? json?.message ?? "Erro inesperado. Tente novamente.";
+    throw new Error(translateError(raw));
+  }
+
+  return json as T;
 }
 
 export async function ensureProfile() {
@@ -155,6 +244,14 @@ async function moveMoneyoung(payload: Omit<TransferPayload, "idempotency_key">, 
       created_by: "demo-user",
       created_at: new Date().toISOString(),
       reversed_transaction_id: null,
+      from_display_name: "Miguel Aires",
+      from_young_key: "@ALN-miguel1234",
+      from_account_type: "personal",
+      from_role: "common_user",
+      to_display_name: null,
+      to_young_key: nextPayload.to_young_key,
+      to_account_type: "personal",
+      to_role: "common_user",
     });
     return { ok: true, mode: "demo" };
   }

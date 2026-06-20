@@ -1,13 +1,14 @@
 import * as Clipboard from "expo-clipboard";
 import QRCode from "qrcode";
 import { useEffect, useState } from "react";
-import { Alert, Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Screen } from "../src/components/Screen";
 import { PageHeader } from "../src/components/PageHeader";
 import { StateView } from "../src/components/StateView";
 import { HexLogo } from "../src/components/HexLogo";
 import { getWalletSummary } from "../src/services/moneyoung";
+import { toast } from "../src/services/toast";
 import { colors } from "../src/theme/colors";
 
 export default function Receive() {
@@ -59,7 +60,7 @@ export default function Receive() {
         style={styles.copyBtn}
         onPress={async () => {
           await Clipboard.setStringAsync(youngKey);
-          Alert.alert("Chave copiada");
+          toast.success("Chave copiada");
         }}
       >
         <Ionicons name="copy-outline" size={20} color="#fff" />

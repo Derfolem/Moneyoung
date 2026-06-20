@@ -1,16 +1,44 @@
 import { router } from "expo-router";
-import { useState } from "react";
-import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
+import { useEffect, useState } from "react";
+import { Platform, StyleSheet, Text, TextInput, View } from "react-native";
 import { Button } from "../src/components/Button";
 import { Screen } from "../src/components/Screen";
 import { HexLogo } from "../src/components/HexLogo";
 import { ensureProfile } from "../src/services/moneyoung";
 import { signInWithGoogle } from "../src/services/auth";
-import { isSupabaseConfigured } from "../src/services/supabase";
+import { isSupabaseConfigured, supabase } from "../src/services/supabase";
+import { toast } from "../src/services/toast";
 import { colors } from "../src/theme/colors";
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
+
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) {
+        ensureProfile()
+          .then(() => router.replace("/home"))
+          .catch(() => {});
+      }
+    });
+
+    if (Platform.OS === "web") {
+      const { data } = supabase.auth.onAuthStateChange((event, session) => {
+        if (session && event === "SIGNED_IN") {
+          setLoading(true);
+          ensureProfile()
+            .then(() => router.replace("/home"))
+            .catch((err) => {
+              toast.error("Erro ao criar perfil", err instanceof Error ? err.message : "Tente novamente.");
+            })
+            .finally(() => setLoading(false));
+        }
+      });
+      return () => data.subscription.unsubscribe();
+    }
+  }, []);
 
   async function handleLogin() {
     try {
@@ -20,7 +48,7 @@ export default function Login() {
       await ensureProfile();
       router.replace("/home");
     } catch (err) {
-      Alert.alert("Nao foi possivel entrar", err instanceof Error ? err.message : "Tente novamente.");
+      toast.error("Nao foi possivel entrar", err instanceof Error ? err.message : "Tente novamente.");
     } finally {
       setLoading(false);
     }

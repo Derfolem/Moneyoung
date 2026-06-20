@@ -1,16 +1,18 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Button } from "../src/components/Button";
 import { HexLogo } from "../src/components/HexLogo";
+import { toast } from "../src/services/toast";
 import { colors } from "../src/theme/colors";
 
 export default function Receipt() {
-  const { to, amount, description, date } = useLocalSearchParams<{
+  const { to, amount, description, date, from } = useLocalSearchParams<{
     to: string;
     amount: string;
     description: string;
     date: string;
+    from: string;
   }>();
 
   const formattedDate = date
@@ -42,7 +44,7 @@ export default function Receipt() {
         <View style={styles.divider} />
         <View style={styles.row}>
           <Text style={styles.label}>Origem</Text>
-          <Text style={styles.value}>@miguel.aires</Text>
+          <Text style={styles.value}>{from || "—"}</Text>
         </View>
         <View style={styles.divider} />
         <View style={styles.row}>
@@ -68,7 +70,7 @@ export default function Receipt() {
       <View style={styles.actions}>
         <Button
           title="Compartilhar"
-          onPress={() => Alert.alert("Em breve", "Funcionalidade disponivel na proxima versao.")}
+          onPress={() => toast.info("Em breve", "Funcionalidade disponivel na proxima versao.")}
           tone="secondary"
         />
         <Button title="Voltar ao inicio" onPress={() => router.replace("/home")} tone="ghost" />

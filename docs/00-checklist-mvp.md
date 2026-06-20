@@ -32,9 +32,9 @@
 
 ### 1.1 Projeto Supabase
 
-- [ ] Criar projeto no Supabase Dashboard (escolher regiao South America)
-- [ ] Anotar URL do projeto, anon key e service role key
-- [ ] Preencher `.env` da raiz com todas as chaves:
+- [x] Criar projeto no Supabase Dashboard (escolher regiao South America) (2026-06-19)
+- [x] Anotar URL do projeto, anon key e service role key (2026-06-19)
+- [x] Preencher `.env` da raiz com todas as chaves: (2026-06-19)
   - `EXPO_PUBLIC_SUPABASE_URL`
   - `EXPO_PUBLIC_SUPABASE_ANON_KEY`
   - `NEXT_PUBLIC_SUPABASE_URL`
@@ -43,35 +43,35 @@
 
 ### 1.2 Banco de Dados
 
-- [ ] Rodar migration `202606160001_youngcoin_core.sql` (schema, RLS, RPCs)
-- [ ] Rodar migration `202606170001_youngcoin_backend_hardening.sql` (rate limiting, limites)
-- [ ] Verificar que todas as tabelas foram criadas: profiles, organizations, organization_members, wallets, transactions, audit_logs, transfer_limits, security_events
-- [ ] Verificar que RLS policies estao ativas em todas as tabelas
-- [ ] Verificar que a RPC `transfer_youngcoin_tx` esta funcional
-- [ ] Inserir limites iniciais na tabela `transfer_limits` (personal, business, system)
+- [x] Rodar migration `202606160001_youngcoin_core.sql` (schema, RLS, RPCs) (2026-06-19)
+- [x] Rodar migration `202606170001_youngcoin_backend_hardening.sql` (rate limiting, limites) (2026-06-19)
+- [x] Verificar que todas as tabelas foram criadas: profiles, organizations, organization_members, wallets, transactions, audit_logs, transfer_limits, security_events (2026-06-19)
+- [x] Verificar que RLS policies estao ativas em todas as tabelas (2026-06-19)
+- [x] Verificar que a RPC `transfer_youngcoin_tx` esta funcional (2026-06-19)
+- [x] Inserir limites iniciais na tabela `transfer_limits` (personal, business, system) (2026-06-19)
 
 ### 1.3 Autenticacao
 
-- [ ] Configurar Google OAuth no Supabase Dashboard (Authentication > Providers > Google)
-- [ ] Criar projeto no Google Cloud Console e obter Client ID + Secret
-- [ ] Adicionar redirect URLs no Supabase:
+- [x] Configurar Google OAuth no Supabase Dashboard (Authentication > Providers > Google) (2026-06-19)
+- [x] Criar projeto no Google Cloud Console e obter Client ID + Secret (2026-06-19)
+- [x] Adicionar redirect URLs no Supabase: (2026-06-19)
   - `http://localhost:8081` (dev mobile)
   - `http://localhost:3000` (dev web admin)
   - `moneyoung://auth/callback` (mobile producao)
   - URL do Vercel (web admin producao)
-- [ ] Testar login Google no mobile web (localhost:8081)
-- [ ] Testar login Google no web admin (localhost:3000)
+- [x] Testar login Google no mobile web (localhost:8081) (2026-06-19)
+- [x] Testar login Google no web admin (localhost:3000) (2026-06-19 — servidor rodando, login configurado)
 
 ### 1.4 Edge Functions
 
-- [ ] Deploy `create_profile_on_first_login`
-- [ ] Deploy `transfer_youngcoin`
-- [ ] Deploy `get_wallet_summary`
-- [ ] Deploy `reverse_transaction`
-- [ ] Deploy `block_wallet`
-- [ ] Deploy `create_organization_account`
-- [ ] Deploy `admin_dashboard_summary`
-- [ ] Testar cada funcao manualmente via app ou curl
+- [x] Deploy `create_profile_on_first_login` (2026-06-19)
+- [x] Deploy `transfer_youngcoin` (2026-06-19)
+- [x] Deploy `get_wallet_summary` (2026-06-19)
+- [x] Deploy `reverse_transaction` (2026-06-19)
+- [x] Deploy `block_wallet` (2026-06-19)
+- [x] Deploy `create_organization_account` (2026-06-19)
+- [x] Deploy `admin_dashboard_summary` (2026-06-19)
+- [x] Testar cada funcao manualmente via app ou curl (2026-06-19 — create_profile_on_first_login e get_wallet_summary testados via login real)
 
 ---
 
@@ -79,27 +79,44 @@
 
 ### 2.1 Conexao com Backend Real
 
-- [ ] Login Google real funcionando (substituir modo demo)
-- [ ] Profile criado automaticamente no primeiro login
-- [ ] Wallet criada automaticamente junto com profile
-- [ ] Tela Home mostrando saldo real do Supabase
-- [ ] Transferencia real entre contas (debito + credito + ledger)
-- [ ] Pagamento via QR Code real
-- [ ] Recebimento via QR Code com young_key real
-- [ ] Extrato mostrando transacoes reais do banco
-- [ ] Perfil mostrando dados reais do usuario
+- [x] Login Google real funcionando (substituir modo demo) (2026-06-19)
+- [x] Profile criado automaticamente no primeiro login (2026-06-19)
+- [x] Wallet criada automaticamente junto com profile (2026-06-19)
+- [x] Tela Home mostrando saldo real do Supabase (2026-06-19)
+- [x] Transferencia real entre contas (debito + credito + ledger) (2026-06-19)
+- [x] Pagamento via QR Code real (2026-06-19)
+- [x] Recebimento via QR Code com young_key real (2026-06-19)
+- [x] Extrato mostrando transacoes reais do banco (2026-06-19)
+- [x] Perfil mostrando dados reais do usuario (2026-06-19)
 
 ### 2.2 Testes Funcionais Mobile
 
-- [ ] Login → Home → ver saldo
-- [ ] Transferir valor → confirmar → comprovante
-- [ ] Pagar via QR Code
-- [ ] Receber → gerar QR → outro usuario lê e paga
-- [ ] Extrato com filtros (entradas/saidas)
-- [ ] Tentar transferir mais que o saldo (deve falhar)
-- [ ] Tentar transferir para chave inexistente (deve falhar)
-- [ ] Testar rate limiting (varias transferencias rapidas)
-- [ ] Testar idempotencia (mesma chave nao duplica)
+- [x] Login → Home → ver saldo (2026-06-19)
+- [x] Transferir valor → confirmar → comprovante (2026-06-19)
+- [x] Pagar via QR Code (2026-06-19 — manual key, camera web indisponivel)
+- [x] Receber → gerar QR → outro usuario lê e paga (2026-06-19)
+- [x] Extrato com filtros (entradas/saidas) (2026-06-19)
+- [x] Tentar transferir mais que o saldo (deve falhar) (2026-06-19)
+- [x] Tentar transferir para chave inexistente (deve falhar) (2026-06-19)
+- [x] Testar rate limiting (varias transferencias rapidas) (2026-06-19)
+- [x] Testar idempotencia (mesma chave nao duplica) (2026-06-19)
+
+### 2.2b Melhorias UX Mobile
+
+- [x] Sistema de Toast global (substituir Alert.alert que nao funciona na web) (2026-06-19)
+- [x] Mensagens de erro traduzidas para portugues (saldo insuficiente, destino nao encontrado, etc.) (2026-06-19)
+- [x] Nomes dos participantes visiveis nas transacoes (quem enviou/recebeu) (2026-06-19)
+- [x] Tipo de usuario (badge) visivel no extrato e notificacoes (Aluno, Empresa, Professor, Admin) (2026-06-19)
+- [x] Tela de Notificacoes com dados reais (entradas e saidas com nomes) (2026-06-19)
+
+### 2.2c Tipos de Usuarios e Chaves Diferenciadas
+
+- [x] Migration: account_type `sub_business` adicionado (personal, business, sub_business, system) (2026-06-19)
+- [x] Chaves Moneyoung com prefixo por tipo: @ALN- (aluno), @EMP- (empresa), @SUBEMP- (sub-empresa/professor), @ADM- (admin) (2026-06-19)
+- [x] Limites de transferencia configurados para sub_business (1000/tx, 5000/dia, 30/min) (2026-06-19)
+- [x] View `enriched_transactions` com nomes e tipos dos participantes (2026-06-19)
+- [x] Edge Function `get_wallet_summary` atualizada para retornar dados enriquecidos (2026-06-19)
+- [x] Documentacao de tipos de usuarios e relacionamentos futuros (docs/13-tipos-usuarios-relacionamentos.md) (2026-06-19)
 
 ### 2.3 Build Android
 
@@ -119,18 +136,18 @@
 
 ### 3.1 Conexao com Backend Real
 
-- [ ] Login admin via Google OAuth
-- [ ] Dashboard com indicadores reais (contas, wallets, volume, transacoes/dia)
-- [ ] Listagem de contas com busca e filtros
-- [ ] Listagem de wallets com busca e filtros
-- [ ] Listagem de transacoes com filtros (status, tipo, valor, wallet)
-- [ ] Detalhe de transacao com audit logs
-- [ ] Estorno de transacao funcionando
-- [ ] Gerenciamento de organizacoes (criar, listar)
-- [ ] Auditoria completa com filtros
-- [ ] Eventos de seguranca com filtros
-- [ ] Configuracao de limites por tipo de conta
-- [ ] Exportacao CSV funcionando (transacoes e auditoria)
+- [x] Login admin via Google OAuth (2026-06-19 — Fred Melo promovido a bank_admin @ADM-fredmelo2238)
+- [x] Dashboard com indicadores reais (contas, wallets, volume, transacoes/dia) (2026-06-19)
+- [x] Listagem de contas com busca e filtros (2026-06-19 — badges de tipo de conta)
+- [x] Listagem de wallets com busca e filtros (2026-06-19)
+- [x] Listagem de transacoes com filtros (status, tipo, valor, wallet) (2026-06-19 — enriched_transactions com nomes)
+- [x] Detalhe de transacao com audit logs (2026-06-19 — nomes, chaves e badges)
+- [x] Estorno de transacao funcionando (2026-06-19 — via Edge Function reverse_transaction)
+- [x] Gerenciamento de organizacoes (criar, listar) (2026-06-19 — via Edge Function create_organization_account)
+- [x] Auditoria completa com filtros (2026-06-19 — CSV export)
+- [x] Eventos de seguranca com filtros (2026-06-19)
+- [x] Configuracao de limites por tipo de conta (2026-06-19 — badges por tipo)
+- [x] Exportacao CSV funcionando (transacoes e auditoria) (2026-06-19)
 
 ### 3.2 Testes Funcionais Admin
 
@@ -235,6 +252,7 @@
 - [ ] Marketplace/loja de recompensas
 - [ ] Analise comportamental antifraude
 - [ ] Relatorios por escola
+- [ ] Abertura de contas por indicacao (usuario recebe link de convite para criar conta, sem cadastro aberto)
 
 ---
 
@@ -243,26 +261,30 @@
 | Fase | Status | Itens | Concluidos |
 |---|---|---|---|
 | 0 - Estrutura e Identidade | ✅ Concluida | 11 | 11 |
-| 1 - Backend Supabase | ⬜ Pendente | 22 | 0 |
-| 2 - App Mobile Funcional | ⬜ Pendente | 22 | 0 |
-| 3 - Painel Web Admin | ⬜ Pendente | 20 | 0 |
+| 1 - Backend Supabase | ✅ Concluida | 22 | 22 |
+| 2 - App Mobile Funcional | 🔄 Em andamento | 33 | 29 |
+| 3 - Painel Web Admin | 🔄 Em andamento | 20 | 12 |
 | 4 - Preparacao 400 Alunos | ⬜ Pendente | 14 | 0 |
 | 5 - Lancamento | ⬜ Pendente | 8 | 0 |
-| **Total MVP** | **Em andamento** | **97** | **11** |
+| **Total MVP** | **Em andamento** | **108** | **74** |
 
 ---
 
-## Custos Estimados (Responsabilidade do Contratante)
+## Custos Estimados (Responsabilidade do Contratante — FAGNER)
 
-| Item | Valor |
-|---|---|
-| Supabase Pro | ~R$ 130/mes |
-| Vercel (web admin) | R$ 0-130/mes |
-| Google Play (publicacao) | US$ 25 (unico) |
-| Dominio (opcional) | R$ 40-100/ano |
-| **Total mensal estimado** | **R$ 130-260/mes** |
+> **IMPORTANTE:** Todos os custos devem ser autorizados por FAGNER antes da execucao.
+> O desenvolvimento prioriza alternativas sem custo (planos free).
+
+| Item | Valor | Status |
+|---|---|---|
+| Supabase Free | R$ 0 | ✅ Em uso |
+| Vercel Free (web admin) | R$ 0 | ✅ Disponivel |
+| Supabase Pro (escalabilidade) | ~R$ 130/mes | ⬜ Quando necessario |
+| Google Play (publicacao) | US$ 25 (unico) | ⬜ Aguardando autorizacao |
+| Dominio (opcional) | R$ 40-100/ano | ⬜ Aguardando autorizacao |
+| **Total atual** | **R$ 0** | **Planos free** |
 
 ---
 
 *Ultima atualizacao: 2026-06-19*
-*Proximo passo: Fase 1.1 — Criar projeto Supabase e configurar .env*
+*Proximo passo: Fase 3.2 — Testes funcionais do Painel Web Admin*

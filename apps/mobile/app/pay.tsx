@@ -1,11 +1,12 @@
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
+import { StyleSheet, Text, TextInput, View } from "react-native";
 import { Button } from "../src/components/Button";
 import { PageHeader } from "../src/components/PageHeader";
 import { Screen } from "../src/components/Screen";
 import { parseAmount, payMoneyoung } from "../src/services/moneyoung";
+import { toast } from "../src/services/toast";
 import { colors } from "../src/theme/colors";
 
 export default function Pay() {
@@ -29,10 +30,10 @@ export default function Pay() {
 
       setLoading(true);
       await payMoneyoung({ to_young_key: youngKey.trim(), amount: parsedAmount, description: "Pagamento via QR Code" });
-      Alert.alert("Pagamento enviado");
+      toast.success("Pagamento enviado");
       router.replace("/home");
     } catch (err) {
-      Alert.alert("Erro no pagamento", err instanceof Error ? err.message : "Tente novamente.");
+      toast.error("Erro no pagamento", err instanceof Error ? err.message : "Tente novamente.");
     } finally {
       setLoading(false);
     }

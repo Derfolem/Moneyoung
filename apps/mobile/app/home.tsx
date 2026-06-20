@@ -1,6 +1,6 @@
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { Alert, Pressable, RefreshControl, StyleSheet, Text, View } from "react-native";
+import { Pressable, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { currency, WalletSummary } from "@moneyoung/shared";
 import { Screen } from "../src/components/Screen";
@@ -10,6 +10,7 @@ import { HexLogo } from "../src/components/HexLogo";
 import { Drawer } from "../src/components/Drawer";
 import { getWalletSummary } from "../src/services/moneyoung";
 import { signOut } from "../src/services/auth";
+import { toast } from "../src/services/toast";
 import { colors } from "../src/theme/colors";
 
 function getGreeting(): string {
@@ -56,7 +57,7 @@ export default function Home() {
       await signOut();
       router.replace("/login");
     } catch (err) {
-      Alert.alert("Erro", "Nao foi possivel sair.");
+      toast.error("Erro", "Nao foi possivel sair.");
     }
   }
 

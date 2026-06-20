@@ -61,8 +61,8 @@ export default function TransactionDetailPage({ params }: { params: { id: string
           <Field label="Status" value={<StatusPill value={tx.status} />} />
           <Field label="Tipo" value={tx.type} />
           <Field label="Valor" value={currency.format(tx.amount)} />
-          <Field label="Origem" value={tx.from_wallet_id ?? "-"} />
-          <Field label="Destino" value={tx.to_wallet_id ?? "-"} />
+          <Field label="Origem" value={<>{tx.from_display_name ?? tx.from_wallet_id ?? "-"}{tx.from_young_key ? <span className="muted" style={{ marginLeft: 4 }}>{tx.from_young_key}</span> : null}{tx.from_account_type ? <span className={`pill pill-${tx.from_account_type}`} style={{ marginLeft: 4 }}>{accountTypeLabel[tx.from_account_type] ?? tx.from_account_type}</span> : null}</>} />
+          <Field label="Destino" value={<>{tx.to_display_name ?? tx.to_wallet_id ?? "-"}{tx.to_young_key ? <span className="muted" style={{ marginLeft: 4 }}>{tx.to_young_key}</span> : null}{tx.to_account_type ? <span className={`pill pill-${tx.to_account_type}`} style={{ marginLeft: 4 }}>{accountTypeLabel[tx.to_account_type] ?? tx.to_account_type}</span> : null}</>} />
           <Field label="Criada em" value={new Date(tx.created_at).toLocaleString("pt-BR")} />
           <Field label="Reversao de" value={tx.reversed_transaction_id ?? "-"} />
           <Field label="Descricao" value={tx.description ?? "-"} wide />
@@ -84,6 +84,8 @@ export default function TransactionDetailPage({ params }: { params: { id: string
 function Field({ label, value, wide = false }: { label: string; value: ReactNode; wide?: boolean }) {
   return <div className={wide ? "detailWide" : ""}><span className="muted">{label}</span><strong>{value}</strong></div>;
 }
+
+const accountTypeLabel: Record<string, string> = { personal: "Aluno", business: "Empresa", sub_business: "Professor", system: "Admin" };
 
 const auditColumns: Column<AuditLog>[] = [
   { key: "created_at", header: "data", render: (row) => new Date(row.created_at).toLocaleString("pt-BR") },

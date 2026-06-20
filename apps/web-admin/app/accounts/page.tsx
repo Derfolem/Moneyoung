@@ -36,11 +36,13 @@ export default function AccountsPage() {
   );
 }
 
+const accountTypeLabel: Record<string, string> = { personal: "Aluno", business: "Empresa", sub_business: "Professor", system: "Admin" };
+
 const columns: Column<Profile>[] = [
   { key: "email", header: "e-mail" },
   { key: "display_name", header: "nome" },
   { key: "young_key", header: "young key" },
-  { key: "account_type", header: "conta" },
+  { key: "account_type", header: "conta", render: (row) => <span className={`pill pill-${row.account_type}`}>{accountTypeLabel[row.account_type] ?? row.account_type}</span> },
   { key: "role", header: "role" },
   { key: "status", header: "status", render: (row) => <StatusPill value={row.status} /> },
   { key: "created_at", header: "criada em", render: (row) => new Date(row.created_at).toLocaleString("pt-BR") }

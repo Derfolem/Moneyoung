@@ -4,21 +4,104 @@
 
 `apps/mobile` usa Expo Router, TypeScript, Supabase client, services e componentes reutilizaveis.
 
+```
+apps/mobile/
+├── app/                    # Telas (Expo Router)
+│   ├── _layout.tsx         # Root layout + auth guard + ToastHost
+│   ├── login.tsx           # Login com Google OAuth
+│   ├── home.tsx            # Dashboard com saldo
+│   ├── transfer.tsx        # Transferir YC
+│   ├── transfer-confirm.tsx # Confirmar transferencia
+│   ├── receipt.tsx         # Comprovante
+│   ├── pay.tsx             # Pagar via QR Code
+│   ├── receive.tsx         # Receber (gerar QR Code)
+│   ├── statement.tsx       # Extrato com filtros
+│   ├── notifications.tsx   # Notificacoes reais (entradas/saidas)
+│   └── profile.tsx         # Perfil do usuario
+├── src/
+│   ├── components/
+│   │   ├── Button.tsx
+│   │   ├── Drawer.tsx
+│   │   ├── HexLogo.tsx
+│   │   ├── PageHeader.tsx
+│   │   ├── Screen.tsx
+│   │   ├── StateView.tsx
+│   │   ├── Toast.tsx       # Toast visual (substitui Alert.alert)
+│   │   └── TransactionRow.tsx # Com nomes e badges de tipo
+│   ├── services/
+│   │   ├── auth.ts           # Google OAuth (signIn, signOut)
+│   │   ├── moneyoung.ts      # Core service (transfer, pay, wallet, translateError)
+│   │   ├── supabase.ts       # Cliente Supabase (nativo, SecureStore)
+│   │   ├── supabase.web.ts   # Cliente Supabase (web, localStorage)
+│   │   └── toast.ts          # Event emitter para toasts globais
+│   └── theme/
+│       └── colors.ts
+└── package.json
+```
+
 ## Telas
 
-- `/login`
-- `/home`
-- `/transfer`
-- `/pay`
-- `/receive`
-- `/statement`
-- `/profile`
+- `/login` — Login Google OAuth
+- `/home` — Dashboard com saldo, acoes rapidas e ultimas transacoes
+- `/transfer` — Informar destino, valor e descricao
+- `/transfer-confirm` — Confirmar antes de executar
+- `/receipt` — Comprovante com dados da transacao
+- `/pay` — Escanear QR Code ou digitar chave
+- `/receive` — QR Code com young_key do usuario
+- `/statement` — Extrato com filtros (tudo/entradas/saidas)
+- `/notifications` — Entradas e saidas com nomes, valores e badges de tipo
+- `/profile` — Dados do usuario
+
+## Modo Demo vs Real
+
+O app funciona em dois modos:
+- **Demo**: sem Supabase configurado, usa dados fake para demonstracao
+- **Real**: com `.env` preenchido, conecta ao Supabase real
+
+A variavel `isSupabaseConfigured` controla o modo em todos os services.
+
+## Servicos
+
+### auth.ts
+- `signInWithGoogle()` — login via OAuth (redirect na web, popup no nativo)
+- `signOut()` — encerra sessao
+- `hasActiveSession()` — verifica se ha sessao ativa
+
+### moneyoung.ts
+- `ensureProfile()` — cria perfil + wallet no primeiro login
+- `getWalletSummary()` — busca saldo, perfil e transacoes enriquecidas (com nomes)
+- `transferMoneyoung(payload)` — transferir YC
+- `payMoneyoung(payload)` — pagar via QR Code
+- `parseAmount(value)` — normaliza valor de moeda
+- `invoke(name, body)` — chama Edge Function via fetch direto (nao usa supabase.functions.invoke)
+- `translateError(raw)` — traduz codigos de erro do backend para portugues
+
+### toast.ts
+- `toast.success(title, message?)` — toast verde
+- `toast.error(title, message?)` — toast vermelho
+- `toast.info(title, message?)` — toast azul
+- `toast.subscribe(fn)` — listener para o componente ToastHost
+
+### supabase.ts / supabase.web.ts
+- Clientes Supabase com armazenamento seguro (SecureStore no nativo, localStorage na web)
+- Header customizado `x-moneyoung-client` para identificar plataforma
+
+## Componentes
+
+### TransactionRow
+Mostra cada transacao com:
+- Nome do outro participante (quem enviou ou recebeu)
+- Badge colorido do tipo de conta (Aluno, Empresa, Professor, Admin)
+- Chave Moneyoung do participante
+- Tipo da transacao e data
+- Valor com cor (verde = entrada, vermelho = saida)
+
+### Toast (ToastHost)
+Componente global montado no `_layout.tsx`. Recebe eventos do `toast.ts` e mostra notificacao animada no topo da tela com icone, titulo e mensagem. Desaparece apos 4 segundos. Suporta tipos: success (verde), error (vermelho), info (azul).
 
 ## Fluxos
 
-Login Google cria profile/wallet no primeiro acesso. Home consulta `get_wallet_summary`. Transferencia e pagamento chamam `transfer_youngcoin`. Recebimento mostra QR Code com `young_key`.
-
-Quando `EXPO_PUBLIC_SUPABASE_URL` e `EXPO_PUBLIC_SUPABASE_ANON_KEY` estao vazios, o app entra em modo demo. Nesse modo, o login nao chama OAuth, cria um usuario local `demo@moneyoung.local`, mostra a chave `@demo`, saldo inicial de `250 YC` e registra transferencias apenas em memoria.
+Login Google cria profile/wallet no primeiro acesso. Home consulta `get_wallet_summary` que retorna transacoes enriquecidas com nomes e tipos. Transferencia e pagamento chamam `transfer_youngcoin`. Erros sao mostrados como toast visual. Recebimento mostra QR Code com `young_key`.
 
 ## Rodar local
 
@@ -28,16 +111,14 @@ npm install
 npm run dev:mobile
 ```
 
-Para testar no navegador nesta estrutura de monorepo, use:
+Para testar no navegador:
 
 ```bash
 cd apps/mobile
-EXPO_USE_METRO_WORKSPACE_ROOT=1 npx expo start --web
+npm run web
 ```
 
-Abra `http://localhost:8081`.
-
-O arquivo `apps/mobile/metro.config.js` aponta o Metro para os `node_modules` da raiz do monorepo. O arquivo `src/services/supabase.web.ts` substitui o cliente nativo no web e usa `localStorage` em vez de `expo-secure-store`.
+Abra `http://localhost:8081`. O script `npm run web` carrega o `.env` da raiz via `dotenv`.
 
 ## Android
 
@@ -49,21 +130,11 @@ cd apps/mobile
 npx expo run:android
 ```
 
-O wrapper usa bibliotecas em `~/glibc-compat`. Se aparecer `stack smashing detected`, reinicie o emulador pelo wrapper e tente novamente.
-
 ```bash
 npm run build:android:preview
 ```
 
 O profile `preview` gera APK.
-
-## iOS
-
-```bash
-npm run build:ios:preview
-```
-
-O profile inicial esta configurado para simulador. Para dispositivo/TestFlight, configure Apple Developer no EAS.
 
 ## Variaveis
 
@@ -71,4 +142,4 @@ O profile inicial esta configurado para simulador. Para dispositivo/TestFlight, 
 - `EXPO_PUBLIC_SUPABASE_ANON_KEY`
 - `EAS_PROJECT_ID`
 
-Com essas variaveis vazias, apenas o modo demo funciona. Para auth real, profile, wallet e ledger persistente, preencha o `.env` da raiz ou suba o Supabase local.
+Com essas variaveis vazias, apenas o modo demo funciona.

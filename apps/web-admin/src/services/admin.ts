@@ -100,16 +100,27 @@ export type SecurityFilters = {
   severity?: SecuritySeverity | "";
 };
 
-type FunctionErrorBody = {
-  code?: string;
-  message?: string;
-};
-
 export async function invokeFunction<T>(name: string, body?: Record<string, unknown>): Promise<T> {
   if (!isSupabaseConfigured) throw new Error(supabaseConfigMessage);
-  const { data, error } = await supabase.functions.invoke<T>(name, body ? { body } : {});
-  if (error) throw new Error(formatFunctionError(error));
-  return data as T;
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const { data: sessionData } = await supabase.auth.getSession();
+  const accessToken = sessionData?.session?.access_token;
+  const res = await fetch(`${url}/functions/v1/${name}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "apikey": anonKey!,
+      "Authorization": `Bearer ${accessToken ?? anonKey}`
+    },
+    ...(body ? { body: JSON.stringify(body) } : {})
+  });
+  const json = await res.json();
+  if (!res.ok) {
+    const raw = json?.error?.message ?? json?.message ?? "Erro inesperado.";
+    throw new Error(raw);
+  }
+  return json as T;
 }
 
 export async function requireAdminSession(): Promise<AdminProfile | null> {
@@ -174,7 +185,7 @@ export async function changeWalletStatus(walletId: string, status: WalletStatus,
 }
 
 export async function listTransactions(filters: TransactionFilters): Promise<LedgerTransaction[]> {
-  let request = supabase.from("transactions").select("*").order("created_at", { ascending: false }).limit(300);
+  let request = supabase.from("enriched_transactions").select("*").order("created_at", { ascending: false }).limit(300);
   if (filters.status) request = request.eq("status", filters.status);
   if (filters.type) request = request.eq("type", filters.type);
   if (filters.min) request = request.gte("amount", Number(filters.min));
@@ -188,7 +199,7 @@ export async function listTransactions(filters: TransactionFilters): Promise<Led
 }
 
 export async function getTransaction(id: string): Promise<LedgerTransaction | null> {
-  const { data, error } = await supabase.from("transactions").select("*").eq("id", id).maybeSingle();
+  const { data, error } = await supabase.from("enriched_transactions").select("*").eq("id", id).maybeSingle();
   if (error) throw new Error(error.message);
   return data as LedgerTransaction | null;
 }
@@ -302,16 +313,3 @@ function cleanSearch(value?: string): string {
   return (value ?? "").trim().replace(/[%*,]/g, "");
 }
 
-function formatFunctionError(error: unknown): string {
-  if (typeof error === "object" && error && "context" in error) {
-    const context = (error as { context?: { body?: unknown } }).context;
-    const body = context?.body;
-    if (typeof body === "object" && body) {
-      const parsed = body as FunctionErrorBody;
-      if (parsed.message) return parsed.message;
-      if (parsed.code) return parsed.code;
-    }
-  }
-  if (error instanceof Error) return error.message;
-  return "Erro ao chamar funcao administrativa.";
-}

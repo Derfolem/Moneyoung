@@ -20,7 +20,7 @@ Deno.serve(async (req) => {
     if (walletError) return error("NOT_FOUND", "Wallet Moneyoung nao encontrada.", 404);
 
     const { data: recent_transactions, error: txError } = await serviceClient
-      .from("transactions")
+      .from("enriched_transactions")
       .select("*")
       .or(`from_wallet_id.eq.${wallet.id},to_wallet_id.eq.${wallet.id}`)
       .order("created_at", { ascending: false })

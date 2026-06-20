@@ -21,7 +21,7 @@ export const supabase = createClient(
       storage: webAdapter,
       autoRefreshToken: true,
       persistSession: true,
-      detectSessionInUrl: false
+      detectSessionInUrl: true
     },
     global: {
       headers: { "x-moneyoung-client": "mobile-web" }

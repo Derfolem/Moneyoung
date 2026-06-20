@@ -12,3 +12,4 @@ coverage
 *.log
 supabase/.branches
 supabase/.temp
+.mcp.json
