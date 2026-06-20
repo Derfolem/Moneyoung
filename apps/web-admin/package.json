@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "DOTENV_CONFIG_PATH=../../.env node -r dotenv/config ./node_modules/next/dist/bin/next dev",
-    "build": "DOTENV_CONFIG_PATH=../../.env node -r dotenv/config ./node_modules/next/dist/bin/next build",
+    "build": "next build",
     "start": "DOTENV_CONFIG_PATH=../../.env node -r dotenv/config ./node_modules/next/dist/bin/next start",
     "lint": "tsc --noEmit -p tsconfig.lint.json"
   },
