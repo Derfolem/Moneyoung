@@ -244,15 +244,90 @@ export async function createOrganization(name: string, slug: string, ownerProfil
 
 export async function linkOrganizationMember(
   organizationId: string,
-  profileId: string,
+  youngKeyOrId: string,
   memberRole: OrganizationMemberRole
 ): Promise<void> {
+  let profileId = youngKeyOrId;
+
+  if (youngKeyOrId.startsWith("@")) {
+    const { data, error: lookupError } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("young_key", youngKeyOrId)
+      .maybeSingle();
+    if (lookupError) throw new Error(lookupError.message);
+    if (!data) throw new Error(`Usuário com chave "${youngKeyOrId}" não encontrado.`);
+    profileId = data.id;
+  }
+
   const { error } = await supabase.from("organization_members").insert({
     organization_id: organizationId,
     profile_id: profileId,
     member_role: memberRole,
     status: "active"
   });
+  if (error) throw new Error(error.message);
+}
+
+export type OrgMember = {
+  id: string;
+  organization_id: string;
+  profile_id: string;
+  member_role: string;
+  status: string;
+  created_at: string;
+  display_name: string | null;
+  young_key: string | null;
+  account_type: string | null;
+};
+
+export async function listOrgMembers(organizationId: string): Promise<OrgMember[]> {
+  const { data, error } = await supabase
+    .from("organization_members")
+    .select("id,organization_id,profile_id,member_role,status,created_at")
+    .eq("organization_id", organizationId)
+    .order("created_at", { ascending: false });
+  if (error) throw new Error(error.message);
+
+  const members = (data ?? []) as Array<{
+    id: string; organization_id: string; profile_id: string;
+    member_role: string; status: string; created_at: string;
+  }>;
+
+  if (members.length === 0) return [];
+
+  const profileIds = members.map(m => m.profile_id);
+  const { data: profiles } = await supabase
+    .from("profiles")
+    .select("id,display_name,young_key,account_type")
+    .in("id", profileIds);
+
+  const profileMap = new Map((profiles ?? []).map(p => [p.id, p]));
+
+  return members.map(m => {
+    const p = profileMap.get(m.profile_id);
+    return {
+      ...m,
+      display_name: p?.display_name ?? null,
+      young_key: p?.young_key ?? null,
+      account_type: p?.account_type ?? null,
+    };
+  });
+}
+
+export async function unlinkOrgMember(memberId: string): Promise<void> {
+  const { error } = await supabase.from("organization_members").delete().eq("id", memberId);
+  if (error) throw new Error(error.message);
+}
+
+export async function deleteOrganization(orgId: string): Promise<void> {
+  const { error: membersError } = await supabase
+    .from("organization_members")
+    .delete()
+    .eq("organization_id", orgId);
+  if (membersError) throw new Error(membersError.message);
+
+  const { error } = await supabase.from("organizations").delete().eq("id", orgId);
   if (error) throw new Error(error.message);
 }
 
