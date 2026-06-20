@@ -161,15 +161,15 @@
 
 ### 3.3 Deploy Web Admin
 
-- [x] Criar projeto no Vercel (2026-06-20 — moneyoung/ycbank, Hobby plan free)
+- [x] Criar projeto no Vercel (2026-06-20 — moneyoung/mygbank, Hobby plan free)
 - [x] Conectar repositorio Git (2026-06-20 — github.com/Derfolem/Moneyoung)
 - [x] Configurar variaveis de ambiente no Vercel (2026-06-20):
   - `NEXT_PUBLIC_SUPABASE_URL`
   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - [x] Deploy preview e testar (2026-06-20 — build OK, 14 paginas)
-- [x] Deploy producao (2026-06-20 — https://ycbank.vercel.app)
+- [x] Deploy producao (2026-06-20 — https://mygbank.vercel.app)
 - [ ] Configurar dominio proprio (aguardando autorizacao de Fagner)
-- [ ] Adicionar URL do Vercel nos redirects do Google OAuth
+- [x] Adicionar URL do Vercel nos redirects do Google OAuth (2026-06-20 — Supabase + Google Cloud)
 
 ---
 
@@ -263,10 +263,10 @@
 | 0 - Estrutura e Identidade | ✅ Concluida | 11 | 11 |
 | 1 - Backend Supabase | ✅ Concluida | 22 | 22 |
 | 2 - App Mobile Funcional | 🔄 Em andamento | 33 | 29 |
-| 3 - Painel Web Admin | 🔄 Em andamento | 20 | 17 |
+| 3 - Painel Web Admin | 🔄 Em andamento | 20 | 18 |
 | 4 - Preparacao 400 Alunos | ⬜ Pendente | 14 | 0 |
 | 5 - Lancamento | ⬜ Pendente | 8 | 0 |
-| **Total MVP** | **Em andamento** | **108** | **79** |
+| **Total MVP** | **Em andamento** | **108** | **80** |
 
 ---
 
@@ -286,5 +286,5 @@
 
 ---
 
-*Ultima atualizacao: 2026-06-19*
-*Proximo passo: Adicionar URL Vercel nos redirects OAuth e testar login em producao*
+*Ultima atualizacao: 2026-06-20*
+*Proximo passo: Fase 3.2 — Testes funcionais do painel admin em producao*

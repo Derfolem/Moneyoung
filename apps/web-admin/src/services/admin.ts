@@ -78,6 +78,21 @@ export type AccountsFilters = {
   status?: ProfileStatus | "";
 };
 
+export type EnrichedWallet = {
+  id: string;
+  profile_id: string;
+  owner_name: string | null;
+  owner_young_key: string | null;
+  owner_account_type: AccountType | null;
+  organization_id: string | null;
+  organization_name: string | null;
+  wallet_type: string;
+  balance: string;
+  status: WalletStatus;
+  created_at: string;
+  updated_at: string;
+};
+
 export type WalletFilters = {
   status?: WalletStatus | "";
   query?: string;
@@ -159,20 +174,20 @@ export async function listAccounts(filters: AccountsFilters): Promise<Profile[]>
   return (data ?? []) as Profile[];
 }
 
-export async function listWallets(filters: WalletFilters): Promise<Wallet[]> {
+export async function listWallets(filters: WalletFilters): Promise<EnrichedWallet[]> {
   let request = supabase
-    .from("wallets")
-    .select("id,profile_id,organization_id,wallet_type,balance,status,created_at,updated_at")
+    .from("enriched_wallets")
+    .select("*")
     .order("created_at", { ascending: false })
     .limit(200);
 
   const query = cleanSearch(filters.query);
   if (filters.status) request = request.eq("status", filters.status);
-  if (query) request = request.or(`id.eq.${query},profile_id.eq.${query},organization_id.eq.${query}`);
+  if (query) request = request.or(`id.eq.${query},profile_id.eq.${query},owner_name.ilike.%${query}%,owner_young_key.ilike.%${query}%`);
 
   const { data, error } = await request;
   if (error) throw new Error(error.message);
-  return (data ?? []) as Wallet[];
+  return (data ?? []) as EnrichedWallet[];
 }
 
 export async function changeWalletStatus(walletId: string, status: WalletStatus, reason: string): Promise<Wallet> {
