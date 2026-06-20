@@ -278,7 +278,7 @@
 | Item | Valor | Status |
 |---|---|---|
 | Supabase Free | R$ 0 | ✅ Em uso |
-| Vercel Free (web admin) | R$ 0 | ✅ Disponivel |
+| Vercel Free (web admin) | R$ 0 | ✅ Em uso |
 | Supabase Pro (escalabilidade) | ~R$ 130/mes | ⬜ Quando necessario |
 | Google Play (publicacao) | US$ 25 (unico) | ⬜ Aguardando autorizacao |
 | Dominio (opcional) | R$ 40-100/ano | ⬜ Aguardando autorizacao |
@@ -287,4 +287,4 @@
 ---
 
 *Ultima atualizacao: 2026-06-20*
-*Proximo passo: Fase 3.2 — Testes funcionais do painel admin em producao*
+*Proximo passo: Fase 3.2 — Testes funcionais (login, criar escola, bloquear wallet, estornar, CSV)*
