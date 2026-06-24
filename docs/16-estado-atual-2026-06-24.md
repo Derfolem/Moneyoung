@@ -2,7 +2,7 @@
 
 ## Progresso
 
-177/229 itens do checklist MVP concluidos (77%).
+189/229 itens do checklist MVP concluidos (83%).
 
 ## Mudancas desde 2026-06-23
 
@@ -80,6 +80,24 @@
 - 6 RLS policies otimizadas com (select auth.uid()) em vez de auth.uid() (avalia uma vez por query, nao por linha)
 - 5 indices criados em foreign keys sem cobertura (audit_logs, organization_members, organizations, profiles, security_events)
 - Pendente: habilitar Leaked Password Protection (requer plano Supabase Pro $25/mes — Authentication > Settings > Security)
+- REVOKE adicional de `authenticated` em generate_invite_code e validate_invite_code (funcoes internas, chamadas apenas via Edge Functions)
+
+### Testes Funcionais Admin (2026-06-24)
+- Dashboard: 3 wallets ativas, 3 profiles, 1 organizacao, transacoes e audit logs — dados reais OK
+- Criar escola: "escola teste" com email, codigos convite ALS3443/ZZQ8983
+- Bloquear wallet: transferencia corretamente bloqueada, audit log registrado
+- Desbloquear wallet: status retornou a active, audit log registrado
+- Estornar transacao: saldo devolvido (escola 990, aluno 10), transacao marcada reversed, audit log registrado
+- Audit logs: 11 acoes registradas com razoes (org.created, registrations, approvals, credit, transfers, block/unblock, reversal)
+- Pendente via browser: excluir organizacao, exportar CSV
+
+### Verificacao de Seguranca Pre-Lancamento (2026-06-24)
+- service_role key: nao exposta em nenhum arquivo de apps/mobile ou apps/web-admin
+- .env: .gitignore correto, apenas .env.example rastreado no Git
+- Acesso nao autorizado: 10 funcoes admin bloqueadas para anon+authenticated, 10 funcoes user acessiveis apenas por authenticated
+- Rate limiting: configurado (personal 250/tx 1000/dia 10/min, business 2500/tx 10000/dia 60/min, sub_business 1000/tx 5000/dia 30/min)
+- Roteiro de incidentes: SECURITY.md com politicas, procedimentos de falha, rotacao de chaves
+- RLS ativa em 8 tabelas (audit_logs, organization_members, organizations, profiles, security_events, transactions, transfer_limits, wallets)
 
 ## O que funciona
 
@@ -125,24 +143,25 @@
 - Deploy Vercel producao (https://mygbank.vercel.app)
 
 ### Usuarios de teste
-- Fred Melo (melfredfred25@gmail.com) — @ADM-fredmelo2238 (bank_admin)
-- Frederic Melo (agentcodi01@gmail.com) — @agentcodi012430 (common_user)
+- Fred Melo (melfredfred25@gmail.com) — @BANK-admin0001 (bank_admin)
+- fred test 1 (agentcodi01@gmail.com) — @SUBEMP-fredtest11215 (organization_admin / sub_business)
+- fred teste 2 (fredmeloofruto@gmail.com) — @ALN-fredteste22319 (common_user / personal)
 
 ## O que falta
 
 ### Fase 2 (9 itens restantes)
 - Build Android: EAS, APK, teste em dispositivo, Google Play
 
-### Fase 3 (9 itens restantes)
-- Testes funcionais do painel admin (8 itens)
+### Fase 3 (3 itens restantes)
+- Excluir organizacao via browser
+- Exportar CSV via browser
 - Dominio proprio (aguardando autorizacao de Fagner)
 
-### Fase 4 (37 itens)
-- **Hardening de seguranca (15 itens):** revogar EXECUTE de anon/authenticated em RPCs sensiveis, fixar search_path em funcoes, otimizar RLS policies com (select auth.uid()), criar indices em foreign keys sem cobertura, habilitar leaked password protection
+### Fase 4 (16 itens restantes)
+- Leaked Password Protection (requer plano Pro $25/mes)
 - Infraestrutura (5 itens): Supabase Pro, compute, backups
 - Dados iniciais (6 itens): contas, creditos, limites
 - Onboarding (4 itens): instrucoes, processos
-- Seguranca pre-lancamento (6 itens): revisao final
 
 ### Fase 5 (13 itens)
 - Lancamento e monitoramento
@@ -150,7 +169,7 @@
 ## Documentacao
 
 16 documentos tecnicos:
-- 00: Checklist MVP (177/229, 77%)
+- 00: Checklist MVP (189/229, 83%)
 - 01: Visao geral (atualizado com convite, colaborador, UI premium)
 - 02: Arquitetura (atualizado com sistema visual premium, OAuth web)
 - 03: Banco de dados

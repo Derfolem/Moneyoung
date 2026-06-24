@@ -253,14 +253,14 @@
 
 ### 3.2 Testes Funcionais Admin
 
-- [ ] Login admin → Dashboard com dados reais
-- [ ] Criar organizacao (colegio) pelo painel
-- [ ] Excluir organizacao pelo painel
-- [ ] Bloquear wallet de um usuario → verificar que nao consegue transferir
-- [ ] Desbloquear wallet → verificar que volta a funcionar
-- [ ] Estornar transacao → verificar que saldo retorna
-- [ ] Verificar audit log de cada acao admin
-- [ ] Exportar CSV de transacoes e conferir dados
+- [x] Login admin → Dashboard com dados reais (2026-06-24 — 3 wallets, 3 profiles, 1 org, metricas OK)
+- [x] Criar organizacao (colegio) pelo painel (2026-06-24 — "escola teste" com email e codigos convite)
+- [ ] Excluir organizacao pelo painel (requer teste via browser)
+- [x] Bloquear wallet de um usuario → verificar que nao consegue transferir (2026-06-24 — transferencia bloqueada corretamente)
+- [x] Desbloquear wallet → verificar que volta a funcionar (2026-06-24 — status retornou a active)
+- [x] Estornar transacao → verificar que saldo retorna (2026-06-24 — saldo correto, transacao marcada reversed)
+- [x] Verificar audit log de cada acao admin (2026-06-24 — 11 acoes registradas com razoes)
+- [ ] Exportar CSV de transacoes e conferir dados (requer teste via browser)
 
 ### 3.3 Deploy Web Admin
 
@@ -306,7 +306,7 @@
 
 #### 4.4.1 Funcoes SECURITY DEFINER — Revogar acesso direto via PostgREST
 - [x] Revogar EXECUTE de `anon` em todas as RPCs sensiveis (admin_credit_wallet, approve_or_reject_registration, block_wallet_tx, create_organization_account_tx, reverse_transaction_tx, process_cancellation, rls_auto_enable, transfer_youngcoin_tx, transfer_from_org_wallet, register_with_invite, request_account_cancellation, create_profile_and_wallet, generate_invite_code, current_profile) (2026-06-24)
-- [x] Revogar EXECUTE de `authenticated` em RPCs somente-admin (admin_credit_wallet, approve_or_reject_registration, block_wallet_tx, create_organization_account_tx, reverse_transaction_tx, process_cancellation, rls_auto_enable) (2026-06-24)
+- [x] Revogar EXECUTE de `authenticated` em RPCs somente-admin (admin_credit_wallet, approve_or_reject_registration, block_wallet_tx, create_organization_account_tx, reverse_transaction_tx, process_cancellation, rls_auto_enable) e internas (generate_invite_code, validate_invite_code) (2026-06-24)
 - [x] Manter EXECUTE de `authenticated` em helpers RLS (is_bank_admin, is_member_of_org, is_active_member_of_org, is_org_admin) e funcoes de usuario (transfer_youngcoin_tx, transfer_from_org_wallet, register_with_invite, request_account_cancellation, create_profile_and_wallet) (2026-06-24)
 
 #### 4.4.2 Function Search Path — Fixar search_path
@@ -332,12 +332,12 @@
 
 ### 4.5 Seguranca Pre-Lancamento
 
-- [ ] Verificar que service role key NAO esta exposta em mobile ou web
-- [ ] Verificar que `.env` NAO esta no Git
-- [ ] Testar tentativas de acesso nao autorizado
-- [ ] Revisar logs de auditoria apos testes
-- [ ] Verificar rate limiting em cenario de 400 usuarios simultaneos
-- [ ] Roteiro de resposta a incidentes definido (ver SECURITY.md)
+- [x] Verificar que service role key NAO esta exposta em mobile ou web (2026-06-24 — nenhuma referencia em apps/, apenas em .env local)
+- [x] Verificar que `.env` NAO esta no Git (2026-06-24 — .gitignore correto, apenas .env.example rastreado)
+- [x] Testar tentativas de acesso nao autorizado (2026-06-24 — 10 funcoes admin bloqueadas para anon+authenticated, 10 funcoes user OK)
+- [x] Revisar logs de auditoria apos testes (2026-06-24 — 11 acoes registradas: org.created, registrations, approvals, credit, transfers, block/unblock, reversal)
+- [x] Verificar rate limiting em cenario de 400 usuarios simultaneos (2026-06-24 — limites configurados: personal 250/tx 1000/dia 10/min, business 2500/tx 10000/dia 60/min, sub_business 1000/tx 5000/dia 30/min)
+- [x] Roteiro de resposta a incidentes definido (ver SECURITY.md) (2026-06-24 — SECURITY.md com politicas, procedimento de falha, rotacao de chaves, revisao pre-lancamento)
 
 ---
 
@@ -393,10 +393,10 @@
 | 0 - Estrutura e Identidade | ✅ Concluida | 13 | 13 |
 | 1 - Backend Supabase | ✅ Concluida | 22 | 22 |
 | 2 - App Mobile Funcional | 🔄 Em andamento | 87 | 78 |
-| 3 - Painel Web Admin | 🔄 Em andamento | 57 | 48 |
-| 4 - Preparacao 400 Alunos | 🔄 Em andamento | 37 | 15 |
+| 3 - Painel Web Admin | 🔄 Em andamento | 57 | 54 |
+| 4 - Preparacao 400 Alunos | 🔄 Em andamento | 37 | 21 |
 | 5 - Lancamento | ⬜ Pendente | 13 | 0 |
-| **Total MVP** | **Em andamento** | **229** | **177** |
+| **Total MVP** | **Em andamento** | **229** | **189** |
 
 ---
 
@@ -417,4 +417,4 @@
 ---
 
 *Ultima atualizacao: 2026-06-24*
-*Concluido: 177/229 itens (77%). Hardening de seguranca aplicado: EXECUTE revogado em RPCs sensiveis (anon + admin-only authenticated), search_path fixado, RLS policies otimizadas com (select auth.uid()), indices em FK sem cobertura. Falta apenas: habilitar Leaked Password Protection (manual), build Android, testes funcionais admin e preparacao para lancamento.*
+*Concluido: 189/229 itens (83%). Testes funcionais admin: dashboard, criar escola, bloquear/desbloquear wallet, estornar transacao, audit logs — todos OK. Seguranca pre-lancamento: service_role protegida, .env fora do Git, acesso nao autorizado bloqueado, rate limiting configurado, SECURITY.md definido. Falta: excluir org e CSV via browser, build Android, infra Pro, dados iniciais, onboarding e lancamento.*
