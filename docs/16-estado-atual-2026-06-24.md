@@ -2,7 +2,7 @@
 
 ## Progresso
 
-158/211 itens do checklist MVP concluidos (75%).
+162/214 itens do checklist MVP concluidos (76%).
 
 ## Mudancas desde 2026-06-23
 
@@ -48,10 +48,30 @@
 - Tela alunos: botoes "Transferir" e "Receber" por aluno + botao "Receber pagamento" no topo
 - Tela transfer: aceita parametro `to` na URL para pre-preencher chave de destino
 
+### Dashboard Admin — Metricas Completas (2026-06-24)
+- Edge Function admin_dashboard_summary reescrita com novas metricas
+- Valor Corrente: soma de todos os saldos de wallets ativas (substitui volume)
+- Contas ativas: alunos (personal) e escolas (business) separados
+- Transacoes por periodo: hoje, mes e ano
+- Estornos: total de transacoes tipo reversal
+- Wallets restritas: bloqueadas + congeladas
+- Eventos criticos: security_events com severity high/critical
+- Dashboard reorganizado em 3 secoes: Financeiro, Contas Ativas, Transacoes
+- Destaque visual no Valor Corrente (borda gold) e vermelho em metricas de risco
+
+### Login Google OAuth no Admin (2026-06-24)
+- Botao "Entrar com Google" com icone SVG na tela de login
+- Login por email/senha mantido como alternativa
+- onAuthStateChange processa callback OAuth automaticamente
+- Verifica role bank_admin apos login Google (rejeita se nao for admin)
+- Redirect URL configurada no Supabase: mygbank.vercel.app/login
+
 ### Correcoes Backend (2026-06-24)
 - Fix CORS em todas as Edge Functions
 - Fix invokeFunction: refresh de sessao automatico
 - Fix exclusao/criacao de escola (token expirado + CORS)
+- Fix views SECURITY INVOKER: enriched_wallets e enriched_transactions recriadas com security_invoker=on (respeita RLS do usuario que consulta)
+- Fix dev:web script: caminho do next hoisted no monorepo corrigido
 
 ## O que funciona
 
@@ -85,7 +105,8 @@
 ### Web Admin (Next.js)
 - Tema dark navy + gold com marca MoneYoung
 - Login admin via Google OAuth
-- Dashboard com metricas reais
+- Login Google OAuth + email/senha
+- Dashboard com metricas completas: valor corrente, contas ativas, transacoes dia/mes/ano, estornos, eventos criticos
 - Listagem de contas, wallets, transacoes com filtros e badges
 - Gerenciamento de organizacoes (criar, excluir, vincular, desvincular)
 - Codigos convite gerados automaticamente e visiveis
@@ -117,7 +138,7 @@
 ## Documentacao
 
 16 documentos tecnicos:
-- 00: Checklist MVP (158/211, 75%)
+- 00: Checklist MVP (162/214, 76%)
 - 01: Visao geral (atualizado com convite, colaborador, UI premium)
 - 02: Arquitetura (atualizado com sistema visual premium, OAuth web)
 - 03: Banco de dados

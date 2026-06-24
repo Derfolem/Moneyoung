@@ -38,7 +38,7 @@ A marca "MoneYoung" aparece no sidebar em Josefin Sans 700 com cor gold, separad
 |---|---|---|
 | invokeFunction | `src/services/admin.ts` | Chama Edge Functions via fetch direto (extrai erros reais) |
 | requireAdminSession | `src/services/admin.ts` | Valida sessao e role bank_admin/super_admin |
-| getDashboardSummary | Edge Function | Metricas globais + ultimas transacoes enriquecidas |
+| getDashboardSummary | Edge Function | Metricas completas: valor corrente, contas ativas, transacoes dia/mes/ano, estornos, wallets, restritas, eventos criticos + ultimas transacoes |
 | listAccounts | Supabase direto | Profiles com busca, filtro por role e status |
 | listWallets | Supabase direto | Wallets com filtro por status |
 | listTransactions | enriched_transactions view | Transacoes com nomes e tipos dos participantes |
@@ -59,8 +59,8 @@ A marca "MoneYoung" aparece no sidebar em Josefin Sans 700 com cor gold, separad
 
 | Rota | Funcionalidade |
 |---|---|
-| `/login` | Login Google OAuth, redireciona para /dashboard |
-| `/dashboard` | Metricas, grafico transacoes/dia, ultimas transacoes com nomes |
+| `/login` | Login Google OAuth (botao "Entrar com Google") + email/senha, redireciona para /dashboard |
+| `/dashboard` | Metricas completas: valor corrente, contas aluno/escola ativas, transacoes dia/mes/ano, estornos, wallets, restritas, eventos criticos. Grafico transacoes/dia, ultimas transacoes |
 | `/accounts` | Lista de perfis com busca, filtro por role/status, badges de tipo |
 | `/wallets` | Lista de wallets, bloquear/desbloquear com motivo |
 | `/transactions` | Lista com filtros (status, tipo, valor, wallet), nomes dos participantes |

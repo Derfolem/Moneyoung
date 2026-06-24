@@ -203,7 +203,8 @@
 ### 3.1 Conexao com Backend Real
 
 - [x] Login admin via Google OAuth (2026-06-19 — Fred Melo promovido a bank_admin @ADM-fredmelo2238)
-- [x] Dashboard com indicadores reais (contas, wallets, volume, transacoes/dia) (2026-06-19)
+- [x] Login admin com Google OAuth (botao "Entrar com Google" + email/senha) (2026-06-24)
+- [x] Dashboard com metricas completas: valor corrente, contas aluno/escola ativas, transacoes dia/mes/ano, estornos, wallets, restritas, eventos criticos (2026-06-24)
 - [x] Listagem de contas com busca e filtros (2026-06-19 — badges de tipo de conta)
 - [x] Listagem de wallets com busca e filtros (2026-06-19)
 - [x] Listagem de transacoes com filtros (status, tipo, valor, wallet) (2026-06-19 — enriched_transactions com nomes)
@@ -215,11 +216,13 @@
 - [x] Configuracao de limites por tipo de conta (2026-06-19 — badges por tipo)
 - [x] Exportacao CSV funcionando (transacoes e auditoria) (2026-06-19)
 
-### 3.1b Bugs Conhecidos (Corrigir antes dos testes)
+### 3.1b Correcoes e Melhorias Admin
 
 - [x] Corrigir CORS em todas as Edge Functions (401/403 sem CORS headers; respostas de erro de requireUser e assertBankAdmin agora incluem corsHeaders) (2026-06-24)
 - [x] Corrigir invokeFunction: refresh de sessao automatico + erro claro quando token expira (2026-06-24)
 - [x] Corrigir exclusao/criacao de escola (causado pelo bug de CORS + token expirado acima) (2026-06-24)
+- [x] Fix views security_invoker: enriched_wallets e enriched_transactions recriadas com SECURITY INVOKER (respeita RLS do usuario) (2026-06-24)
+- [x] Fix dev:web script: corrigir caminho do next hoisted no monorepo (2026-06-24)
 
 ### 3.1c Sistema de Codigos Convite e Cadastro (Backend + Admin)
 
@@ -363,10 +366,10 @@
 | 0 - Estrutura e Identidade | ✅ Concluida | 13 | 13 |
 | 1 - Backend Supabase | ✅ Concluida | 22 | 22 |
 | 2 - App Mobile Funcional | 🔄 Em andamento | 87 | 78 |
-| 3 - Painel Web Admin | 🔄 Em andamento | 54 | 45 |
+| 3 - Painel Web Admin | 🔄 Em andamento | 57 | 48 |
 | 4 - Preparacao 400 Alunos | ⬜ Pendente | 22 | 0 |
 | 5 - Lancamento | ⬜ Pendente | 13 | 0 |
-| **Total MVP** | **Em andamento** | **211** | **158** |
+| **Total MVP** | **Em andamento** | **214** | **162** |
 
 ---
 
@@ -387,4 +390,4 @@
 ---
 
 *Ultima atualizacao: 2026-06-24*
-*Concluido: 158/211 itens (75%). Sistema completo de codigos convite, cadastro, aprovacao, experiencia colaborador, credito YC, correcoes OAuth/routing/telas universais, UI/UX premium e correcoes criticas de transferencia (case-insensitive, wallet pending, colaborador). Faltam: build Android, testes funcionais admin e preparacao para lancamento.*
+*Concluido: 162/214 itens (76%). Dashboard admin com metricas completas (valor corrente, contas ativas, transacoes dia/mes/ano, estornos, eventos criticos). Login Google OAuth no admin. Views corrigidas para SECURITY INVOKER. Faltam: build Android, testes funcionais admin e preparacao para lancamento.*
