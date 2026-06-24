@@ -17,7 +17,7 @@ const typeLabels: Record<LedgerTransaction["type"], string> = {
 };
 
 const badgeColors: Record<AccountType, string> = {
-  personal: colors.primary,
+  personal: colors.gold,
   business: "#E65100",
   sub_business: "#6A1B9A",
   system: colors.danger,
@@ -66,17 +66,18 @@ export function TransactionRow({ tx, walletId }: Props) {
 
 const styles = StyleSheet.create({
   row: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
+    backgroundColor: colors.glass,
+    borderRadius: 16,
     padding: 14,
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    shadowColor: colors.cardShadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 8,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: colors.glassBorder,
+    // @ts-ignore
+    backdropFilter: "blur(12px)",
+    // @ts-ignore
+    WebkitBackdropFilter: "blur(12px)",
   },
   iconCircle: {
     width: 40,
@@ -86,7 +87,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   copy: { flex: 1, gap: 3 },
-  name: { color: colors.ink, fontWeight: "800", fontSize: 15 },
+  name: { color: colors.textPrimary, fontWeight: "800", fontSize: 15 },
   metaRow: { flexDirection: "row", alignItems: "center", gap: 6 },
   badge: {
     paddingHorizontal: 6,
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     textTransform: "uppercase",
   },
-  meta: { color: colors.muted, fontSize: 12, flex: 1 },
-  date: { color: colors.muted, fontSize: 11 },
+  meta: { color: colors.textSecondary, fontSize: 12, flex: 1 },
+  date: { color: colors.textSecondary, fontSize: 11 },
   amount: { fontWeight: "900", textAlign: "right", fontSize: 15 },
 });

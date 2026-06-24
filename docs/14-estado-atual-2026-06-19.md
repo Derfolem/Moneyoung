@@ -1,4 +1,6 @@
-# Estado Atual — 2026-06-19
+# Estado Atual — 2026-06-19 (snapshot historico)
+
+> **Nota:** Este documento e um snapshot historico. Para o estado atual, veja `docs/15-estado-atual-2026-06-23.md`.
 
 ## Progresso
 

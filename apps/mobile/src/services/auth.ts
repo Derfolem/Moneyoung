@@ -9,10 +9,9 @@ export async function signInWithGoogle() {
   if (!isSupabaseConfigured) return true;
 
   if (Platform.OS === "web") {
-    const redirectTo = window.location.origin + "/login";
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo }
+      options: { redirectTo: window.location.origin + "/login" }
     });
     if (error) throw error;
     return false;

@@ -15,7 +15,7 @@ const iconMap = {
 const colorMap = {
   success: colors.success,
   error: "#E53935",
-  info: colors.primary,
+  info: colors.gold,
 };
 
 export function ToastHost() {
@@ -75,18 +75,24 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    backgroundColor: colors.surface,
-    borderRadius: 12,
+    backgroundColor: colors.glassStrong,
+    borderRadius: 16,
     paddingVertical: 14,
     paddingHorizontal: 16,
     borderLeftWidth: 4,
+    borderWidth: 1,
+    borderColor: colors.glassBorder,
     maxWidth: 480,
     width: "100%",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
     elevation: 6,
+    // @ts-ignore
+    backdropFilter: "blur(20px)",
+    // @ts-ignore
+    WebkitBackdropFilter: "blur(20px)",
   },
   textWrap: {
     flex: 1,
@@ -95,11 +101,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 15,
     fontWeight: "700",
-    color: colors.ink,
+    color: colors.textPrimary,
   },
   message: {
     fontSize: 13,
-    color: colors.muted,
+    color: colors.textSecondary,
     lineHeight: 18,
   },
 });

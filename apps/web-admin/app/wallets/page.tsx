@@ -56,7 +56,7 @@ export default function WalletsPage() {
         <div>
           <strong>{row.owner_name ?? "—"}</strong>
           <br />
-          <small style={{ color: "#666" }}>{row.owner_young_key ?? ""}</small>
+          <small className="muted">{row.owner_young_key ?? ""}</small>
         </div>
       ),
     },
@@ -185,10 +185,7 @@ function WalletActionModal({
         {error && <StateMessage tone="danger" title="Erro" detail={error} />}
         <div style={{ display: "flex", gap: 8, marginTop: 12, justifyContent: "flex-end" }}>
           <button className="secondary" onClick={onClose} disabled={busy}>Cancelar</button>
-          <button onClick={submit} disabled={busy} style={{
-            background: nextStatus === "blocked" ? "#c62828" : "#2e7d32",
-            color: "#fff",
-          }}>
+          <button onClick={submit} disabled={busy} className={nextStatus === "blocked" ? "danger" : undefined} style={nextStatus !== "blocked" ? { background: "var(--success)", color: "#fff" } : undefined}>
             {busy ? "Aplicando..." : nextStatus === "blocked" ? "Confirmar Bloqueio" : "Confirmar Desbloqueio"}
           </button>
         </div>

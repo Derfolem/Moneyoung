@@ -10,7 +10,7 @@ interface HexLogoProps {
 
 export function HexLogo({
   size = 80,
-  color = colors.primaryDark,
+  color = colors.gold,
   textColor = "#FFFFFF",
 }: HexLogoProps) {
   const fontSize = size * 0.28;
@@ -20,7 +20,6 @@ export function HexLogo({
 
   return (
     <View style={[styles.container, { width: size, height: size }]}>
-      {/* Outer facet - darkest */}
       <View
         style={[
           styles.facet,
@@ -33,7 +32,6 @@ export function HexLogo({
           },
         ]}
       />
-      {/* Mid facet - lighter, offset up-left for 3D */}
       <View
         style={[
           styles.facet,
@@ -46,7 +44,6 @@ export function HexLogo({
           },
         ]}
       />
-      {/* Inner facet - bright highlight */}
       <View
         style={[
           styles.facet,
@@ -59,7 +56,6 @@ export function HexLogo({
           },
         ]}
       />
-      {/* Top-left shine line */}
       <View
         style={[
           styles.facet,
@@ -72,7 +68,6 @@ export function HexLogo({
           },
         ]}
       />
-      {/* Bottom-right edge */}
       <View
         style={[
           styles.facet,
@@ -85,7 +80,6 @@ export function HexLogo({
           },
         ]}
       />
-      {/* Border glow */}
       <View
         style={[
           styles.facet,
@@ -94,13 +88,12 @@ export function HexLogo({
             height: outer + 4,
             borderRadius: (outer + 4) * 0.2,
             borderWidth: 1.5,
-            borderColor: "rgba(37,99,235,0.3)",
+            borderColor: colors.borderGold,
             backgroundColor: "transparent",
             transform: [{ rotate: "45deg" }],
           },
         ]}
       />
-      {/* Text */}
       <Text style={[styles.text, { fontSize, color: textColor }]}>MYG</Text>
     </View>
   );
@@ -110,6 +103,10 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     justifyContent: "center",
+    shadowColor: colors.gold,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.35,
+    shadowRadius: 16,
   },
   facet: {
     position: "absolute",

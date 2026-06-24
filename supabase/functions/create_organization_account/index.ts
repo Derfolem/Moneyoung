@@ -1,7 +1,7 @@
 import { error, json, corsHeaders, parseBody } from "../_shared/http.ts";
 import { assertBankAdmin, requireUser, requestMeta } from "../_shared/supabase.ts";
 
-type Body = { name?: string; slug?: string; owner_profile_id?: string };
+type Body = { name?: string; slug?: string; email?: string; owner_profile_id?: string };
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -17,6 +17,7 @@ Deno.serve(async (req) => {
       p_actor_id: user.id,
       p_name: body.name,
       p_slug: body.slug,
+      p_email: body.email ?? null,
       p_owner_profile_id: body.owner_profile_id ?? null,
       p_ip_address: meta.ip_address,
       p_user_agent: meta.user_agent
@@ -24,7 +25,13 @@ Deno.serve(async (req) => {
     if (rpcError) return error("INVALID_INPUT", rpcError.message, 422);
 
     const row = Array.isArray(data) ? data[0] : data;
-    return json({ organization: row?.organization ?? null, business_wallet: row?.business_wallet ?? null });
+    const org = row?.organization ?? null;
+    return json({
+      organization: org,
+      business_wallet: row?.business_wallet ?? null,
+      invite_code_student: org?.invite_code_student ?? null,
+      invite_code_staff: org?.invite_code_staff ?? null
+    });
   } catch (err) {
     if (err instanceof Response) return err;
     return error("SERVER_ERROR", err instanceof Error ? err.message : "Erro inesperado.", 500);

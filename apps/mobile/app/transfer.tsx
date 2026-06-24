@@ -1,22 +1,24 @@
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import { Button } from "../src/components/Button";
 import { PageHeader } from "../src/components/PageHeader";
 import { Screen } from "../src/components/Screen";
+import { BottomNav } from "../src/components/BottomNav";
 import { parseAmount } from "../src/services/moneyoung";
 import { toast } from "../src/services/toast";
 import { colors } from "../src/theme/colors";
 
 export default function Transfer() {
-  const [to, setTo] = useState("");
+  const params = useLocalSearchParams<{ to?: string }>();
+  const [to, setTo] = useState(params.to ?? "");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
 
   function goToConfirm() {
     const parsedAmount = parseAmount(amount);
     if (!to.trim()) {
-      toast.error("Chave obrigatoria", "Informe a chave Moneyoung de destino.");
+      toast.error("Chave obrigatoria", "Informe a chave MoneYoung de destino.");
       return;
     }
     if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) {
@@ -31,50 +33,54 @@ export default function Transfer() {
   }
 
   return (
-    <Screen>
-      <PageHeader title="Transferir" />
+    <View style={styles.root}>
+      <Screen>
+        <PageHeader title="Transferir" />
 
-      <View style={styles.amountArea}>
-        <Text style={styles.amountDisplay}>{amount || "0"}</Text>
-        <Text style={styles.amountSuffix}>YC</Text>
-      </View>
+        <View style={styles.amountArea}>
+          <Text style={styles.amountDisplay}>{amount || "0"}</Text>
+          <Text style={styles.amountSuffix}>YC</Text>
+        </View>
 
-      <TextInput
-        style={styles.hiddenInput}
-        keyboardType="decimal-pad"
-        value={amount}
-        onChangeText={setAmount}
-        placeholder="0,00"
-        placeholderTextColor={colors.muted}
-      />
-
-      <View style={styles.fields}>
-        <Text style={styles.label}>Chave Moneyoung</Text>
         <TextInput
-          style={styles.input}
-          placeholder="@chaveyoung"
-          placeholderTextColor={colors.muted}
-          autoCapitalize="none"
-          value={to}
-          onChangeText={setTo}
+          style={styles.hiddenInput}
+          keyboardType="decimal-pad"
+          value={amount}
+          onChangeText={setAmount}
+          placeholder="0,00"
+          placeholderTextColor={colors.textSecondary}
         />
 
-        <Text style={styles.label}>Descricao</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Opcional"
-          placeholderTextColor={colors.muted}
-          value={description}
-          onChangeText={setDescription}
-        />
-      </View>
+        <View style={styles.fields}>
+          <Text style={styles.label}>Chave MoneYoung</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="@chaveyoung"
+            placeholderTextColor={colors.textSecondary}
+            autoCapitalize="none"
+            value={to}
+            onChangeText={setTo}
+          />
 
-      <Button title="Transferir" onPress={goToConfirm} disabled={!to.trim() || !amount.trim()} />
-    </Screen>
+          <Text style={styles.label}>Descricao</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Opcional"
+            placeholderTextColor={colors.textSecondary}
+            value={description}
+            onChangeText={setDescription}
+          />
+        </View>
+
+        <Button title="Transferir" onPress={goToConfirm} disabled={!to.trim() || !amount.trim()} />
+      </Screen>
+      <BottomNav />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  root: { flex: 1, backgroundColor: colors.navyDeep },
   amountArea: {
     flexDirection: "row",
     alignItems: "baseline",
@@ -85,35 +91,42 @@ const styles = StyleSheet.create({
   amountDisplay: {
     fontSize: 48,
     fontWeight: "900",
-    color: colors.ink,
+    color: colors.gold,
+    textShadowColor: colors.glowGold,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 14,
   },
   amountSuffix: {
     fontSize: 24,
     fontWeight: "700",
-    color: colors.muted,
+    color: colors.textSecondary,
   },
   hiddenInput: {
-    backgroundColor: colors.background,
-    borderRadius: 12,
+    backgroundColor: colors.glass,
+    borderRadius: 16,
     padding: 16,
     fontSize: 18,
     textAlign: "center",
-    color: colors.ink,
+    color: colors.textPrimary,
+    borderWidth: 1,
+    borderColor: colors.glassBorder,
   },
   fields: {
     gap: 8,
   },
   label: {
     fontSize: 14,
-    color: colors.muted,
+    color: colors.textSecondary,
     fontWeight: "600",
     marginTop: 8,
   },
   input: {
-    backgroundColor: colors.background,
-    borderRadius: 12,
+    backgroundColor: colors.glass,
+    borderRadius: 16,
     padding: 16,
     fontSize: 16,
-    color: colors.ink,
+    color: colors.textPrimary,
+    borderWidth: 1,
+    borderColor: colors.glassBorder,
   },
 });

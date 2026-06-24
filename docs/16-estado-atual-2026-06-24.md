@@ -1,0 +1,136 @@
+# Estado Atual — 2026-06-24
+
+## Progresso
+
+158/211 itens do checklist MVP concluidos (75%).
+
+## Mudancas desde 2026-06-23
+
+### Sistema de Codigos Convite e Cadastro (2026-06-24)
+- Migration completa: colunas de convite em organizations, dados pessoais em profiles
+- 6 novas RPCs: generate_invite_code, validate_invite_code, register_with_invite, approve_or_reject_registration, transfer_from_org_wallet, admin_credit_wallet
+- 6 novas Edge Functions: validate_invite, register_with_invite, approve_registration, org_wallet_summary, transfer_from_org, admin_credit_wallet
+- Views: enriched_transactions com created_by, org_students_with_balance
+- Web admin: email escola, codigos convite, aprovacoes pendentes, credito YC, PIN escola, alterar role
+
+### Experiencia Colaborador (2026-06-24)
+- /org-home: dashboard com saldo da escola, nome e role
+- /students: lista de alunos com saldo, protegida por PIN
+- BottomNav com variante staff (5 abas diferenciadas)
+- Transferencia da conta da escola identificada por colaborador
+
+### Correcoes Criticas (2026-06-24)
+- Fix loop OAuth: detectSessionInUrl dinamico (true web, false nativo)
+- Fix storage: localStorage na web, SecureStore no nativo
+- Fix routing professor: sub_business → /org-home
+- Fix profile universal: carrega direto de profiles (nao mais getWalletSummary)
+- Fix extrato universal: detecta account_type para source correto
+- Fix notificacoes: funciona para ambos tipos + "Limpar tudo"
+- Fix org_wallet_summary: filtro por wallet.id (nao orgId)
+- Perfil: data abertura de conta, nascimento DD/MM/AA
+
+### UI/UX Premium v3 (2026-06-24)
+- Glassmorphism: GlassCard com blur CSS, borda luminosa, highlight line
+- Energia: botoes com glow dourado pulsante (Animated API), textShadow em saldos
+- Poeira de Ouro: 14 particulas douradas animadas flutuantes
+- Orbs Ambientais: 3 circulos de luz suave no fundo
+- Novos tokens de cor: glass, glassBorder, glassHighlight, glassStrong, glow*, dust*, orb*
+- 14 telas atualizadas com efeitos visuais premium
+- BottomNav em glass com blur e glow
+- Toast/Drawer em glass escuro com blur
+
+### Correcoes de Transferencia e Cadastro (2026-06-24)
+- Fix data nascimento: formato DD/MM/AAAA brasileiro com mascara automatica no cadastro
+- Fix wallets_status_check: constraint agora aceita 'pending' (necessario para cadastro via convite)
+- Fix transfer-confirm: detecta account_type e usa transferFromOrg para colaboradores
+- Fix receive: busca young_key direto do profile (funciona para colaboradores sem wallet pessoal)
+- Fix busca young_key: case-insensitive (lower() em ambos os lados) nas RPCs transfer_youngcoin_tx e transfer_from_org_wallet
+- Tela alunos: botoes "Transferir" e "Receber" por aluno + botao "Receber pagamento" no topo
+- Tela transfer: aceita parametro `to` na URL para pre-preencher chave de destino
+
+### Correcoes Backend (2026-06-24)
+- Fix CORS em todas as Edge Functions
+- Fix invokeFunction: refresh de sessao automatico
+- Fix exclusao/criacao de escola (token expirado + CORS)
+
+## O que funciona
+
+### Backend (Supabase)
+- Projeto Supabase ativo (regiao South America)
+- 4+ migrations aplicadas
+- 8+ tabelas com RLS + 2 views enriquecidas
+- 13 Edge Functions deployadas (todas ACTIVE)
+- Google OAuth configurado
+- 4 tipos de conta: personal, business, sub_business, system
+- Sistema completo de convite, cadastro, aprovacao
+- Transferencia de colaborador (da conta da escola)
+- Credito de YC pelo admin
+
+### Mobile (Expo)
+- UI premium: glassmorphism + energia + poeira de ouro + orbs
+- BottomNav glass com 2 variantes (personal/staff)
+- Login Google OAuth + fluxo de cadastro via convite
+- Profile + wallet automaticos
+- Transferencia real com ledger
+- Pagamento via chave manual
+- Recebimento via QR Code
+- Extrato universal (pessoal ou escola) com filtros
+- Notificacoes universais com "Limpar tudo"
+- Perfil universal: dados pessoais, escola, chave, status, data abertura, nascimento DD/MM/AA
+- Dashboard colaborador (/org-home) com saldo da escola
+- Lista de alunos (/students) protegida por PIN
+- Toast global glass com blur
+- Mensagens de erro traduzidas
+
+### Web Admin (Next.js)
+- Tema dark navy + gold com marca MoneYoung
+- Login admin via Google OAuth
+- Dashboard com metricas reais
+- Listagem de contas, wallets, transacoes com filtros e badges
+- Gerenciamento de organizacoes (criar, excluir, vincular, desvincular)
+- Codigos convite gerados automaticamente e visiveis
+- Aprovacoes pendentes (aprovar/recusar)
+- Credito de YC para escolas
+- PIN de escola e alteracao de role
+- Auditoria + seguranca + limites + CSV
+- Deploy Vercel producao (https://mygbank.vercel.app)
+
+### Usuarios de teste
+- Fred Melo (melfredfred25@gmail.com) — @ADM-fredmelo2238 (bank_admin)
+- Frederic Melo (agentcodi01@gmail.com) — @agentcodi012430 (common_user)
+
+## O que falta
+
+### Fase 2 (9 itens restantes)
+- Build Android: EAS, APK, teste em dispositivo, Google Play
+
+### Fase 3 (9 itens restantes)
+- Testes funcionais do painel admin (8 itens)
+- Dominio proprio (aguardando autorizacao de Fagner)
+
+### Fase 4 (14 itens)
+- Preparacao para 400 alunos (Supabase Pro, dados iniciais, onboarding, seguranca)
+
+### Fase 5 (8 itens)
+- Lancamento e monitoramento
+
+## Documentacao
+
+16 documentos tecnicos:
+- 00: Checklist MVP (158/211, 75%)
+- 01: Visao geral (atualizado com convite, colaborador, UI premium)
+- 02: Arquitetura (atualizado com sistema visual premium, OAuth web)
+- 03: Banco de dados
+- 04: Seguranca
+- 05: Mobile (reescrito: nova estrutura, todos os componentes, servicos, fluxos)
+- 06: Web admin (atualizado com codigos convite, aprovacoes, credito)
+- 07: Edge Functions
+- 08: Auditoria
+- 09: Deploy
+- 10: Roadmap
+- 11: Estado 2026-06-16 (snapshot historico)
+- 12: Redesign visual (reescrito: v3 glassmorphism/energia/dust/orbs)
+- 13: Tipos de usuarios e relacionamentos
+- 14: Estado 2026-06-19 (snapshot historico)
+- 15: Estado 2026-06-23 (snapshot historico)
+- 16: Estado 2026-06-24 (este documento)

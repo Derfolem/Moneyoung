@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
+import { corsHeaders } from "./http.ts";
 
 export function clients(req: Request) {
   const url = Deno.env.get("SUPABASE_URL");
@@ -28,7 +29,7 @@ export async function requireUser(req: Request) {
   if (error || !data.user) {
     throw new Response(JSON.stringify({ error: { code: "UNAUTHENTICATED", message: "Sessao invalida ou expirada." } }), {
       status: 401,
-      headers: { "Content-Type": "application/json" }
+      headers: { ...corsHeaders, "Content-Type": "application/json" }
     });
   }
   return { user: data.user, userClient, serviceClient };
@@ -51,7 +52,7 @@ export async function assertBankAdmin(serviceClient: ReturnType<typeof createCli
   if (error || !data || data.status !== "active" || !["bank_admin", "super_admin"].includes(data.role)) {
     throw new Response(JSON.stringify({ error: { code: "FORBIDDEN", message: "Acesso restrito ao Moneyoungbank." } }), {
       status: 403,
-      headers: { "Content-Type": "application/json" }
+      headers: { ...corsHeaders, "Content-Type": "application/json" }
     });
   }
 }

@@ -5,6 +5,7 @@ import { StyleSheet, Text, TextInput, View } from "react-native";
 import { Button } from "../src/components/Button";
 import { PageHeader } from "../src/components/PageHeader";
 import { Screen } from "../src/components/Screen";
+import { BottomNav } from "../src/components/BottomNav";
 import { parseAmount, payMoneyoung } from "../src/services/moneyoung";
 import { toast } from "../src/services/toast";
 import { colors } from "../src/theme/colors";
@@ -25,7 +26,7 @@ export default function Pay() {
   async function pay() {
     try {
       const parsedAmount = parseAmount(amount);
-      if (!youngKey.trim()) throw new Error("Informe ou leia uma chave Moneyoung.");
+      if (!youngKey.trim()) throw new Error("Informe ou leia uma chave MoneYoung.");
       if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) throw new Error("Informe um valor maior que zero.");
 
       setLoading(true);
@@ -40,75 +41,78 @@ export default function Pay() {
   }
 
   return (
-    <Screen scroll={false}>
-      <View style={styles.content}>
-        <PageHeader title="Pagar" />
+    <View style={styles.rootWrap}>
+      <Screen scroll={false}>
+        <View style={styles.content}>
+          <PageHeader title="Pagar" />
 
-        {permission === "granted" && !scanned ? (
-          <View style={styles.scannerWrap}>
-            <BarCodeScanner
-              style={styles.camera}
-              onBarCodeScanned={({ data }) => {
-                setYoungKey(data.trim());
-                setScanned(true);
-              }}
-            />
-            <View style={styles.overlay}>
-              <View style={styles.overlayTop} />
-              <View style={styles.overlayMiddle}>
-                <View style={styles.overlaySide} />
-                <View style={styles.scanFrame}>
-                  <View style={[styles.corner, styles.cornerTL]} />
-                  <View style={[styles.corner, styles.cornerTR]} />
-                  <View style={[styles.corner, styles.cornerBL]} />
-                  <View style={[styles.corner, styles.cornerBR]} />
+          {permission === "granted" && !scanned ? (
+            <View style={styles.scannerWrap}>
+              <BarCodeScanner
+                style={styles.camera}
+                onBarCodeScanned={({ data }) => {
+                  setYoungKey(data.trim());
+                  setScanned(true);
+                }}
+              />
+              <View style={styles.overlay}>
+                <View style={styles.overlayTop} />
+                <View style={styles.overlayMiddle}>
+                  <View style={styles.overlaySide} />
+                  <View style={styles.scanFrame}>
+                    <View style={[styles.corner, styles.cornerTL]} />
+                    <View style={[styles.corner, styles.cornerTR]} />
+                    <View style={[styles.corner, styles.cornerBL]} />
+                    <View style={[styles.corner, styles.cornerBR]} />
+                  </View>
+                  <View style={styles.overlaySide} />
                 </View>
-                <View style={styles.overlaySide} />
-              </View>
-              <View style={styles.overlayBottom}>
-                <Text style={styles.scanHint}>Aponte para o QR Code Moneyoung</Text>
+                <View style={styles.overlayBottom}>
+                  <Text style={styles.scanHint}>Aponte para o QR Code MoneYoung</Text>
+                </View>
               </View>
             </View>
-          </View>
-        ) : (
-          <View style={styles.form}>
-            {permission === "loading" ? (
-              <Text style={styles.helper}>Solicitando permissao da camera...</Text>
-            ) : null}
-            {permission === "denied" ? (
-              <Text style={styles.helper}>
-                Camera indisponivel. Voce ainda pode pagar informando a chave manualmente.
-              </Text>
-            ) : null}
+          ) : (
+            <View style={styles.form}>
+              {permission === "loading" ? (
+                <Text style={styles.helper}>Solicitando permissao da camera...</Text>
+              ) : null}
+              {permission === "denied" ? (
+                <Text style={styles.helper}>
+                  Camera indisponivel. Voce ainda pode pagar informando a chave manualmente.
+                </Text>
+              ) : null}
 
-            <Text style={styles.label}>Chave Moneyoung</Text>
-            <TextInput
-              style={styles.input}
-              value={youngKey}
-              onChangeText={setYoungKey}
-              placeholder="@chaveyoung"
-              placeholderTextColor={colors.muted}
-              autoCapitalize="none"
-            />
+              <Text style={styles.label}>Chave MoneYoung</Text>
+              <TextInput
+                style={styles.input}
+                value={youngKey}
+                onChangeText={setYoungKey}
+                placeholder="@chaveyoung"
+                placeholderTextColor={colors.textSecondary}
+                autoCapitalize="none"
+              />
 
-            <Text style={styles.label}>Valor</Text>
-            <TextInput
-              style={styles.input}
-              value={amount}
-              onChangeText={setAmount}
-              placeholder="0,00"
-              placeholderTextColor={colors.muted}
-              keyboardType="decimal-pad"
-            />
+              <Text style={styles.label}>Valor</Text>
+              <TextInput
+                style={styles.input}
+                value={amount}
+                onChangeText={setAmount}
+                placeholder="0,00"
+                placeholderTextColor={colors.textSecondary}
+                keyboardType="decimal-pad"
+              />
 
-            <Button title="Confirmar pagamento" onPress={pay} loading={loading} disabled={!youngKey.trim() || !amount.trim()} />
-            {permission === "granted" ? (
-              <Button title="Ler outro QR Code" onPress={() => setScanned(false)} tone="secondary" />
-            ) : null}
-          </View>
-        )}
-      </View>
-    </Screen>
+              <Button title="Confirmar pagamento" onPress={pay} loading={loading} disabled={!youngKey.trim() || !amount.trim()} />
+              {permission === "granted" ? (
+                <Button title="Ler outro QR Code" onPress={() => setScanned(false)} tone="secondary" />
+              ) : null}
+            </View>
+          )}
+        </View>
+      </Screen>
+      <BottomNav />
+    </View>
   );
 }
 
@@ -116,8 +120,9 @@ const CORNER_SIZE = 24;
 const CORNER_THICK = 3;
 
 const styles = StyleSheet.create({
+  rootWrap: { flex: 1, backgroundColor: colors.navyDeep },
   content: { flex: 1, padding: 24, gap: 20 },
-  scannerWrap: { flex: 1, borderRadius: 16, overflow: "hidden", position: "relative" },
+  scannerWrap: { flex: 1, borderRadius: 20, overflow: "hidden", position: "relative", borderWidth: 1, borderColor: colors.glassBorder },
   camera: { flex: 1, minHeight: 360 },
   overlay: { ...StyleSheet.absoluteFillObject },
   overlayTop: { flex: 1, backgroundColor: "rgba(0,0,0,0.55)" },
@@ -127,18 +132,20 @@ const styles = StyleSheet.create({
   overlayBottom: { flex: 1, backgroundColor: "rgba(0,0,0,0.55)", alignItems: "center", paddingTop: 20 },
   scanHint: { color: "#fff", fontSize: 14, fontWeight: "600" },
   corner: { position: "absolute", width: CORNER_SIZE, height: CORNER_SIZE },
-  cornerTL: { top: 0, left: 0, borderTopWidth: CORNER_THICK, borderLeftWidth: CORNER_THICK, borderColor: colors.primary },
-  cornerTR: { top: 0, right: 0, borderTopWidth: CORNER_THICK, borderRightWidth: CORNER_THICK, borderColor: colors.primary },
-  cornerBL: { bottom: 0, left: 0, borderBottomWidth: CORNER_THICK, borderLeftWidth: CORNER_THICK, borderColor: colors.primary },
-  cornerBR: { bottom: 0, right: 0, borderBottomWidth: CORNER_THICK, borderRightWidth: CORNER_THICK, borderColor: colors.primary },
+  cornerTL: { top: 0, left: 0, borderTopWidth: CORNER_THICK, borderLeftWidth: CORNER_THICK, borderColor: colors.gold },
+  cornerTR: { top: 0, right: 0, borderTopWidth: CORNER_THICK, borderRightWidth: CORNER_THICK, borderColor: colors.gold },
+  cornerBL: { bottom: 0, left: 0, borderBottomWidth: CORNER_THICK, borderLeftWidth: CORNER_THICK, borderColor: colors.gold },
+  cornerBR: { bottom: 0, right: 0, borderBottomWidth: CORNER_THICK, borderRightWidth: CORNER_THICK, borderColor: colors.gold },
   form: { gap: 10 },
-  helper: { color: colors.muted, lineHeight: 22 },
-  label: { fontSize: 14, color: colors.muted, fontWeight: "600", marginTop: 4 },
+  helper: { color: colors.textSecondary, lineHeight: 22 },
+  label: { fontSize: 14, color: colors.textSecondary, fontWeight: "600", marginTop: 4 },
   input: {
-    backgroundColor: colors.background,
-    borderRadius: 12,
+    backgroundColor: colors.glass,
+    borderRadius: 16,
     padding: 16,
     fontSize: 16,
-    color: colors.ink,
+    color: colors.textPrimary,
+    borderWidth: 1,
+    borderColor: colors.glassBorder,
   },
 });

@@ -29,7 +29,6 @@ type DrawerProps = {
 };
 
 const DRAWER_WIDTH = 280;
-const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 export function Drawer({ visible, onClose, userName, youngKey, onSignOut }: DrawerProps) {
   const translateX = useRef(new Animated.Value(-DRAWER_WIDTH)).current;
@@ -84,16 +83,13 @@ export function Drawer({ visible, onClose, userName, youngKey, onSignOut }: Draw
     <View
       style={[styles.wrapper, { pointerEvents: visible ? "auto" : "none" }]}
     >
-      {/* Overlay */}
       <Animated.View style={[styles.overlay, { opacity: overlayOpacity }]}>
         <Pressable style={styles.overlayPress} onPress={onClose} />
       </Animated.View>
 
-      {/* Drawer panel */}
       <Animated.View
         style={[styles.drawer, { transform: [{ translateX }] }]}
       >
-        {/* Header */}
         <View style={styles.header}>
           <HexLogo size={48} />
           <View style={styles.headerText}>
@@ -104,7 +100,6 @@ export function Drawer({ visible, onClose, userName, youngKey, onSignOut }: Draw
 
         <View style={styles.divider} />
 
-        {/* Menu items */}
         <View style={styles.menu}>
           {menuItems.map((item) => (
             <Pressable
@@ -112,13 +107,12 @@ export function Drawer({ visible, onClose, userName, youngKey, onSignOut }: Draw
               style={styles.menuItem}
               onPress={() => item.route && navigate(item.route)}
             >
-              <Ionicons name={item.icon} size={22} color="rgba(255,255,255,0.7)" />
+              <Ionicons name={item.icon} size={22} color={colors.gold} />
               <Text style={styles.menuLabel}>{item.label}</Text>
             </Pressable>
           ))}
         </View>
 
-        {/* Sign out */}
         <View style={styles.footer}>
           <View style={styles.divider} />
           <Pressable
@@ -144,7 +138,7 @@ const styles = StyleSheet.create({
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(0,0,0,0.6)",
   },
   overlayPress: {
     flex: 1,
@@ -155,9 +149,15 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: 0,
     width: DRAWER_WIDTH,
-    backgroundColor: colors.navyDeep,
+    backgroundColor: colors.glassStrong,
     paddingTop: 60,
     paddingBottom: 30,
+    borderRightWidth: 1,
+    borderRightColor: colors.glassBorder,
+    // @ts-ignore
+    backdropFilter: "blur(24px)",
+    // @ts-ignore
+    WebkitBackdropFilter: "blur(24px)",
   },
   header: {
     flexDirection: "row",
@@ -171,18 +171,18 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   userName: {
-    color: "#fff",
+    color: colors.textPrimary,
     fontSize: 18,
     fontWeight: "900",
   },
   youngKey: {
-    color: "rgba(255,255,255,0.5)",
+    color: colors.gold,
     fontSize: 13,
     fontWeight: "600",
   },
   divider: {
     height: 1,
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: colors.border,
     marginHorizontal: 24,
   },
   menu: {
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   menuLabel: {
-    color: "rgba(255,255,255,0.85)",
+    color: colors.textPrimary,
     fontSize: 16,
     fontWeight: "600",
   },

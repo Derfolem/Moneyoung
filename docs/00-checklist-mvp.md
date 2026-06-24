@@ -25,6 +25,8 @@
 - [x] Implementar modo demo mobile (sem Supabase) (2026-06-16)
 - [x] Redesign visual completo do mobile (identidade fintech dark navy) (2026-06-17)
 - [x] Corrigir identidade: app = Moneyoung (MYG), moeda = Youngcoin (YC) (2026-06-19)
+- [x] Redesign visual mobile v2: TextLogo MoneYoung (Josefin Sans 700), BottomNav 5 abas, paleta navy #0A1628 + gold #D4A843 (2026-06-23)
+- [x] Redesign visual web admin: tema dark navy+gold, CSS variables, fontes Josefin Sans+Inter, sidebar com marca MoneYoung (2026-06-23)
 
 ---
 
@@ -118,7 +120,71 @@
 - [x] Edge Function `get_wallet_summary` atualizada para retornar dados enriquecidos (2026-06-19)
 - [x] Documentacao de tipos de usuarios e relacionamentos futuros (docs/13-tipos-usuarios-relacionamentos.md) (2026-06-19)
 
-### 2.3 Build Android
+### 2.4 Cadastro via Codigo Convite (Mobile)
+
+- [x] Tela de login: botao "Tenho um codigo convite" (2026-06-24)
+- [x] Nova tela `/invite`: validar codigo convite (3 letras + 4 numeros) (2026-06-24)
+- [x] Nova tela `/register`: formulario pos-OAuth (nome completo, nascimento, pais, estado, cidade, esporte, sobre, hobby) (2026-06-24)
+- [x] Calculo automatico de idade a partir da data de nascimento (2026-06-24)
+- [x] Chamada Edge Function `register_with_invite` para criar cadastro (2026-06-24)
+- [x] Nova tela `/pending-approval`: aguardando aprovacao do banco (2026-06-24)
+- [x] Verificacao de status (refresh) na tela de aprovacao (2026-06-24)
+- [x] Redirecionamento automatico para `/home` apos aprovacao (2026-06-24)
+
+### 2.5 Experiencia Colaborador (Mobile)
+
+- [x] Detectar account_type `sub_business` apos login (2026-06-24 — layout + login redirecionam para /org-home)
+- [x] Home do colaborador: saldo da conta da escola, nome da escola no header (2026-06-24 — /org-home)
+- [x] BottomNav diferenciado: Inicio, Transferir, Receber, Alunos, Perfil (2026-06-24 — prop staff)
+- [x] Aba Alunos: lista de alunos da escola com nome, chave e saldo (2026-06-24 — /students)
+- [x] Aba Alunos protegida por PIN (definido pelo diretor ou banco) (2026-06-24 — PIN via org access_pin)
+- [x] Transferencia da conta da escola via Edge Function `transfer_from_org` (2026-06-24)
+- [x] Extrato da conta da escola com nome do colaborador em cada transacao (2026-06-24 — enriched_transactions com created_by)
+- [x] Perfil do colaborador: dados pessoais + nome da escola + role (2026-06-24)
+
+### 2.6 Correcoes Fluxo OAuth e Telas (2026-06-24)
+
+- [x] Fix loop OAuth: detectSessionInUrl dinamico (true na web, false no nativo) (2026-06-24)
+- [x] Fix storage separado: localStorage na web, SecureStore no nativo (2026-06-24)
+- [x] Fix invite_code em localStorage: limpeza no "Voltar" e deteccao correta no _layout.tsx (2026-06-24)
+- [x] Fix routing professor: sub_business redirecionado para /org-home apos login (2026-06-24)
+- [x] Fix profile universal: carrega direto da tabela profiles (funciona para personal e sub_business) (2026-06-24)
+- [x] Fix extrato universal: detecta account_type e usa getWalletSummary ou getOrgWalletSummary (2026-06-24)
+- [x] Fix notificacoes universal: funciona para ambos os tipos de conta (2026-06-24)
+- [x] Botao "Limpar tudo" nas notificacoes (2026-06-24)
+- [x] Data de abertura de conta no perfil (campo created_at) (2026-06-24)
+- [x] Data de nascimento no formato DD/MM/AA (padrao brasileiro) (2026-06-24)
+- [x] Sino de notificacoes no header do org-home (2026-06-24)
+- [x] Fix org_wallet_summary: filtro por wallet.id em vez de orgId (2026-06-24)
+
+### 2.7 UI/UX Premium — Glassmorphism, Energia e Poeira de Ouro (2026-06-24)
+
+- [x] Novos tokens de cor: glass, glassBorder, glassHighlight, glassStrong, glow*, dust*, orb* (2026-06-24)
+- [x] Novo componente GlassCard: card com fundo semi-transparente, blur CSS, borda luminosa, opcao glow (2026-06-24)
+- [x] Novo componente GoldDust: 14 particulas douradas animadas flutuantes (2026-06-24)
+- [x] Novo componente AmbientOrbs: 3 orbs de luz suave no fundo das telas (2026-06-24)
+- [x] Screen atualizado: AmbientOrbs no fundo + prop dust para particulas (2026-06-24)
+- [x] Button com energia: glow dourado pulsante animado no botao primario (2026-06-24)
+- [x] BottomNav em vidro: fundo glass com blur, linha de glow no topo, icone ativo com fundo glow (2026-06-24)
+- [x] TransactionRow em vidro: fundo glass com blur e borda luminosa (2026-06-24)
+- [x] Toast em vidro: fundo glass escuro com blur forte (2026-06-24)
+- [x] Drawer em vidro: menu lateral com blur e borda luminosa (2026-06-24)
+- [x] PageHeader: botao voltar em vidro (2026-06-24)
+- [x] HexLogo: shadow dourada/glow (2026-06-24)
+- [x] 14 telas atualizadas com efeitos glass/energy/dust: home, org-home, login, profile, statement, notifications, transfer, transfer-confirm, receipt, receive, pay, invite, register, pending-approval (2026-06-24)
+
+### 2.8 Correcoes Criticas de Transferencia e Cadastro (2026-06-24)
+
+- [x] Fix data nascimento no cadastro: formato DD/MM/AAAA brasileiro com mascara automatica (2026-06-24)
+- [x] Fix wallet status check: adicionar 'pending' ao constraint wallets_status_check (cadastro via convite) (2026-06-24)
+- [x] Fix transfer-confirm para colaboradores: detecta account_type e usa transferFromOrg em vez de getWalletSummary (2026-06-24)
+- [x] Fix receive para colaboradores: busca young_key direto do profile (sem depender de wallet pessoal) (2026-06-24)
+- [x] Fix busca young_key case-insensitive: lower() em ambos os lados nas RPCs transfer_youngcoin_tx e transfer_from_org_wallet (2026-06-24)
+- [x] Tela alunos: botao "Receber pagamento" no topo (abre QR Code da escola) (2026-06-24)
+- [x] Tela alunos: botoes "Transferir" e "Receber" por aluno (transferir pre-preenche a chave) (2026-06-24)
+- [x] Tela transfer: aceita parametro `to` na URL para pre-preencher chave de destino (2026-06-24)
+
+### 2.9 Build Android
 
 - [ ] Configurar `EAS_PROJECT_ID` no `.env`
 - [ ] Criar conta no Expo (eas login)
@@ -149,10 +215,44 @@
 - [x] Configuracao de limites por tipo de conta (2026-06-19 — badges por tipo)
 - [x] Exportacao CSV funcionando (transacoes e auditoria) (2026-06-19)
 
+### 3.1b Bugs Conhecidos (Corrigir antes dos testes)
+
+- [x] Corrigir CORS em todas as Edge Functions (401/403 sem CORS headers; respostas de erro de requireUser e assertBankAdmin agora incluem corsHeaders) (2026-06-24)
+- [x] Corrigir invokeFunction: refresh de sessao automatico + erro claro quando token expira (2026-06-24)
+- [x] Corrigir exclusao/criacao de escola (causado pelo bug de CORS + token expirado acima) (2026-06-24)
+
+### 3.1c Sistema de Codigos Convite e Cadastro (Backend + Admin)
+
+- [x] Migration: colunas email, invite_code_student, invite_code_staff, access_pin em organizations (2026-06-24)
+- [x] Migration: colunas full_name, birth_date, country, state, city, sport, about, hobby, invited_by_org_id em profiles (2026-06-24)
+- [x] RPC: generate_invite_code() — gera codigo AAA0000 unico (2026-06-24)
+- [x] RPC: atualizar create_organization_account_tx() com email e codigos (2026-06-24)
+- [x] RPC: validate_invite_code() — valida codigo e retorna escola/tipo (2026-06-24)
+- [x] RPC: register_with_invite() — cadastro completo via convite (2026-06-24)
+- [x] RPC: approve_or_reject_registration() — banco aprova/rejeita (2026-06-24)
+- [x] RPC: transfer_from_org_wallet() — colaborador transfere da conta da escola (2026-06-24)
+- [x] View: atualizar enriched_transactions com created_by (nome do colaborador) (2026-06-24)
+- [x] View: org_students_with_balance (alunos + saldos por escola) (2026-06-24)
+- [x] RLS: politicas para novas views e funcoes (2026-06-24)
+- [x] Edge Function: atualizar create_organization_account (email + codigos) (2026-06-24 — v4)
+- [x] Edge Function: validate_invite (sem JWT) (2026-06-24 — v1)
+- [x] Edge Function: register_with_invite (2026-06-24 — v1)
+- [x] Edge Function: approve_registration (2026-06-24 — v1)
+- [x] Edge Function: org_wallet_summary (colaborador) (2026-06-24 — v1)
+- [x] Edge Function: transfer_from_org (colaborador) (2026-06-24 — v1)
+- [x] Web admin: campo email no formulario de escola (2026-06-24)
+- [x] Web admin: exibir codigos convite apos criacao (2026-06-24)
+- [x] Web admin: codigos convite na tabela de escolas (2026-06-24)
+- [x] Web admin: tela de aprovacoes pendentes (aprovar/recusar) (2026-06-24)
+- [x] Web admin: distribuir YC para escola (credito na wallet business) (2026-06-24 — admin_credit_wallet RPC + Edge Function + modal)
+- [x] Web admin: definir/alterar PIN da escola (2026-06-24)
+- [x] Web admin: alterar role de membro (aluno → professor/funcionario/diretor) (2026-06-24)
+
 ### 3.2 Testes Funcionais Admin
 
 - [ ] Login admin → Dashboard com dados reais
 - [ ] Criar organizacao (colegio) pelo painel
+- [ ] Excluir organizacao pelo painel
 - [ ] Bloquear wallet de um usuario → verificar que nao consegue transferir
 - [ ] Desbloquear wallet → verificar que volta a funcionar
 - [ ] Estornar transacao → verificar que saldo retorna
@@ -260,13 +360,13 @@
 
 | Fase | Status | Itens | Concluidos |
 |---|---|---|---|
-| 0 - Estrutura e Identidade | ✅ Concluida | 11 | 11 |
+| 0 - Estrutura e Identidade | ✅ Concluida | 13 | 13 |
 | 1 - Backend Supabase | ✅ Concluida | 22 | 22 |
-| 2 - App Mobile Funcional | 🔄 Em andamento | 33 | 29 |
-| 3 - Painel Web Admin | 🔄 Em andamento | 20 | 18 |
-| 4 - Preparacao 400 Alunos | ⬜ Pendente | 14 | 0 |
-| 5 - Lancamento | ⬜ Pendente | 8 | 0 |
-| **Total MVP** | **Em andamento** | **108** | **80** |
+| 2 - App Mobile Funcional | 🔄 Em andamento | 87 | 78 |
+| 3 - Painel Web Admin | 🔄 Em andamento | 54 | 45 |
+| 4 - Preparacao 400 Alunos | ⬜ Pendente | 22 | 0 |
+| 5 - Lancamento | ⬜ Pendente | 13 | 0 |
+| **Total MVP** | **Em andamento** | **211** | **158** |
 
 ---
 
@@ -286,5 +386,5 @@
 
 ---
 
-*Ultima atualizacao: 2026-06-20*
-*Proximo passo: Fase 3.2 — Testes funcionais (login, criar escola, bloquear wallet, estornar, CSV)*
+*Ultima atualizacao: 2026-06-24*
+*Concluido: 158/211 itens (75%). Sistema completo de codigos convite, cadastro, aprovacao, experiencia colaborador, credito YC, correcoes OAuth/routing/telas universais, UI/UX premium e correcoes criticas de transferencia (case-insensitive, wallet pending, colaborador). Faltam: build Android, testes funcionais admin e preparacao para lancamento.*

@@ -1,6 +1,7 @@
 import "react-native-url-polyfill/auto";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SecureStore from "expo-secure-store";
+import { Platform } from "react-native";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL ?? "";
@@ -10,7 +11,15 @@ export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
 export const supabaseConfigMessage =
   "Configure EXPO_PUBLIC_SUPABASE_URL e EXPO_PUBLIC_SUPABASE_ANON_KEY no .env antes de usar o app.";
 
-const secureAdapter = {
+const isWeb = Platform.OS === "web";
+
+const webStorage = {
+  getItem: async (key: string) => localStorage.getItem(key),
+  setItem: async (key: string, value: string) => { localStorage.setItem(key, value); },
+  removeItem: async (key: string) => { localStorage.removeItem(key); },
+};
+
+const nativeStorage = {
   getItem: async (key: string) => SecureStore.getItemAsync(key),
   setItem: async (key: string, value: string) => SecureStore.setItemAsync(key, value),
   removeItem: async (key: string) => SecureStore.deleteItemAsync(key)
@@ -21,10 +30,10 @@ export const supabase = createClient(
   supabaseAnonKey || "local-development-anon-key",
   {
     auth: {
-      storage: secureAdapter,
+      storage: isWeb ? webStorage : nativeStorage,
       autoRefreshToken: true,
       persistSession: true,
-      detectSessionInUrl: false
+      detectSessionInUrl: isWeb,
     },
     global: {
       headers: { "x-moneyoung-client": "mobile" }

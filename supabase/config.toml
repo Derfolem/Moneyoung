@@ -39,3 +39,27 @@ verify_jwt = true
 
 [functions.admin_dashboard_summary]
 verify_jwt = true
+
+[functions.validate_invite]
+verify_jwt = false
+
+[functions.register_with_invite]
+verify_jwt = true
+
+[functions.approve_registration]
+verify_jwt = true
+
+[functions.org_wallet_summary]
+verify_jwt = true
+
+[functions.transfer_from_org]
+verify_jwt = true
+
+[functions.admin_credit_wallet]
+verify_jwt = true
+
+[functions.request_cancellation]
+verify_jwt = true
+
+[functions.process_cancellation]
+verify_jwt = true

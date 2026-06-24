@@ -20,6 +20,10 @@ export type Organization = {
   id: string;
   name: string;
   slug: string;
+  email: string | null;
+  invite_code_student: string | null;
+  invite_code_staff: string | null;
+  access_pin: string | null;
   owner_profile_id: string | null;
   status: ProfileStatus;
   created_at: string;
@@ -119,14 +123,19 @@ export async function invokeFunction<T>(name: string, body?: Record<string, unkn
   if (!isSupabaseConfigured) throw new Error(supabaseConfigMessage);
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  const { data: sessionData } = await supabase.auth.getSession();
+  let { data: sessionData } = await supabase.auth.getSession();
+  if (!sessionData?.session?.access_token) {
+    const { data: refreshed } = await supabase.auth.refreshSession();
+    sessionData = { session: refreshed.session };
+  }
   const accessToken = sessionData?.session?.access_token;
+  if (!accessToken) throw new Error("Sessão expirada. Faça login novamente.");
   const res = await fetch(`${url}/functions/v1/${name}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "apikey": anonKey!,
-      "Authorization": `Bearer ${accessToken ?? anonKey}`
+      "Authorization": `Bearer ${accessToken}`
     },
     ...(body ? { body: JSON.stringify(body) } : {})
   });
@@ -234,10 +243,18 @@ export async function listOrganizations(): Promise<Organization[]> {
   return (data ?? []) as Organization[];
 }
 
-export async function createOrganization(name: string, slug: string, ownerProfileId?: string): Promise<void> {
-  await invokeFunction("create_organization_account", {
+export type CreateOrgResult = {
+  organization: Organization;
+  business_wallet: unknown;
+  invite_code_student: string;
+  invite_code_staff: string;
+};
+
+export async function createOrganization(name: string, slug: string, email?: string, ownerProfileId?: string): Promise<CreateOrgResult> {
+  return invokeFunction<CreateOrgResult>("create_organization_account", {
     name,
     slug,
+    email: email || undefined,
     owner_profile_id: ownerProfileId || undefined
   });
 }
@@ -327,6 +344,12 @@ export async function deleteOrganization(orgId: string): Promise<void> {
     .eq("organization_id", orgId);
   if (membersError) throw new Error(membersError.message);
 
+  const { error: walletsError } = await supabase
+    .from("wallets")
+    .delete()
+    .eq("organization_id", orgId);
+  if (walletsError) throw new Error(walletsError.message);
+
   const { error } = await supabase.from("organizations").delete().eq("id", orgId);
   if (error) throw new Error(error.message);
 }
@@ -397,6 +420,139 @@ export function exportCsv(filename: string, rows: Record<string, unknown>[]) {
 
 export function toCsvRows<T extends Record<string, unknown>>(rows: T[]): Record<string, unknown>[] {
   return rows.map((row) => ({ ...row }));
+}
+
+export type PendingRegistration = {
+  id: string;
+  email: string;
+  display_name: string;
+  full_name: string | null;
+  young_key: string;
+  account_type: string;
+  status: string;
+  birth_date: string | null;
+  invited_by_org_id: string | null;
+  created_at: string;
+  organization_name?: string;
+};
+
+export async function listPendingRegistrations(): Promise<PendingRegistration[]> {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("id,email,display_name,full_name,young_key,account_type,status,birth_date,invited_by_org_id,created_at")
+    .eq("status", "pending")
+    .order("created_at", { ascending: false });
+  if (error) throw new Error(error.message);
+
+  const profiles = (data ?? []) as PendingRegistration[];
+  if (profiles.length === 0) return [];
+
+  const orgIds = [...new Set(profiles.map(p => p.invited_by_org_id).filter(Boolean))] as string[];
+  if (orgIds.length > 0) {
+    const { data: orgs } = await supabase.from("organizations").select("id,name").in("id", orgIds);
+    const orgMap = new Map((orgs ?? []).map(o => [o.id, o.name]));
+    for (const p of profiles) {
+      if (p.invited_by_org_id) p.organization_name = orgMap.get(p.invited_by_org_id) ?? undefined;
+    }
+  }
+  return profiles;
+}
+
+export async function approveRegistration(profileId: string, approved: boolean, reason?: string): Promise<void> {
+  await invokeFunction("approve_registration", {
+    profile_id: profileId,
+    approved,
+    reason: reason || undefined
+  });
+}
+
+export async function creditOrgWallet(orgId: string, amount: number, description: string): Promise<void> {
+  const { data: wallet, error: wErr } = await supabase
+    .from("wallets")
+    .select("id")
+    .eq("organization_id", orgId)
+    .eq("wallet_type", "business")
+    .maybeSingle();
+  if (wErr || !wallet) throw new Error("Wallet da escola nao encontrada.");
+
+  const session = await supabase.auth.getSession();
+  const actorId = session.data.session?.user.id;
+  if (!actorId) throw new Error("Sessao expirada.");
+
+  await invokeFunction("admin_credit_wallet", {
+    wallet_id: wallet.id,
+    amount,
+    description: description || "Credito do banco para escola",
+  });
+}
+
+export async function updateOrgAccessPin(orgId: string, pin: string): Promise<void> {
+  const { error } = await supabase
+    .from("organizations")
+    .update({ access_pin: pin })
+    .eq("id", orgId);
+  if (error) throw new Error(error.message);
+}
+
+export async function updateMemberRole(memberId: string, newRole: OrganizationMemberRole): Promise<void> {
+  const { error } = await supabase
+    .from("organization_members")
+    .update({ member_role: newRole })
+    .eq("id", memberId);
+  if (error) throw new Error(error.message);
+}
+
+export type CancellationRequest = {
+  id: string;
+  email: string;
+  display_name: string;
+  full_name: string | null;
+  young_key: string;
+  account_type: string;
+  status: string;
+  cancellation_requested_at: string;
+  invited_by_org_id: string | null;
+  organization_name?: string;
+};
+
+export async function listCancellationRequests(): Promise<CancellationRequest[]> {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("id,email,display_name,full_name,young_key,account_type,status,cancellation_requested_at,invited_by_org_id")
+    .not("cancellation_requested_at", "is", null)
+    .order("cancellation_requested_at", { ascending: false });
+  if (error) throw new Error(error.message);
+
+  const rows = (data ?? []) as CancellationRequest[];
+  if (rows.length === 0) return [];
+
+  const orgIds = [...new Set(rows.map(r => r.invited_by_org_id).filter(Boolean))] as string[];
+  if (orgIds.length > 0) {
+    const { data: orgs } = await supabase.from("organizations").select("id,name").in("id", orgIds);
+    const orgMap = new Map((orgs ?? []).map(o => [o.id, o.name]));
+    for (const r of rows) {
+      if (r.invited_by_org_id) r.organization_name = orgMap.get(r.invited_by_org_id) ?? undefined;
+    }
+  }
+  return rows;
+}
+
+export async function processCancellation(profileId: string, approved: boolean): Promise<void> {
+  await invokeFunction("process_cancellation", { profile_id: profileId, approved });
+}
+
+export async function reactivateAccount(profileId: string): Promise<void> {
+  const { error } = await supabase
+    .from("profiles")
+    .update({ status: "active", cancellation_requested_at: null })
+    .eq("id", profileId);
+  if (error) throw new Error(error.message);
+
+  await supabase
+    .from("wallets")
+    .update({ status: "active" })
+    .eq("profile_id", profileId)
+    .eq("status", "blocked");
 }
 
 function cleanSearch(value?: string): string {

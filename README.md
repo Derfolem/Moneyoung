@@ -41,41 +41,43 @@ Os scripts do monorepo carregam esse `.env` da raiz automaticamente.
 
 ## Rodar
 
-Estado atual de desenvolvimento:
+### Pre-requisitos
 
-- O app mobile web roda sem Supabase configurado usando modo demo local.
-- O painel web admin sobe, mas dados reais dependem das variaveis Supabase.
-- O Android emulator nesta maquina usa wrapper local por incompatibilidade de GLIBC.
+1. Copie `.env.example` para `.env` e preencha as chaves Supabase (ou use as que ja estao configuradas).
+2. Instale as dependencias: `npm install` na raiz do projeto.
+
+Os scripts do monorepo carregam o `.env` da raiz automaticamente via `dotenv`.
+Cada app tambem possui um symlink `.env.local -> ../../.env` para que Next.js e Expo leiam as variaveis corretamente em modo dev.
+
+### Painel Web Admin (porta 3000)
+
+Rode do diretorio raiz:
 
 ```bash
-npm run supabase:start
-npm run supabase:migrate
-npm run supabase:functions
 npm run dev:web
+```
+
+Abra `http://localhost:3000`. Login via Google OAuth (conta bank_admin).
+
+### App Mobile Expo (porta 8081)
+
+Rode do diretorio raiz:
+
+```bash
 npm run dev:mobile
 ```
 
-Para testar o app mobile no navegador, use:
+Abra `http://localhost:8081` para testar no navegador, ou escaneie o QR code com Expo Go no celular.
+
+**Importante:** se `npm run dev:mobile` apresentar tela branca, rode diretamente do diretorio do app:
 
 ```bash
 cd apps/mobile
-EXPO_USE_METRO_WORKSPACE_ROOT=1 npx expo start --web
+CI=1 EXPO_USE_METRO_WORKSPACE_ROOT=1 DOTENV_CONFIG_PATH=../../.env \
+  node -r dotenv/config ../../node_modules/expo/bin/cli start --port 8081
 ```
 
-Abra `http://localhost:8081`. Com `.env` vazio, a tela de login mostra `Entrar no modo demo`, cria um usuario local de teste e permite navegar pelo app sem OAuth.
-
-Para rodar o painel admin:
-
-```bash
-cd apps/web-admin
-npm run dev
-```
-
-Abra `http://localhost:3000`.
-
-O app mobile esta em Expo SDK 51. Se o Expo Go do iPhone pedir SDK 54, use um simulador iOS, gere um development build, ou migre o app para SDK 54 antes de testar no Expo Go atual.
-
-Para testar no emulador Android desta maquina:
+### Emulador Android
 
 ```bash
 ~/Android/emulator-compat -avd Pixel_6_API_34
@@ -84,6 +86,16 @@ npx expo run:android
 ```
 
 O emulador pode falhar com `stack smashing detected` por causa do workaround de GLIBC. Reinicie o wrapper e tente novamente.
+
+### Supabase local (opcional)
+
+```bash
+npm run supabase:start
+npm run supabase:migrate
+npm run supabase:functions
+```
+
+O projeto esta conectado ao Supabase Cloud (producao). Use Supabase local apenas para desenvolvimento de migrations e Edge Functions.
 
 ## Builds
 

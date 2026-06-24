@@ -169,6 +169,7 @@ const errorMessages: Record<string, string> = {
   INVALID_IDEMPOTENCY_KEY: "Erro interno. Tente novamente.",
   TRANSFER_LIMIT_NOT_CONFIGURED: "Limite de transferencia nao configurado. Contate o administrador.",
   FORBIDDEN: "Voce nao tem permissao para esta acao.",
+  INVITE_REQUIRED: "Cadastro requer codigo convite. Solicite o codigo da sua escola.",
 };
 
 function translateError(raw: string): string {
@@ -216,6 +217,68 @@ async function invoke<T>(name: string, body?: Record<string, unknown>): Promise<
 export async function ensureProfile() {
   if (!isSupabaseConfigured) return getDemoSummary().profile;
   return invoke("create_profile_on_first_login");
+}
+
+export type InviteValidation = {
+  valid: boolean;
+  organization_id?: string;
+  organization_name?: string;
+  code_type?: "student" | "staff";
+};
+
+export async function validateInviteCode(code: string): Promise<InviteValidation> {
+  if (!isSupabaseConfigured) throw new Error(supabaseConfigMessage);
+  const url = process.env.EXPO_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+  const res = await fetch(`${url}/functions/v1/validate_invite`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "apikey": anonKey! },
+    body: JSON.stringify({ code: code.trim() }),
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json?.error?.message ?? "Codigo invalido.");
+  return json as InviteValidation;
+}
+
+export type RegisterData = {
+  invite_code: string;
+  full_name: string;
+  birth_date: string;
+  country?: string | undefined;
+  state?: string | undefined;
+  city?: string | undefined;
+  sport?: string | undefined;
+  about?: string | undefined;
+  hobby?: string | undefined;
+};
+
+export async function registerWithInvite(data: RegisterData) {
+  return invoke("register_with_invite", data as unknown as Record<string, unknown>);
+}
+
+export async function getOrgWalletSummary() {
+  return invoke<{
+    organization: { id: string; name: string; email: string | null; access_pin: string | null };
+    wallet: { id: string; balance: string; status: string };
+    member_role: string;
+    recent_transactions: WalletSummary["recent_transactions"];
+    members: Array<{
+      profile_id: string; display_name: string; full_name: string | null;
+      young_key: string; balance: number; member_role: string; status: string;
+    }>;
+  }>("org_wallet_summary");
+}
+
+export async function transferFromOrg(payload: Omit<TransferPayload, "idempotency_key">) {
+  const nextPayload = validateTransferPayload(payload);
+  return invoke("transfer_from_org", {
+    ...nextPayload,
+    idempotency_key: createIdempotencyKey("mobile_org_transfer"),
+  });
+}
+
+export async function requestCancellation(reason?: string) {
+  return invoke("request_cancellation", reason ? { reason } : {});
 }
 
 export async function getWalletSummary(): Promise<WalletSummary> {

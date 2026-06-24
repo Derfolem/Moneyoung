@@ -1,8 +1,7 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { Button } from "../src/components/Button";
-import { HexLogo } from "../src/components/HexLogo";
+import { TextLogo } from "../src/components/TextLogo";
 import { toast } from "../src/services/toast";
 import { colors } from "../src/theme/colors";
 
@@ -21,10 +20,10 @@ export default function Receipt() {
 
   return (
     <View style={styles.root}>
-      {/* Dark header */}
+      {/* Header */}
       <View style={styles.header}>
         <View style={styles.watermark}>
-          <HexLogo size={80} color="rgba(255,255,255,0.08)" textColor="rgba(255,255,255,0.15)" />
+          <TextLogo size={18} color="rgba(212,168,67,0.2)" />
         </View>
         <Text style={styles.headerTitle}>Comprovante</Text>
         <Text style={styles.headerSub}>Transferencia realizada</Text>
@@ -80,13 +79,15 @@ export default function Receipt() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.background },
+  root: { flex: 1, backgroundColor: colors.navyDeep },
   header: {
-    backgroundColor: colors.navyDeep,
+    backgroundColor: colors.glassStrong,
     paddingTop: 70,
     paddingBottom: 60,
     alignItems: "center",
     gap: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.glassBorder,
   },
   watermark: {
     position: "absolute",
@@ -95,26 +96,34 @@ const styles = StyleSheet.create({
     opacity: 1,
   },
   headerTitle: {
-    color: "#fff",
+    color: colors.gold,
     fontSize: 28,
     fontWeight: "900",
+    textShadowColor: colors.glowGold,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
   },
   headerSub: {
-    color: "rgba(255,255,255,0.6)",
+    color: colors.textSecondary,
     fontSize: 14,
   },
   card: {
-    backgroundColor: colors.surface,
-    borderRadius: 16,
+    backgroundColor: colors.glass,
+    borderRadius: 20,
     marginHorizontal: 24,
     marginTop: -30,
     padding: 24,
     gap: 14,
-    shadowColor: colors.cardShadow,
+    borderWidth: 1,
+    borderColor: colors.glassBorder,
+    // @ts-ignore
+    backdropFilter: "blur(16px)",
+    // @ts-ignore
+    WebkitBackdropFilter: "blur(16px)",
+    shadowColor: colors.gold,
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
+    shadowOpacity: 0.15,
     shadowRadius: 16,
-    elevation: 4,
   },
   row: {
     flexDirection: "row",
@@ -123,19 +132,19 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    color: colors.muted,
+    color: colors.textSecondary,
   },
   value: {
     fontSize: 15,
     fontWeight: "700",
-    color: colors.ink,
+    color: colors.textPrimary,
     textAlign: "right",
     flex: 1,
     marginLeft: 12,
   },
   divider: {
     height: 1,
-    backgroundColor: colors.border,
+    backgroundColor: colors.glassBorder,
   },
   statusRow: {
     flexDirection: "row",

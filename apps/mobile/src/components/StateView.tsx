@@ -13,7 +13,7 @@ type Props = {
 export function StateView({ title, message, actionLabel, onAction, loading }: Props) {
   return (
     <View style={styles.root}>
-      {loading ? <ActivityIndicator color={colors.primary} size="large" /> : null}
+      {loading ? <ActivityIndicator color={colors.gold} size="large" /> : null}
       {title ? <Text style={styles.title}>{title}</Text> : null}
       {message ? <Text style={styles.message}>{message}</Text> : null}
       {actionLabel && onAction ? <Button title={actionLabel} onPress={onAction} tone="secondary" /> : null}
@@ -23,6 +23,6 @@ export function StateView({ title, message, actionLabel, onAction, loading }: Pr
 
 const styles = StyleSheet.create({
   root: { flex: 1, minHeight: 280, justifyContent: "center", gap: 12 },
-  title: { color: colors.ink, fontSize: 22, fontWeight: "900", textAlign: "center" },
-  message: { color: colors.muted, fontSize: 16, lineHeight: 23, textAlign: "center" }
+  title: { color: colors.textPrimary, fontSize: 22, fontWeight: "900", textAlign: "center" },
+  message: { color: colors.textSecondary, fontSize: 16, lineHeight: 23, textAlign: "center" }
 });

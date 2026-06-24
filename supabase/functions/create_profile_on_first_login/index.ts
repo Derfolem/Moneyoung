@@ -15,7 +15,13 @@ Deno.serve(async (req) => {
       p_avatar_url: user.user_metadata?.avatar_url ?? null
     });
 
-    if (rpcError) return error("SERVER_ERROR", rpcError.message, 500);
+    if (rpcError) {
+      const msg = rpcError.message ?? "";
+      if (msg.includes("INVITE_REQUIRED")) {
+        return error("INVITE_REQUIRED", "Cadastro requer codigo convite. Solicite o codigo da sua escola.", 403);
+      }
+      return error("SERVER_ERROR", msg, 500);
+    }
     return json({ data });
   } catch (err) {
     if (err instanceof Response) return err;

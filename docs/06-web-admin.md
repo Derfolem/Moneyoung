@@ -1,10 +1,27 @@
-# Web Admin — Moneyoungbank
+# Web Admin — MoneYoung Admin
 
-Data: 2026-06-16 (atualizado 2026-06-19)
+Data: 2026-06-16 (atualizado 2026-06-24)
 
 ## Estrutura
 
-`apps/web-admin` usa Next.js 14 App Router, TypeScript, Supabase client, layout administrativo com sidebar teal/dark e tabelas reutilizaveis.
+`apps/web-admin` usa Next.js 14 App Router, TypeScript, Supabase client, layout administrativo com sidebar dark navy + gold e tabelas reutilizaveis.
+
+## Identidade Visual
+
+Tema dark navy (#0A1628) + gold (#D4A843), consistente com o mobile. CSS custom properties em `globals.css` definem toda a paleta. Fontes: Josefin Sans 700 (marca) e Inter 400-900 (UI) via Google Fonts `@import`.
+
+| Variavel CSS | Cor | Uso |
+|---|---|---|
+| `--navy-deep` | `#0A1628` | Fundo body |
+| `--navy-card` | `#0F2035` | Cards, sidebar, tabelas |
+| `--navy-light` | `#162D4A` | Inputs, headers de tabela |
+| `--gold` | `#D4A843` | Botoes, marca, links ativos, acentos |
+| `--text-primary` | `#FFFFFF` | Texto principal |
+| `--text-secondary` | `#8B9DC3` | Texto secundario |
+| `--border` | `#1E3A5F` | Bordas gerais |
+| `--border-gold` | `rgba(212,168,67,0.3)` | Bordas douradas em cards |
+
+A marca "MoneYoung" aparece no sidebar em Josefin Sans 700 com cor gold, separada por borda dourada. Links ativos no sidebar tem fundo gold translucido e borda esquerda gold. Avatar do usuario logado no rodape do sidebar.
 
 ## Componentes
 
@@ -28,8 +45,10 @@ Data: 2026-06-16 (atualizado 2026-06-19)
 | getTransaction | enriched_transactions view | Detalhe de transacao com nomes, chaves e tipos |
 | reverseTransaction | Edge Function | Estorno via reverse_transaction |
 | changeWalletStatus | Edge Function | Bloquear/desbloquear via block_wallet |
-| createOrganization | Edge Function | Criar escola via create_organization_account |
+| createOrganization | Edge Function | Criar escola via create_organization_account (gera codigos convite) |
 | linkOrganizationMember | Supabase direto | Vincular usuario a organizacao |
+| approveRegistration | Edge Function | Aprovar/rejeitar cadastro via approve_registration |
+| adminCreditWallet | Edge Function | Creditar YC na wallet de escola |
 | listAuditLogs | Supabase direto | Logs de auditoria com filtros |
 | listSecurityEvents | Supabase direto | Eventos de seguranca com filtro por severidade |
 | listTransferLimits | Supabase direto | Limites por tipo de conta |
@@ -46,7 +65,8 @@ Data: 2026-06-16 (atualizado 2026-06-19)
 | `/wallets` | Lista de wallets, bloquear/desbloquear com motivo |
 | `/transactions` | Lista com filtros (status, tipo, valor, wallet), nomes dos participantes |
 | `/transactions/[id]` | Detalhe com nomes, chaves, badges, estorno com motivo, audit logs |
-| `/organizations` | Criar escola, vincular usuario, lista de organizacoes |
+| `/organizations` | Criar escola (com email, gera codigos convite), vincular/desvincular membros, alterar role, definir PIN, codigos visiveis na tabela |
+| `/approvals` | Cadastros pendentes de aprovacao (aprovar/recusar com motivo) |
 | `/audit` | Logs de auditoria com filtros, export CSV |
 | `/security-events` | Eventos de seguranca com filtro por severidade |
 | `/limits` | Editar limites de transferencia por tipo de conta |
@@ -72,7 +92,7 @@ RLS policies permitem que bank_admin leia todas as tabelas (profiles, wallets, t
 ## Rodar local
 
 ```bash
-cd ycbank
+cd MYGbank
 npm run dev:web
 ```
 

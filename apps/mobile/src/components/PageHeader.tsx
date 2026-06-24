@@ -10,23 +10,20 @@ type Props = {
   darkHeader?: boolean;
 };
 
-export function PageHeader({ title, subtitle, backTo = "/home", darkHeader }: Props) {
-  const tint = darkHeader ? "#fff" : colors.ink;
-  const mutedTint = darkHeader ? "rgba(255,255,255,0.6)" : colors.muted;
-
+export function PageHeader({ title, subtitle, backTo = "/home" }: Props) {
   return (
     <View style={styles.root}>
       <Pressable
         accessibilityRole="button"
         accessibilityLabel="Voltar"
         onPress={() => router.replace(backTo)}
-        style={[styles.back, darkHeader && styles.backDark]}
+        style={styles.back}
       >
-        <Ionicons name="chevron-back" size={24} color={tint} />
+        <Ionicons name="chevron-back" size={24} color={colors.textPrimary} />
       </Pressable>
       <View style={styles.copy}>
-        <Text style={[styles.title, { color: tint }]}>{title}</Text>
-        {subtitle ? <Text style={[styles.subtitle, { color: mutedTint }]}>{subtitle}</Text> : null}
+        <Text style={styles.title}>{title}</Text>
+        {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
       </View>
     </View>
   );
@@ -40,12 +37,11 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: colors.background,
-  },
-  backDark: {
-    backgroundColor: "rgba(255,255,255,0.12)",
+    backgroundColor: colors.glass,
+    borderWidth: 1,
+    borderColor: colors.glassBorder,
   },
   copy: { flex: 1, gap: 4 },
-  title: { fontSize: 28, fontWeight: "900" },
-  subtitle: { lineHeight: 21 },
+  title: { fontSize: 28, fontWeight: "900", color: colors.textPrimary },
+  subtitle: { lineHeight: 21, color: colors.textSecondary },
 });
