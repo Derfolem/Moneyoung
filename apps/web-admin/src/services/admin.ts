@@ -560,6 +560,6 @@ export async function reactivateAccount(profileId: string): Promise<void> {
 }
 
 function cleanSearch(value?: string): string {
-  return (value ?? "").trim().replace(/[%*,]/g, "");
+  return (value ?? "").trim().replace(/[%*,()\\]/g, "");
 }
 

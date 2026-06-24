@@ -338,6 +338,7 @@
 - [x] Revisar logs de auditoria apos testes (2026-06-24 — 11 acoes registradas: org.created, registrations, approvals, credit, transfers, block/unblock, reversal)
 - [x] Verificar rate limiting em cenario de 400 usuarios simultaneos (2026-06-24 — limites configurados: personal 250/tx 1000/dia 10/min, business 2500/tx 10000/dia 60/min, sub_business 1000/tx 5000/dia 30/min)
 - [x] Roteiro de resposta a incidentes definido (ver SECURITY.md) (2026-06-24 — SECURITY.md com politicas, procedimento de falha, rotacao de chaves, revisao pre-lancamento)
+- [x] Auditoria de seguranca do frontend (mobile + web admin) (2026-06-24 — sem XSS, sem eval/innerHTML, sem secrets hardcoded, sem open redirects, localStorage apenas dados nao-sensiveis, cleanSearch endurecido contra filter injection PostgREST)
 
 ---
 
@@ -394,9 +395,9 @@
 | 1 - Backend Supabase | ✅ Concluida | 22 | 22 |
 | 2 - App Mobile Funcional | 🔄 Em andamento | 87 | 78 |
 | 3 - Painel Web Admin | 🔄 Em andamento | 57 | 54 |
-| 4 - Preparacao 400 Alunos | 🔄 Em andamento | 37 | 21 |
+| 4 - Preparacao 400 Alunos | 🔄 Em andamento | 37 | 22 |
 | 5 - Lancamento | ⬜ Pendente | 13 | 0 |
-| **Total MVP** | **Em andamento** | **229** | **189** |
+| **Total MVP** | **Em andamento** | **229** | **190** |
 
 ---
 

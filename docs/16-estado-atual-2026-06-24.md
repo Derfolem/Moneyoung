@@ -2,7 +2,7 @@
 
 ## Progresso
 
-189/229 itens do checklist MVP concluidos (83%).
+190/229 itens do checklist MVP concluidos (83%).
 
 ## Mudancas desde 2026-06-23
 
@@ -81,6 +81,16 @@
 - 5 indices criados em foreign keys sem cobertura (audit_logs, organization_members, organizations, profiles, security_events)
 - Pendente: habilitar Leaked Password Protection (requer plano Supabase Pro $25/mes — Authentication > Settings > Security)
 - REVOKE adicional de `authenticated` em generate_invite_code e validate_invite_code (funcoes internas, chamadas apenas via Edge Functions)
+
+### Auditoria de Seguranca do Frontend (2026-06-24)
+- Sem XSS: nenhum uso de dangerouslySetInnerHTML, innerHTML ou document.write em todo o frontend
+- Sem injecao de codigo: nenhum eval(), new Function() ou setTimeout com string
+- Sem secrets hardcoded: todas as chaves via variáveis de ambiente (.env)
+- Sem open redirects: todos os redirects usam paths fixos internos
+- localStorage: apenas dados nao-sensiveis (invite_code, org_name) com try/catch
+- React auto-escape: metadata renderizada como texto (JSON.stringify), nao como HTML
+- Rate limiting no login admin: 5 tentativas → bloqueio 60s
+- Corrigido: cleanSearch endurecido — agora remove () e \ alem de %*,  para prevenir filter injection em chamadas .or() do PostgREST (risco baixo, admin-only, RLS protege)
 
 ### Testes Funcionais Admin (2026-06-24)
 - Dashboard: 3 wallets ativas, 3 profiles, 1 organizacao, transacoes e audit logs — dados reais OK
@@ -169,7 +179,7 @@
 ## Documentacao
 
 16 documentos tecnicos:
-- 00: Checklist MVP (189/229, 83%)
+- 00: Checklist MVP (190/229, 83%)
 - 01: Visao geral (atualizado com convite, colaborador, UI premium)
 - 02: Arquitetura (atualizado com sistema visual premium, OAuth web)
 - 03: Banco de dados
