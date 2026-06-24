@@ -25,14 +25,29 @@ export default function DashboardPage() {
     <AdminShell>
       <div className="pageHeader"><h1>Dashboard</h1></div>
       {error ? <StateMessage tone="danger" title="Resumo indisponivel" detail={error} /> : null}
+
+      <h2 style={{ marginBottom: 8, fontSize: 14, color: "var(--muted)" }}>Financeiro</h2>
       <div className="grid">
-        <Metric label="Contas" value={summary?.total_accounts} loading={loading} />
-        <Metric label="Wallets" value={summary?.total_wallets} loading={loading} />
-        <Metric label="Transacoes" value={summary?.total_transactions} loading={loading} />
-        <Metric label="Volume" value={summary ? currency.format(summary.total_volume) : undefined} loading={loading} />
-        <Metric label="Wallets restritas" value={summary?.blocked_wallets} loading={loading} />
-        <Metric label="Eventos criticos" value={summary?.suspicious_transactions} loading={loading} />
+        <Metric label="Valor Corrente" value={summary ? currency.format(summary.current_value) : undefined} loading={loading} highlight />
+        <Metric label="Total Wallets" value={summary?.total_wallets} loading={loading} />
+        <Metric label="Wallets Restritas" value={summary?.blocked_wallets} loading={loading} tone="danger" />
+        <Metric label="Estornos" value={summary?.total_reversals} loading={loading} />
       </div>
+
+      <h2 style={{ marginTop: 20, marginBottom: 8, fontSize: 14, color: "var(--muted)" }}>Contas Ativas</h2>
+      <div className="grid">
+        <Metric label="Alunos" value={summary?.active_students} loading={loading} />
+        <Metric label="Escolas" value={summary?.active_schools} loading={loading} />
+      </div>
+
+      <h2 style={{ marginTop: 20, marginBottom: 8, fontSize: 14, color: "var(--muted)" }}>Transacoes</h2>
+      <div className="grid">
+        <Metric label="Hoje" value={summary?.transactions_today} loading={loading} />
+        <Metric label="Este Mes" value={summary?.transactions_month} loading={loading} />
+        <Metric label="Este Ano" value={summary?.transactions_year} loading={loading} />
+        <Metric label="Eventos Criticos" value={summary?.critical_events} loading={loading} tone="danger" />
+      </div>
+
       <section className="panel" style={{ marginTop: 16 }}>
         <h2>Transacoes por dia</h2>
         {loading ? <StateMessage title="Carregando serie..." /> : byDay.length ? (
@@ -65,6 +80,9 @@ const transactionColumns: Column<LedgerTransaction>[] = [
   { key: "created_at", header: "data", render: (row) => new Date(row.created_at).toLocaleString("pt-BR") }
 ];
 
-function Metric({ label, value, loading }: { label: string; value?: number | string | undefined; loading: boolean }) {
-  return <div className="card"><span className="muted">{label}</span><strong>{loading ? "..." : value ?? 0}</strong></div>;
+function Metric({ label, value, loading, highlight, tone }: { label: string; value?: number | string | undefined; loading: boolean; highlight?: boolean; tone?: "danger" }) {
+  const style: React.CSSProperties = {};
+  if (highlight) style.borderLeft = "3px solid var(--gold, #D4A843)";
+  if (tone === "danger" && typeof value === "number" && value > 0) style.color = "#EF4444";
+  return <div className="card" style={style}><span className="muted">{label}</span><strong>{loading ? "..." : value ?? 0}</strong></div>;
 }

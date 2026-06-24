@@ -66,13 +66,17 @@ export type SecurityEvent = {
 };
 
 export type DashboardSummary = {
-  total_accounts: number;
+  current_value: number;
+  active_students: number;
+  active_schools: number;
+  transactions_today: number;
+  transactions_month: number;
+  transactions_year: number;
+  total_reversals: number;
   total_wallets: number;
-  total_transactions: number;
-  total_volume: number;
-  transactions_by_day: Record<string, number>;
   blocked_wallets: number;
-  suspicious_transactions: number;
+  critical_events: number;
+  transactions_by_day: Record<string, number>;
   latest_transactions: LedgerTransaction[];
 };
 
