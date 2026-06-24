@@ -302,9 +302,36 @@
 - [ ] Definir processo para o colegio distribuir Youngcoin aos alunos
 - [ ] Definir processo para alunos comprarem produtos/servicos
 
-### 4.4 Seguranca Pre-Lancamento
+### 4.4 Hardening de Seguranca (Supabase Advisors)
 
-- [ ] Revisar todas as RLS policies
+#### 4.4.1 Funcoes SECURITY DEFINER — Revogar acesso direto via PostgREST
+- [x] Revogar EXECUTE de `anon` em todas as RPCs sensiveis (admin_credit_wallet, approve_or_reject_registration, block_wallet_tx, create_organization_account_tx, reverse_transaction_tx, process_cancellation, rls_auto_enable, transfer_youngcoin_tx, transfer_from_org_wallet, register_with_invite, request_account_cancellation, create_profile_and_wallet, generate_invite_code, current_profile) (2026-06-24)
+- [x] Revogar EXECUTE de `authenticated` em RPCs somente-admin (admin_credit_wallet, approve_or_reject_registration, block_wallet_tx, create_organization_account_tx, reverse_transaction_tx, process_cancellation, rls_auto_enable) (2026-06-24)
+- [x] Manter EXECUTE de `authenticated` em helpers RLS (is_bank_admin, is_member_of_org, is_active_member_of_org, is_org_admin) e funcoes de usuario (transfer_youngcoin_tx, transfer_from_org_wallet, register_with_invite, request_account_cancellation, create_profile_and_wallet) (2026-06-24)
+
+#### 4.4.2 Function Search Path — Fixar search_path
+- [x] Fixar search_path em account_type_label, touch_updated_at, generate_young_key (SET search_path = public) (2026-06-24)
+
+#### 4.4.3 RLS Policies — Otimizar auth.uid() com subselect
+- [x] Otimizar policy `profiles read own or bank admin` — usar (select auth.uid()) (2026-06-24)
+- [x] Otimizar policy `profiles update own basic` — usar (select auth.uid()) (2026-06-24)
+- [x] Otimizar policy `transactions read participant or admin` — usar (select auth.uid()) (2026-06-24)
+- [x] Otimizar policy `transfer limits read authenticated` — usar (select auth.uid()) (2026-06-24)
+- [x] Otimizar policy `organization members read own orgs or admin` — usar (select auth.uid()) (2026-06-24)
+- [x] Otimizar policy `wallets read own orgs or bank admin` — usar (select auth.uid()) (2026-06-24)
+
+#### 4.4.4 Indices — Foreign keys sem cobertura
+- [x] Criar indice em audit_logs(actor_profile_id) (2026-06-24)
+- [x] Criar indice em organization_members(profile_id) (2026-06-24)
+- [x] Criar indice em organizations(owner_profile_id) (2026-06-24)
+- [x] Criar indice em profiles(invited_by_org_id) (2026-06-24)
+- [x] Criar indice em security_events(profile_id) (2026-06-24)
+
+#### 4.4.5 Auth — Protecao adicional
+- [ ] Habilitar Leaked Password Protection no Supabase Dashboard (Authentication > Security)
+
+### 4.5 Seguranca Pre-Lancamento
+
 - [ ] Verificar que service role key NAO esta exposta em mobile ou web
 - [ ] Verificar que `.env` NAO esta no Git
 - [ ] Testar tentativas de acesso nao autorizado
@@ -367,9 +394,9 @@
 | 1 - Backend Supabase | ✅ Concluida | 22 | 22 |
 | 2 - App Mobile Funcional | 🔄 Em andamento | 87 | 78 |
 | 3 - Painel Web Admin | 🔄 Em andamento | 57 | 48 |
-| 4 - Preparacao 400 Alunos | ⬜ Pendente | 22 | 0 |
+| 4 - Preparacao 400 Alunos | 🔄 Em andamento | 37 | 15 |
 | 5 - Lancamento | ⬜ Pendente | 13 | 0 |
-| **Total MVP** | **Em andamento** | **214** | **162** |
+| **Total MVP** | **Em andamento** | **229** | **177** |
 
 ---
 
@@ -390,4 +417,4 @@
 ---
 
 *Ultima atualizacao: 2026-06-24*
-*Concluido: 162/214 itens (76%). Dashboard admin com metricas completas (valor corrente, contas ativas, transacoes dia/mes/ano, estornos, eventos criticos). Login Google OAuth no admin. Views corrigidas para SECURITY INVOKER. Faltam: build Android, testes funcionais admin e preparacao para lancamento.*
+*Concluido: 177/229 itens (77%). Hardening de seguranca aplicado: EXECUTE revogado em RPCs sensiveis (anon + admin-only authenticated), search_path fixado, RLS policies otimizadas com (select auth.uid()), indices em FK sem cobertura. Falta apenas: habilitar Leaked Password Protection (manual), build Android, testes funcionais admin e preparacao para lancamento.*

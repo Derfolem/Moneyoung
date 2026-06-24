@@ -2,7 +2,7 @@
 
 ## Progresso
 
-162/214 itens do checklist MVP concluidos (76%).
+177/229 itens do checklist MVP concluidos (77%).
 
 ## Mudancas desde 2026-06-23
 
@@ -73,6 +73,14 @@
 - Fix views SECURITY INVOKER: enriched_wallets e enriched_transactions recriadas com security_invoker=on (respeita RLS do usuario que consulta)
 - Fix dev:web script: caminho do next hoisted no monorepo corrigido
 
+### Hardening de Seguranca (2026-06-24)
+- REVOKE EXECUTE de `anon` em 20 funcoes SECURITY DEFINER (impede chamada direta via PostgREST sem login)
+- REVOKE EXECUTE de `authenticated` em 8 funcoes somente-admin (admin_credit_wallet, approve_or_reject_registration, block_wallet_tx, create_organization_account_tx, reverse_transaction_tx, process_cancellation, rls_auto_enable)
+- Fixar search_path em account_type_label, touch_updated_at, generate_young_key (previne search_path hijack)
+- 6 RLS policies otimizadas com (select auth.uid()) em vez de auth.uid() (avalia uma vez por query, nao por linha)
+- 5 indices criados em foreign keys sem cobertura (audit_logs, organization_members, organizations, profiles, security_events)
+- Pendente: habilitar Leaked Password Protection (manual no dashboard Supabase)
+
 ## O que funciona
 
 ### Backend (Supabase)
@@ -129,16 +137,20 @@
 - Testes funcionais do painel admin (8 itens)
 - Dominio proprio (aguardando autorizacao de Fagner)
 
-### Fase 4 (14 itens)
-- Preparacao para 400 alunos (Supabase Pro, dados iniciais, onboarding, seguranca)
+### Fase 4 (37 itens)
+- **Hardening de seguranca (15 itens):** revogar EXECUTE de anon/authenticated em RPCs sensiveis, fixar search_path em funcoes, otimizar RLS policies com (select auth.uid()), criar indices em foreign keys sem cobertura, habilitar leaked password protection
+- Infraestrutura (5 itens): Supabase Pro, compute, backups
+- Dados iniciais (6 itens): contas, creditos, limites
+- Onboarding (4 itens): instrucoes, processos
+- Seguranca pre-lancamento (6 itens): revisao final
 
-### Fase 5 (8 itens)
+### Fase 5 (13 itens)
 - Lancamento e monitoramento
 
 ## Documentacao
 
 16 documentos tecnicos:
-- 00: Checklist MVP (162/214, 76%)
+- 00: Checklist MVP (177/229, 77%)
 - 01: Visao geral (atualizado com convite, colaborador, UI premium)
 - 02: Arquitetura (atualizado com sistema visual premium, OAuth web)
 - 03: Banco de dados
