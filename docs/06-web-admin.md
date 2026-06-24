@@ -55,22 +55,121 @@ A marca "MoneYoung" aparece no sidebar em Josefin Sans 700 com cor gold, separad
 | updateTransferLimit | Supabase direto | Editar limites (RLS exige bank_admin) |
 | exportCsv | Local | Gera CSV no browser e faz download |
 
-## Rotas
+## Paginas do Painel (Menu Lateral)
 
-| Rota | Funcionalidade |
-|---|---|
-| `/login` | Login Google OAuth (botao "Entrar com Google") + email/senha, redireciona para /dashboard |
-| `/dashboard` | Metricas completas: valor corrente, contas aluno/escola ativas, transacoes dia/mes/ano, estornos, wallets, restritas, eventos criticos. Grafico transacoes/dia, ultimas transacoes |
-| `/accounts` | Lista de perfis com busca, filtro por role/status, badges de tipo |
-| `/wallets` | Lista de wallets, bloquear/desbloquear com motivo |
-| `/transactions` | Lista com filtros (status, tipo, valor, wallet), nomes dos participantes |
-| `/transactions/[id]` | Detalhe com nomes, chaves, badges, estorno com motivo, audit logs |
-| `/organizations` | Criar escola (com email, gera codigos convite), vincular/desvincular membros, alterar role, definir PIN, codigos visiveis na tabela |
-| `/approvals` | Cadastros pendentes de aprovacao (aprovar/recusar com motivo) |
-| `/audit` | Logs de auditoria com filtros, export CSV |
-| `/security-events` | Eventos de seguranca com filtro por severidade |
-| `/limits` | Editar limites de transferencia por tipo de conta |
-| `/settings` | Info do ambiente, logout |
+### Login (`/login`)
+Tela de acesso ao painel. Oferece dois metodos de autenticacao:
+- **Entrar com Google** — botao OAuth com icone Google. Apos autenticar, o sistema verifica se o usuario tem role `bank_admin` ou `super_admin`. Se nao tiver, o acesso e rejeitado.
+- **Email e senha** — formulario tradicional como alternativa ao Google.
+
+Apos login bem-sucedido, redireciona para o Dashboard.
+
+### Dashboard (`/dashboard`)
+Visao geral do banco em tempo real. Exibe metricas organizadas em 3 secoes:
+
+- **Financeiro:** Valor Corrente (soma de todos os saldos de wallets ativas, destacado com borda dourada), Total de Wallets, Wallets Restritas (bloqueadas ou congeladas, em vermelho), Estornos realizados.
+- **Contas Ativas:** quantidade de Alunos (personal + active) e Escolas (business + active).
+- **Transacoes:** quantidade de transacoes Hoje, Este Mes e Este Ano, e Eventos Criticos (em vermelho).
+
+Abaixo das metricas: grafico de transacoes por dia (ultimos 30 dias) e tabela das ultimas transacoes com nomes dos participantes.
+
+### Contas (`/accounts`)
+Lista todos os perfis (usuarios) cadastrados no sistema. Permite:
+- **Buscar** por nome ou email.
+- **Filtrar** por role (bank_admin, organization_admin, common_user) e por status (active, pending, blocked).
+- Cada perfil exibe um **badge** colorido indicando o tipo de conta (Aluno, Empresa, Professor, Admin).
+
+Use esta tela para verificar quem esta cadastrado, qual o status de cada usuario e qual tipo de conta ele possui.
+
+### Wallets (`/wallets`)
+Lista todas as carteiras digitais do sistema. Permite:
+- **Filtrar** por status (active, blocked, frozen, pending).
+- **Bloquear** uma wallet — impede que o usuario faca qualquer transferencia. O admin deve informar o motivo do bloqueio.
+- **Desbloquear** — reativa a wallet para uso normal.
+
+Use esta tela para intervir em casos de suspeita de fraude, uso indevido ou a pedido do colegio/responsavel.
+
+### Transacoes (`/transactions`)
+Lista todas as transacoes realizadas no sistema. Permite:
+- **Filtrar** por status (completed, reversed, failed), tipo (transfer, reversal, admin_adjustment), valor e wallet.
+- Exibe **nomes** dos participantes (quem enviou e quem recebeu) em vez de apenas IDs.
+- **Exportar CSV** — gera um arquivo para download com todas as transacoes filtradas.
+
+### Detalhe da Transacao (`/transactions/[id]`)
+Ao clicar em uma transacao, exibe todos os detalhes:
+- Nomes, chaves Moneyoung e badges de tipo de ambos os participantes.
+- Valor, descricao, status e data.
+- Botao **Estornar** — reverte a transacao: devolve o valor ao remetente e debita do destinatario. Exige motivo. So funciona em transacoes com status `completed`.
+- **Audit logs** relacionados a essa transacao.
+
+### Organizacoes (`/organizations`)
+Gerenciamento de escolas (colegios). Permite:
+- **Criar escola** — formulario com nome e email do colegio. Ao criar, o sistema gera automaticamente dois codigos de convite (um para alunos, outro para colaboradores).
+- **Excluir escola** — remove a organizacao do sistema.
+- **Codigos de convite** — visiveis na tabela para cada escola. Formato AAA0000 (3 letras + 4 numeros). O codigo de alunos e o de colaboradores sao diferentes.
+- **Vincular/desvincular membros** — adicionar ou remover usuarios de uma escola pela chave Moneyoung.
+- **Alterar role** de um membro (aluno, professor, funcionario, diretor).
+- **Definir PIN** — senha numerica de acesso a aba "Alunos" no app do colaborador.
+- **Creditar YC** — transferir Youngcoins para a wallet da escola (modal com valor e descricao).
+
+### Aprovacoes (`/approvals`)
+Lista cadastros pendentes de aprovacao. Quando um novo usuario se cadastra via codigo de convite no app mobile, ele fica com status `pending` ate que o admin aprove.
+- **Aprovar** — ativa o perfil e a wallet do usuario, permitindo que ele use o sistema.
+- **Recusar** — bloqueia o perfil. O admin pode informar o motivo da recusa.
+
+Cada registro mostra: nome, email, escola vinculada, tipo (aluno ou colaborador) e data do cadastro.
+
+### Auditoria (`/audit`)
+Registro completo de todas as acoes administrativas realizadas no sistema. Cada entrada mostra:
+- **Acao** — o que foi feito (ex: organization.created, wallet.status_changed, transaction.reversed, registration.approved).
+- **Entidade** — tipo do objeto afetado (profile, wallet, transaction, organization).
+- **Ator** — quem realizou a acao (profile_id do admin).
+- **Data** — quando aconteceu.
+- **Filtros** — por acao e por entidade.
+- **Exportar CSV** — gera arquivo para download.
+
+Use esta tela para rastrear quem fez o que e quando. Essencial para auditoria financeira e resolucao de disputas.
+
+### Seguranca (`/security-events`)
+Registro de eventos suspeitos ou criticos detectados automaticamente pelo sistema. Exemplos de eventos:
+- **Transferencia com wallet bloqueada** — alguem tentou transferir de uma wallet que esta bloqueada.
+- **Rate limiting atingido** — muitas transferencias em sequencia rapida (possivel ataque ou automacao).
+- **Acesso nao autorizado** — tentativa de chamar funcao admin por usuario comum.
+- **Falhas de autenticacao repetidas.**
+
+Cada evento tem:
+- **Severidade** — `low` (informativo), `medium` (atencao), `high` (investigar), `critical` (acao imediata). Filtro disponivel.
+- **Tipo do evento** — classificacao do que aconteceu.
+- **Profile** — usuario envolvido.
+- **Metadata** — detalhes adicionais (IP, user agent, descricao).
+
+Use esta tela para monitorar atividades suspeitas, especialmente apos o lancamento com 400 alunos.
+
+### Limites (`/limits`)
+Configuracao dos limites de transferencia por tipo de conta. Exibe uma tabela com:
+- **Tipo de conta** — Aluno, Empresa, Professor, Admin.
+- **Limite por transacao** — valor maximo permitido em uma unica transferencia.
+- **Limite diario** — valor maximo acumulado em um dia.
+- **Por minuto** — numero maximo de transferencias por minuto (rate limiting).
+- **Botao Editar** — abre formulario para alterar os valores.
+
+Valores atuais:
+
+| Tipo | Por transacao | Diario | Por minuto |
+|---|---|---|---|
+| Aluno | 250 YC | 1.000 YC | 10 |
+| Empresa | 2.500 YC | 10.000 YC | 60 |
+| Professor | 1.000 YC | 5.000 YC | 30 |
+| Admin | Ilimitado | Ilimitado | Ilimitado |
+
+Use esta tela para ajustar limites conforme o uso real. Se os alunos precisarem transferir mais, aumente aqui.
+
+### Ajustes (`/settings`)
+Tela de configuracoes do painel. Mostra:
+- **Status do Supabase** — indica se a conexao com o banco de dados esta configurada corretamente.
+- **Botao Sair** — encerra a sessao do admin e redireciona para o login.
+
+As configuracoes de provedores (OAuth Google, chaves Supabase, deploy Vercel) sao feitas diretamente nos consoles dos respectivos servicos, nao nesta tela.
 
 ## Badges de tipo de conta
 
