@@ -79,7 +79,7 @@
 - Fixar search_path em account_type_label, touch_updated_at, generate_young_key (previne search_path hijack)
 - 6 RLS policies otimizadas com (select auth.uid()) em vez de auth.uid() (avalia uma vez por query, nao por linha)
 - 5 indices criados em foreign keys sem cobertura (audit_logs, organization_members, organizations, profiles, security_events)
-- Pendente: habilitar Leaked Password Protection (manual no dashboard Supabase)
+- Pendente: habilitar Leaked Password Protection (requer plano Supabase Pro $25/mes — Authentication > Settings > Security)
 
 ## O que funciona
 

@@ -328,7 +328,7 @@
 - [x] Criar indice em security_events(profile_id) (2026-06-24)
 
 #### 4.4.5 Auth — Protecao adicional
-- [ ] Habilitar Leaked Password Protection no Supabase Dashboard (Authentication > Security)
+- [ ] Habilitar Leaked Password Protection no Supabase Dashboard (Authentication > Settings > Security) — requer plano Pro ($25/mes)
 
 ### 4.5 Seguranca Pre-Lancamento
 
