@@ -2,7 +2,8 @@
 
 ## Progresso
 
-212/252 itens do checklist MVP concluidos (84%).
+225/314 itens do checklist MVP concluidos (72%).
+(Checklist expandido com secao 2.10 iOS — 62 novos itens; progresso absoluto mantido)
 
 ---
 
@@ -173,7 +174,11 @@ ba6dc6c  feat: bloqueia transferencia entre alunos (personal → personal)
 
 ```
 d45a4d1  fix+feat: carteira colaborador, dashboard e sistema de alertas
-(pendente commit)  fix: destino exibe nome da escola em transacoes da org
+2ee75b5  fix: destino exibe nome da escola + badge Escola em transacoes
+a36d856  fix(web): suppressHydrationWarning no html para extensoes de browser
+29ad826  docs: registra fix hydration warning e itens 3.1f/3.1g no checklist
+009df26  docs: checklist secoes 3.1f e 3.1g marcadas como testado e aprovado
+0a14021  docs: checklist completo para publicacao na Apple App Store (secao 2.10)
 ```
 
 ---
@@ -244,28 +249,32 @@ c18eb5e  feat(admin): soft-delete e purge de orgs/contas com modais de confirmac
 
 ## O que falta
 
-### Fase 2 (9 itens)
-- Build Android: EAS, APK, teste em dispositivo, Google Play
+### Prioridade alta (bloqueadores de lancamento)
 
-### Fase 3 (3 itens)
-- Exportar CSV via browser (testar)
-- Dominio proprio (aguardando autorizacao de Fagner)
+1. **Build Android** (secao 2.9): EAS + APK + teste fisico + Google Play
+2. **Sign in with Apple** (2.10.2): obrigatorio pela Apple para apps com login Google
+3. **Politica de privacidade** (2.10.4): URL publica necessaria para ambas as stores
+4. **Dados iniciais** (4.2): conta admin real, escola real, credito YC, limites
 
-### Fase 4 (15 itens)
-- Leaked Password Protection (requer plano Pro $25/mes)
-- Infraestrutura (5 itens): Supabase Pro, compute, backups
-- Dados iniciais (6 itens): contas dos colegios reais, creditos YC, limites
-- Onboarding (4 itens): instrucoes para admin, professor, aluno
+### Prioridade media
 
-### Fase 5 (13 itens)
-- Lancamento e monitoramento
+5. **Build iOS** (secao 2.10): certificados, App Store Connect, screenshots, submissao
+6. **Supabase Pro** (4.1): recomendado para 400 alunos simultaneos ($25/mes)
+7. **Exportar CSV** (3.2): testar via browser
+8. **Dominio proprio** (3.3): aguardando autorizacao de Fagner
+
+### Para amanha (proxima sessao sugerida)
+
+- Iniciar build Android: configurar EAS, gerar APK preview
+- Ou: criar pagina de politica de privacidade (desbloqueia ambas as stores)
+- Ou: configurar Sign in with Apple no Supabase + app mobile
 
 ---
 
 ## Documentacao
 
 17 documentos tecnicos em `docs/`:
-- 00: Checklist MVP (207/247, 84%)
+- 00: Checklist MVP (225/314, 72% — expandido com iOS secao 2.10)
 - 01-13: Documentacao tecnica (arquitetura, banco, seguranca, mobile, web admin, edge functions, auditoria, deploy, roadmap, tipos de usuarios)
 - 14-16: Snapshots historicos (2026-06-19, 2026-06-23, 2026-06-24)
 - 17: Este documento (estado 2026-06-29)
