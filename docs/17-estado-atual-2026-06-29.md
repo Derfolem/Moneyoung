@@ -2,7 +2,7 @@
 
 ## Progresso
 
-207/247 itens do checklist MVP concluidos (84%).
+210/250 itens do checklist MVP concluidos (84%).
 
 ---
 
@@ -110,6 +110,49 @@ c1ada00  feat(mobile): atalhos de valor na transferencia e ajustes visuais
 - `home.tsx` e `org-home.tsx`: `useEffect` trocado por `useFocusEffect`
 - Ao navegar de volta para essas telas sem sessao valida, `load()` e reexecutado, detecta UNAUTHENTICATED e redireciona para `/login` em vez de mostrar dados cacheados
 
+---
+
+## Sessao 3 — Controles de Transferencia (noite, 2026-06-29)
+
+### O que foi implementado
+
+**Bloqueio aluno → aluno (`20260629190000_block_peer_transfer`):**
+- RPC `transfer_youngcoin_tx` rejeita transferencia quando remetente e destinatario sao ambos `account_type = 'personal'`
+- Lanca `PEER_TRANSFER_BLOCKED`; registra `security_event` com severity 'low' para auditoria
+- Edge function `transfer_youngcoin` v5 devolve erro 403 com mensagem em pt-BR
+- Colaboradores (`sub_business`) e banco (`system`) sem restricao de destinatario
+
+**Edge function `get_school_contacts` v2:**
+- Retorna lista completa de contatos da escola filtrando por papel inverso:
+  - Aluno (personal) → colaboradores ativos (teacher, staff, admin)
+  - Colaborador (sub_business) → alunos ativos (student)
+- Tambem retorna `recent_contacts`: ate 5 ultimos destinatarios unicos com base no historico real de transacoes (cross-referenciados com membros ativos da escola)
+- Retorna `account_type` para a tela saber qual label exibir
+
+**Tela de transferencia (`transfer.tsx`) — redesign:**
+- **Cards "Recentes":** ate 5 cards horizontais com avatar (iniciais), primeiro nome e cargo abreviado (Prof./Func./Dir./Aluno) — so aparece se houver historico
+- **Lista suspensa com busca:** modal slide-up com:
+  - Campo de busca por nome OU chave MoneYoung (filtragem instantanea client-side)
+  - Contador de resultados ("N colaboradores da escola" / "X resultados")
+  - FlatList virtualizado — suporta 5000+ entradas sem travamento
+  - Cada linha: avatar com iniciais, nome completo, chave MoneYoung, badge de cargo, checkmark no selecionado
+  - Fechar com X ou gesto back
+- **Seleção:** toque em card recente ou linha da lista preenche o campo e move o foco para o campo de valor automaticamente
+- Campo de chave ainda aceita digitação manual (para chaves fora da escola)
+
+### Commits da sessao 3
+
+```
+7280717  feat: lista de contatos da escola na tela de transferencia
+ba6dc6c  feat: bloqueia transferencia entre alunos (personal → personal)
+```
+
+---
+
+## Sessao 2 — Sistema de Exclusao e Purge (tarde, 2026-06-29)
+
+### O que foi implementado
+
 ### Commits da sessao 2
 
 ```
@@ -150,6 +193,8 @@ c18eb5e  feat(admin): soft-delete e purge de orgs/contas com modais de confirmac
 - **NOVO:** Conta deletada bloqueada no login (mesma mensagem de sem cadastro)
 - **NOVO:** Todas as edge functions bloqueiam conta deleted
 - **NOVO:** useFocusEffect em home/org-home (sem perfil antigo ao voltar)
+- **NOVO:** Transferencia bloqueada entre alunos (personal → personal)
+- **NOVO:** Tela de transferencia com modal de busca por nome + cards de recentes (ate 5)
 
 ### Web Admin (Next.js)
 - Tema dark navy-black + gold

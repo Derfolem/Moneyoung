@@ -274,6 +274,12 @@
 - [x] Reativacao via convite: perfil deleted pode se recadastrar com novo invite code (perfil reativado com novos dados, wallet e historico de transacoes preservados) (2026-06-29)
 - [x] Fix navegacao: useFocusEffect em home/org-home recarrega ao voltar — evita exibir perfil antigo apos signOut (2026-06-29)
 
+### 3.1e Controles de Transferencia (2026-06-29)
+
+- [x] Bloquear transferencia aluno → aluno (personal → personal): RPC transfer_youngcoin_tx rejeita com PEER_TRANSFER_BLOCKED; registra security_event severity 'low'; mensagem amigavel na edge function transfer_youngcoin v5 (2026-06-29)
+- [x] Edge function get_school_contacts v2: retorna lista completa de contatos da escola (colaboradores para alunos, alunos para colaboradores) + ultimos 5 destinatarios recentes (baseado em historico real de transacoes) (2026-06-29)
+- [x] Tela de transferencia: cards horizontais "Recentes" (ate 5 ultimas transferencias unicas); lista suspensa com modal de busca por nome ou chave; suporta 5000+ alunos (FlatList virtualizado); selecao preenche campo e foca no valor automaticamente (2026-06-29)
+
 ### 3.2 Testes Funcionais Admin
 
 - [x] Login admin → Dashboard com dados reais (2026-06-24 — 3 wallets, 3 profiles, 1 org, metricas OK)
@@ -417,10 +423,10 @@
 | 0 - Estrutura e Identidade | ✅ Concluida | 14 | 14 |
 | 1 - Backend Supabase | ✅ Concluida | 22 | 22 |
 | 2 - App Mobile Funcional | 🔄 Em andamento | 92 | 83 |
-| 3 - Painel Web Admin | 🔄 Em andamento | 69 | 66 |
+| 3 - Painel Web Admin | 🔄 Em andamento | 72 | 69 |
 | 4 - Preparacao 400 Alunos | 🔄 Em andamento | 37 | 22 |
 | 5 - Lancamento | ⬜ Pendente | 13 | 0 |
-| **Total MVP** | **Em andamento** | **247** | **207** |
+| **Total MVP** | **Em andamento** | **250** | **210** |
 
 ---
 

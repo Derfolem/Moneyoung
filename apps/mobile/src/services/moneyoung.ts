@@ -284,8 +284,12 @@ export type SchoolContact = {
   member_role: string;
 };
 
-export async function getSchoolContacts(): Promise<{ contacts: SchoolContact[]; account_type: string }> {
-  if (!isSupabaseConfigured) return { contacts: [], account_type: "personal" };
+export async function getSchoolContacts(): Promise<{
+  contacts: SchoolContact[];
+  recent_contacts: SchoolContact[];
+  account_type: string;
+}> {
+  if (!isSupabaseConfigured) return { contacts: [], recent_contacts: [], account_type: "personal" };
   return invoke("get_school_contacts");
 }
 

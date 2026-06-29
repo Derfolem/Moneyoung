@@ -1,14 +1,18 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
+  Keyboard,
+  Modal,
   Pressable,
+  SafeAreaView,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { Button } from "../src/components/Button";
 import { PageHeader } from "../src/components/PageHeader";
 import { Screen } from "../src/components/Screen";
@@ -18,6 +22,13 @@ import { toast } from "../src/services/toast";
 import { colors } from "../src/theme/colors";
 
 const roleLabel: Record<string, string> = {
+  teacher: "Professor(a)",
+  staff: "Funcionario(a)",
+  admin: "Diretor(a)",
+  student: "Aluno(a)",
+};
+
+const roleLabelShort: Record<string, string> = {
   teacher: "Prof.",
   staff: "Func.",
   admin: "Dir.",
@@ -25,30 +36,63 @@ const roleLabel: Record<string, string> = {
 };
 
 function initials(name: string) {
-  const parts = name.trim().split(" ");
+  const parts = name.trim().split(" ").filter(Boolean);
+  if (parts.length === 0) return "?";
   if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
   return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
 }
 
-function ContactCard({ contact, onPress, selected }: {
+function Avatar({ name, size = 40, selected = false }: { name: string; size?: number; selected?: boolean }) {
+  return (
+    <View style={[
+      styles.avatar,
+      { width: size, height: size, borderRadius: size / 2 },
+      selected && styles.avatarSelected,
+    ]}>
+      <Text style={[styles.avatarText, { fontSize: size * 0.35 }, selected && styles.avatarTextSelected]}>
+        {initials(name)}
+      </Text>
+    </View>
+  );
+}
+
+function RecentCard({ contact, onPress, selected }: {
+  contact: SchoolContact;
+  onPress: () => void;
+  selected: boolean;
+}) {
+  const firstName = contact.display_name.split(" ")[0];
+  return (
+    <Pressable style={[styles.recentCard, selected && styles.recentCardSelected]} onPress={onPress}>
+      <Avatar name={contact.display_name} size={40} selected={selected} />
+      <Text style={[styles.recentName, selected && styles.recentNameSelected]} numberOfLines={1}>
+        {firstName}
+      </Text>
+      <Text style={styles.recentRole}>{roleLabelShort[contact.member_role] ?? contact.member_role}</Text>
+    </Pressable>
+  );
+}
+
+function ContactRow({ contact, onPress, selected }: {
   contact: SchoolContact;
   onPress: () => void;
   selected: boolean;
 }) {
   return (
-    <Pressable
-      style={[styles.contactCard, selected && styles.contactCardSelected]}
-      onPress={onPress}
-    >
-      <View style={[styles.contactAvatar, selected && styles.contactAvatarSelected]}>
-        <Text style={[styles.contactInitials, selected && styles.contactInitialsSelected]}>
-          {initials(contact.display_name)}
+    <Pressable style={[styles.contactRow, selected && styles.contactRowSelected]} onPress={onPress}>
+      <Avatar name={contact.display_name} size={44} selected={selected} />
+      <View style={styles.contactInfo}>
+        <Text style={[styles.contactName, selected && styles.contactNameSelected]} numberOfLines={1}>
+          {contact.display_name}
+        </Text>
+        <Text style={styles.contactKey} numberOfLines={1}>{contact.young_key}</Text>
+      </View>
+      <View style={[styles.roleBadge, selected && styles.roleBadgeSelected]}>
+        <Text style={[styles.roleBadgeText, selected && styles.roleBadgeTextSelected]}>
+          {roleLabelShort[contact.member_role] ?? contact.member_role}
         </Text>
       </View>
-      <Text style={[styles.contactName, selected && styles.contactNameSelected]} numberOfLines={1}>
-        {contact.display_name.split(" ")[0]}
-      </Text>
-      <Text style={styles.contactRole}>{roleLabel[contact.member_role] ?? contact.member_role}</Text>
+      {selected && <Ionicons name="checkmark-circle" size={20} color={colors.gold} />}
     </Pressable>
   );
 }
@@ -56,28 +100,75 @@ function ContactCard({ contact, onPress, selected }: {
 export default function Transfer() {
   const params = useLocalSearchParams<{ to?: string }>();
   const [to, setTo] = useState(params.to ?? "");
+  const [selectedContact, setSelectedContact] = useState<SchoolContact | null>(null);
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [contacts, setContacts] = useState<SchoolContact[]>([]);
+  const [recentContacts, setRecentContacts] = useState<SchoolContact[]>([]);
+  const [contactsLabel, setContactsLabel] = useState("");
   const [loadingContacts, setLoadingContacts] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const amountRef = useRef<TextInput>(null);
+  const searchRef = useRef<TextInput>(null);
 
   useEffect(() => {
     getSchoolContacts()
-      .then((res) => setContacts(res.contacts))
+      .then((res) => {
+        setContacts(res.contacts);
+        setRecentContacts(res.recent_contacts ?? []);
+        const isStudent = res.account_type === "personal";
+        setContactsLabel(isStudent ? "Colaboradores da escola" : "Alunos da escola");
+        // Se veio com ?to=, tenta pré-selecionar o contato
+        if (params.to) {
+          const found = res.contacts.find(
+            (c) => c.young_key.toLowerCase() === params.to!.toLowerCase()
+          );
+          if (found) setSelectedContact(found);
+        }
+      })
       .catch(() => {})
       .finally(() => setLoadingContacts(false));
   }, []);
 
+  const filtered = useMemo(() => {
+    if (!searchQuery.trim()) return contacts;
+    const q = searchQuery.toLowerCase();
+    return contacts.filter(
+      (c) =>
+        c.display_name.toLowerCase().includes(q) ||
+        c.young_key.toLowerCase().includes(q)
+    );
+  }, [contacts, searchQuery]);
+
   function selectContact(contact: SchoolContact) {
+    setSelectedContact(contact);
     setTo(contact.young_key);
-    setTimeout(() => amountRef.current?.focus(), 100);
+    setModalVisible(false);
+    setSearchQuery("");
+    Keyboard.dismiss();
+    setTimeout(() => amountRef.current?.focus(), 150);
+  }
+
+  function clearContact() {
+    setSelectedContact(null);
+    setTo("");
+  }
+
+  function openModal() {
+    setModalVisible(true);
+    setTimeout(() => searchRef.current?.focus(), 200);
+  }
+
+  function closeModal() {
+    setModalVisible(false);
+    setSearchQuery("");
   }
 
   function goToConfirm() {
     const parsedAmount = parseAmount(amount);
     if (!to.trim()) {
-      toast.error("Chave obrigatoria", "Informe a chave MoneYoung de destino.");
+      toast.error("Destinatario obrigatorio", "Selecione ou informe a chave MoneYoung de destino.");
       return;
     }
     if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) {
@@ -104,7 +195,7 @@ export default function Transfer() {
 
         <TextInput
           ref={amountRef}
-          style={styles.hiddenInput}
+          style={styles.numericInput}
           keyboardType="decimal-pad"
           value={amount}
           onChangeText={setAmount}
@@ -112,47 +203,60 @@ export default function Transfer() {
           placeholderTextColor={colors.textSecondary}
         />
 
-        {/* Lista de contatos da escola */}
-        <View style={styles.contactsSection}>
-          <Text style={styles.label}>
-            {contacts.length > 0 && contacts[0].member_role === "student"
-              ? "Alunos da escola"
-              : "Colaboradores da escola"}
-          </Text>
-
-          {loadingContacts ? (
-            <ActivityIndicator color={colors.gold} style={{ marginVertical: 12 }} />
-          ) : contacts.length === 0 ? (
-            <Text style={styles.emptyContacts}>Nenhum contato disponivel.</Text>
-          ) : (
+        {/* Cards de transferências recentes */}
+        {recentContacts.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionLabel}>Recentes</Text>
             <FlatList
-              data={contacts}
-              keyExtractor={(c) => c.profile_id}
+              data={recentContacts}
+              keyExtractor={(c) => `recent-${c.profile_id}`}
               horizontal
               showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.contactsList}
+              contentContainerStyle={styles.recentList}
               renderItem={({ item }) => (
-                <ContactCard
+                <RecentCard
                   contact={item}
                   onPress={() => selectContact(item)}
                   selected={item.young_key.toLowerCase() === selectedKey}
                 />
               )}
             />
-          )}
+          </View>
+        )}
+
+        {/* Dropdown de busca */}
+        <View style={styles.section}>
+          <Text style={styles.label}>Destinatario</Text>
+
+          <Pressable style={styles.dropdown} onPress={openModal}>
+            {selectedContact ? (
+              <View style={styles.dropdownSelected}>
+                <Avatar name={selectedContact.display_name} size={32} selected />
+                <View style={styles.dropdownSelectedInfo}>
+                  <Text style={styles.dropdownSelectedName} numberOfLines={1}>
+                    {selectedContact.display_name}
+                  </Text>
+                  <Text style={styles.dropdownSelectedKey} numberOfLines={1}>
+                    {selectedContact.young_key}
+                  </Text>
+                </View>
+                <Pressable onPress={clearContact} hitSlop={12} style={styles.clearBtn}>
+                  <Ionicons name="close-circle" size={20} color={colors.textSecondary} />
+                </Pressable>
+              </View>
+            ) : (
+              <>
+                <Ionicons name="search" size={16} color={colors.textSecondary} />
+                <Text style={styles.dropdownPlaceholder}>
+                  {loadingContacts ? "Carregando..." : `Buscar em ${contactsLabel}...`}
+                </Text>
+                <Ionicons name="chevron-down" size={16} color={colors.textSecondary} />
+              </>
+            )}
+          </Pressable>
         </View>
 
-        <View style={styles.fields}>
-          <Text style={styles.label}>Chave MoneYoung</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="@chaveyoung"
-            placeholderTextColor={colors.textSecondary}
-            autoCapitalize="none"
-            value={to}
-            onChangeText={setTo}
-          />
-
+        <View style={styles.section}>
           <Text style={styles.label}>Descricao</Text>
           <TextInput
             style={styles.input}
@@ -181,6 +285,84 @@ export default function Transfer() {
           disabled={!to.trim() || !amount.trim()}
         />
       </Screen>
+
+      {/* Modal de busca */}
+      <Modal
+        visible={modalVisible}
+        animationType="slide"
+        onRequestClose={closeModal}
+        statusBarTranslucent
+      >
+        <SafeAreaView style={styles.modalRoot}>
+          {/* Cabeçalho do modal */}
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>{contactsLabel}</Text>
+            <Pressable onPress={closeModal} style={styles.modalClose}>
+              <Ionicons name="close" size={22} color={colors.textPrimary} />
+            </Pressable>
+          </View>
+
+          {/* Campo de busca */}
+          <View style={styles.searchBar}>
+            <Ionicons name="search" size={16} color={colors.textSecondary} />
+            <TextInput
+              ref={searchRef}
+              style={styles.searchInput}
+              placeholder="Buscar por nome ou chave..."
+              placeholderTextColor={colors.textSecondary}
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              autoCapitalize="none"
+              clearButtonMode="while-editing"
+            />
+            {searchQuery.length > 0 && (
+              <Pressable onPress={() => setSearchQuery("")}>
+                <Ionicons name="close-circle" size={16} color={colors.textSecondary} />
+              </Pressable>
+            )}
+          </View>
+
+          {/* Contador */}
+          <Text style={styles.contactCount}>
+            {searchQuery
+              ? `${filtered.length} resultado${filtered.length !== 1 ? "s" : ""}`
+              : `${contacts.length} ${contactsLabel.toLowerCase()}`}
+          </Text>
+
+          {/* Lista de contatos */}
+          {loadingContacts ? (
+            <View style={styles.loadingCenter}>
+              <ActivityIndicator color={colors.gold} size="large" />
+              <Text style={styles.loadingText}>Carregando contatos...</Text>
+            </View>
+          ) : filtered.length === 0 ? (
+            <View style={styles.loadingCenter}>
+              <Ionicons name="person-outline" size={40} color={colors.textSecondary} />
+              <Text style={styles.emptyText}>
+                {searchQuery
+                  ? `Nenhum resultado para "${searchQuery}"`
+                  : "Nenhum contato disponivel."}
+              </Text>
+            </View>
+          ) : (
+            <FlatList
+              data={filtered}
+              keyExtractor={(c) => c.profile_id}
+              contentContainerStyle={styles.modalList}
+              keyboardShouldPersistTaps="handled"
+              renderItem={({ item }) => (
+                <ContactRow
+                  contact={item}
+                  onPress={() => selectContact(item)}
+                  selected={item.young_key.toLowerCase() === selectedKey}
+                />
+              )}
+              ItemSeparatorComponent={() => <View style={styles.separator} />}
+            />
+          )}
+        </SafeAreaView>
+      </Modal>
+
       <BottomNav />
     </View>
   );
@@ -192,7 +374,6 @@ const styles = StyleSheet.create({
   amountArea: {
     flexDirection: "row",
     alignItems: "baseline",
-    justifyContent: "flex-start",
     paddingTop: 22,
     paddingBottom: 8,
     gap: 8,
@@ -205,12 +386,9 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 14,
   },
-  amountSuffix: {
-    fontSize: 24,
-    fontWeight: "700",
-    color: colors.textPrimary,
-  },
-  hiddenInput: {
+  amountSuffix: { fontSize: 24, fontWeight: "700", color: colors.textPrimary },
+
+  numericInput: {
     backgroundColor: colors.input,
     borderRadius: 10,
     padding: 14,
@@ -220,68 +398,67 @@ const styles = StyleSheet.create({
     borderColor: colors.glassBorder,
   },
 
-  contactsSection: { gap: 8 },
-  contactsList: { gap: 10, paddingVertical: 4 },
-  emptyContacts: {
-    color: colors.textSecondary,
-    fontSize: 13,
-    paddingVertical: 8,
-  },
+  section: { gap: 8 },
+  sectionLabel: { fontSize: 13, color: colors.textSecondary, fontWeight: "700" },
+  label: { fontSize: 14, color: colors.textSecondary, fontWeight: "600" },
 
-  contactCard: {
+  // Cards de recentes
+  recentList: { gap: 10, paddingVertical: 2 },
+  recentCard: {
     width: 72,
     alignItems: "center",
     gap: 5,
-    padding: 8,
+    padding: 10,
     borderRadius: 14,
     backgroundColor: colors.input,
     borderWidth: 1,
     borderColor: colors.glassBorder,
   },
-  contactCardSelected: {
+  recentCardSelected: {
     borderColor: colors.gold,
     backgroundColor: "rgba(217,154,38,0.12)",
   },
-  contactAvatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+  recentName: {
+    fontSize: 11,
+    fontWeight: "700",
+    color: colors.textPrimary,
+    textAlign: "center",
+  },
+  recentNameSelected: { color: colors.goldLight },
+  recentRole: { fontSize: 10, color: colors.textSecondary, fontWeight: "600" },
+
+  // Avatar
+  avatar: {
     backgroundColor: colors.navyLight,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1.5,
     borderColor: colors.glassBorder,
   },
-  contactAvatarSelected: {
-    borderColor: colors.gold,
-    backgroundColor: "rgba(217,154,38,0.2)",
-  },
-  contactInitials: {
-    fontSize: 14,
-    fontWeight: "900",
-    color: colors.textSecondary,
-  },
-  contactInitialsSelected: { color: colors.gold },
-  contactName: {
-    fontSize: 11,
-    fontWeight: "700",
-    color: colors.textPrimary,
-    textAlign: "center",
-  },
-  contactNameSelected: { color: colors.goldLight },
-  contactRole: {
-    fontSize: 10,
-    color: colors.textSecondary,
-    fontWeight: "600",
-  },
+  avatarSelected: { borderColor: colors.gold, backgroundColor: "rgba(217,154,38,0.2)" },
+  avatarText: { fontWeight: "900", color: colors.textSecondary },
+  avatarTextSelected: { color: colors.gold },
 
-  fields: { gap: 8 },
-  label: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    fontWeight: "600",
-    marginTop: 4,
+  // Dropdown trigger
+  dropdown: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    backgroundColor: colors.input,
+    borderRadius: 10,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: colors.glassBorder,
+    minHeight: 52,
   },
+  dropdownPlaceholder: { flex: 1, color: colors.textSecondary, fontSize: 15 },
+  dropdownSelected: { flex: 1, flexDirection: "row", alignItems: "center", gap: 10 },
+  dropdownSelectedInfo: { flex: 1 },
+  dropdownSelectedName: { fontSize: 14, fontWeight: "700", color: colors.textPrimary },
+  dropdownSelectedKey: { fontSize: 12, color: colors.textSecondary, marginTop: 1 },
+  clearBtn: { padding: 2 },
+
+  // Input descrição
   input: {
     backgroundColor: colors.input,
     borderRadius: 10,
@@ -292,6 +469,7 @@ const styles = StyleSheet.create({
     borderColor: colors.glassBorder,
   },
 
+  // Atalhos de valor
   shortcuts: { flexDirection: "row", gap: 10 },
   shortcut: {
     flex: 1,
@@ -303,9 +481,80 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  shortcutText: {
-    color: colors.textPrimary,
-    fontWeight: "900",
-    fontSize: 13,
+  shortcutText: { color: colors.textPrimary, fontWeight: "900", fontSize: 13 },
+
+  // Modal
+  modalRoot: { flex: 1, backgroundColor: colors.navyDeep },
+  modalHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.glassBorder,
   },
+  modalTitle: { fontSize: 17, fontWeight: "900", color: colors.textPrimary },
+  modalClose: { padding: 4 },
+
+  searchBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    marginHorizontal: 16,
+    marginTop: 14,
+    marginBottom: 4,
+    backgroundColor: colors.input,
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: colors.glassBorder,
+  },
+  searchInput: { flex: 1, fontSize: 15, color: colors.textPrimary, padding: 0 },
+
+  contactCount: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    marginHorizontal: 20,
+    marginTop: 8,
+    marginBottom: 4,
+    fontWeight: "600",
+  },
+
+  modalList: { paddingHorizontal: 16, paddingBottom: 20 },
+
+  // Linha de contato na lista
+  contactRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 4,
+    borderRadius: 10,
+  },
+  contactRowSelected: { backgroundColor: "rgba(217,154,38,0.08)" },
+  contactInfo: { flex: 1 },
+  contactName: { fontSize: 14, fontWeight: "700", color: colors.textPrimary },
+  contactNameSelected: { color: colors.goldLight },
+  contactKey: { fontSize: 12, color: colors.textSecondary, marginTop: 2 },
+
+  roleBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+    backgroundColor: colors.navyLight,
+    borderWidth: 1,
+    borderColor: colors.glassBorder,
+  },
+  roleBadgeSelected: { borderColor: colors.gold, backgroundColor: "rgba(217,154,38,0.15)" },
+  roleBadgeText: { fontSize: 11, fontWeight: "700", color: colors.textSecondary },
+  roleBadgeTextSelected: { color: colors.goldLight },
+
+  separator: { height: 1, backgroundColor: colors.glassBorder, marginLeft: 56 },
+
+  loadingCenter: { flex: 1, alignItems: "center", justifyContent: "center", gap: 14, padding: 40 },
+  loadingText: { color: colors.textSecondary, fontSize: 14 },
+  emptyText: { color: colors.textSecondary, fontSize: 14, textAlign: "center" },
 });
