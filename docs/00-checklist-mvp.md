@@ -27,6 +27,7 @@
 - [x] Corrigir identidade: app = Moneyoung (MYG), moeda = Youngcoin (YC) (2026-06-19)
 - [x] Redesign visual mobile v2: TextLogo MoneYoung (Josefin Sans 700), BottomNav 5 abas, paleta navy #0A1628 + gold #D4A843 (2026-06-23)
 - [x] Redesign visual web admin: tema dark navy+gold, CSS variables, fontes Josefin Sans+Inter, sidebar com marca MoneYoung (2026-06-23)
+- [x] Redesign visual v4: paleta do mockup (navy #00070D + gold #D99A26), componentes refinados (GlassCard, Button, TransactionRow, PageHeader), AmbientOrbs com ondas SVG decorativas, BottomNav com botao YC central dourado elevado (2026-06-29)
 
 ---
 
@@ -156,6 +157,8 @@
 - [x] Data de nascimento no formato DD/MM/AA (padrao brasileiro) (2026-06-24)
 - [x] Sino de notificacoes no header do org-home (2026-06-24)
 - [x] Fix org_wallet_summary: filtro por wallet.id em vez de orgId (2026-06-24)
+- [x] Fix key duplicada nos atalhos da home (rota /transfer aparecia como key repetida no map de quickActions) (2026-06-29)
+- [x] Login simplificado: remover campos email/senha (desabilitados) e opcao Microsoft; manter apenas botao Google e link "Criar conta" (2026-06-29)
 
 ### 2.7 UI/UX Premium — Glassmorphism, Energia e Poeira de Ouro (2026-06-24)
 
@@ -172,6 +175,11 @@
 - [x] PageHeader: botao voltar em vidro (2026-06-24)
 - [x] HexLogo: shadow dourada/glow (2026-06-24)
 - [x] 14 telas atualizadas com efeitos glass/energy/dust: home, org-home, login, profile, statement, notifications, transfer, transfer-confirm, receipt, receive, pay, invite, register, pending-approval (2026-06-24)
+
+### 2.7b Melhorias UX v4 (2026-06-29)
+
+- [x] Ordenacao de transacoes por data mais recente em todas as listas: extrato, notificacoes, home e org-home (2026-06-29)
+- [x] Atalhos de valor rapido na tela de transferencia: +10, +50, +100, +200 (2026-06-29)
 
 ### 2.8 Correcoes Criticas de Transferencia e Cadastro (2026-06-24)
 
@@ -391,13 +399,13 @@
 
 | Fase | Status | Itens | Concluidos |
 |---|---|---|---|
-| 0 - Estrutura e Identidade | ✅ Concluida | 13 | 13 |
+| 0 - Estrutura e Identidade | ✅ Concluida | 14 | 14 |
 | 1 - Backend Supabase | ✅ Concluida | 22 | 22 |
-| 2 - App Mobile Funcional | 🔄 Em andamento | 87 | 78 |
+| 2 - App Mobile Funcional | 🔄 Em andamento | 92 | 83 |
 | 3 - Painel Web Admin | 🔄 Em andamento | 57 | 54 |
 | 4 - Preparacao 400 Alunos | 🔄 Em andamento | 37 | 22 |
 | 5 - Lancamento | ⬜ Pendente | 13 | 0 |
-| **Total MVP** | **Em andamento** | **229** | **190** |
+| **Total MVP** | **Em andamento** | **235** | **195** |
 
 ---
 
@@ -417,5 +425,5 @@
 
 ---
 
-*Ultima atualizacao: 2026-06-24*
-*Concluido: 189/229 itens (83%). Testes funcionais admin: dashboard, criar escola, bloquear/desbloquear wallet, estornar transacao, audit logs — todos OK. Seguranca pre-lancamento: service_role protegida, .env fora do Git, acesso nao autorizado bloqueado, rate limiting configurado, SECURITY.md definido. Falta: excluir org e CSV via browser, build Android, infra Pro, dados iniciais, onboarding e lancamento.*
+*Ultima atualizacao: 2026-06-29*
+*Concluido: 195/235 itens (83%). Redesign visual v4 aplicado (paleta do mockup #00070D + #D99A26, login simplificado, BottomNav YC central, atalhos de valor, ordenacao por data). Falta: excluir org e CSV via browser, build Android, infra Pro, dados iniciais, onboarding e lancamento.*

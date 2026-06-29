@@ -13,53 +13,59 @@ Interface premium fintech com identidade dark navy + gold, aplicada de forma con
 | v1 | 2026-06-17 | Primeira versao dark navy + gold, HexLogo |
 | v2 | 2026-06-23 | TextLogo MoneYoung, BottomNav 5 abas, paleta unificada, web admin dark |
 | v3 | 2026-06-24 | Glassmorphism, energia, poeira de ouro, orbs ambientais |
+| v4 | 2026-06-29 | Paleta do mockup (#00070D + #D99A26), ondas SVG decorativas, BottomNav YC central, TransactionRow em container, Button com brilho, login simplificado |
 
 ## Paleta de cores
 
-### Cores base (Mobile + Web Admin)
+### Cores base (Mobile + Web Admin) — v4
 
-| Token | Cor | Uso |
+| Token | Cor v3 | Cor v4 | Uso |
+|---|---|---|---|
+| navyDeep | #0A1628 | **#00070D** | Fundo principal de paginas |
+| navyInk | — | **#000306** | Base quase preta (novo) |
+| navyCard | #0F2035 | **#03131D** | Cards e superficies |
+| navyLight | #162D4A | **#061E2A** | Azul secundario |
+| gold | #D4A843 | **#D99A26** | Botoes primarios, acentos, logo |
+| goldDark | #B8912F | **#9F6508** | Hover em botoes gold |
+| goldLight | #E8C66A | **#F3C65E** | Destaques, links |
+| goldPale | — | **#FFE2A1** | Dourado palido (novo) |
+| textPrimary | #FFFFFF | #FFFFFF | Texto principal |
+| textSecondary | #8B9DC3 | **#A7B4C0** | Texto secundario, labels |
+| textMuted | — | **#6F8594** | Texto atenuado (novo) |
+| success | #22C55E | #22C55E | Entradas de valor |
+| danger | #EF4444 | #EF4444 | Erros, saidas de valor |
+| warning | #F59E0B | #F59E0B | Alertas |
+
+### Tokens glass (Mobile v3/v4)
+
+| Token | Cor v3 | Cor v4 |
 |---|---|---|
-| navyDeep | #0A1628 | Fundo principal de paginas |
-| navyCard | #0F2035 | Legacy (substituido por glass no mobile v3) |
-| navyLight | #162D4A | Fallback para inputs |
-| gold | #D4A843 | Botoes primarios, acentos, logo, saldo |
-| goldDark | #B8912F | Hover em botoes gold |
-| goldLight | #E8C66A | Destaques secundarios |
-| textPrimary | #FFFFFF | Texto principal |
-| textSecondary | #8B9DC3 | Texto secundario, labels |
-| success | #22C55E | Entradas de valor |
-| danger | #EF4444 | Erros, saidas de valor |
-| warning | #F59E0B | Alertas |
+| glass | rgba(15,32,53,0.45) | **rgba(3,19,29,0.76)** |
+| glassBorder | rgba(212,168,67,0.12) | **rgba(243,198,94,0.18)** |
+| glassHighlight | rgba(255,255,255,0.05) | **rgba(255,255,255,0.08)** |
+| glassStrong | rgba(15,32,53,0.7) | **rgba(0,9,15,0.94)** |
+| borderGold | rgba(212,168,67,0.3) | **rgba(217,154,38,0.42)** |
+| input | — | **rgba(0,10,16,0.74)** (novo, fundo inputs/acoes) |
 
-### Tokens glass (Mobile v3)
+### Tokens glow/energia (Mobile v3/v4)
 
-| Token | Cor | Uso |
+| Token | Cor v3 | Cor v4 |
 |---|---|---|
-| glass | rgba(15,32,53,0.45) | Fundo glassmorphism padrao |
-| glassBorder | rgba(212,168,67,0.12) | Borda luminosa sutil |
-| glassHighlight | rgba(255,255,255,0.05) | Linha highlight no topo |
-| glassStrong | rgba(15,32,53,0.7) | Glass escuro (nav, toast, drawer) |
+| glowGold | rgba(212,168,67,0.30) | **rgba(217,154,38,0.34)** |
+| glowGoldSoft | rgba(212,168,67,0.12) | **rgba(217,154,38,0.14)** |
+| glowGoldStrong | rgba(232,198,106,0.50) | **rgba(243,198,94,0.52)** |
+| glowSuccess | rgba(34,197,94,0.25) | rgba(34,197,94,0.25) |
+| glowDanger | rgba(239,68,68,0.25) | rgba(239,68,68,0.25) |
 
-### Tokens glow/energia (Mobile v3)
+### Tokens particulas (Mobile v3/v4)
 
-| Token | Cor | Uso |
+| Token | Cor v3 | Cor v4 |
 |---|---|---|
-| glowGold | rgba(212,168,67,0.30) | Shadow/textShadow em saldos |
-| glowGoldSoft | rgba(212,168,67,0.12) | Fundo de icone ativo |
-| glowGoldStrong | rgba(232,198,106,0.50) | Glow intenso |
-| glowSuccess | rgba(34,197,94,0.25) | Glow verde |
-| glowDanger | rgba(239,68,68,0.25) | Glow vermelho |
-
-### Tokens particulas (Mobile v3)
-
-| Token | Cor | Uso |
-|---|---|---|
-| dustGold | rgba(212,168,67,0.6) | Particula dourada principal |
-| dustGoldLight | rgba(232,198,106,0.4) | Particula dourada clara |
-| dustWhite | rgba(255,255,255,0.3) | Particula branca |
-| orbGold | rgba(212,168,67,0.03) | Orb dourado de fundo |
-| orbBlue | rgba(30,58,95,0.25) | Orb azul de fundo |
+| dustGold | rgba(212,168,67,0.6) | **rgba(217,154,38,0.72)** |
+| dustGoldLight | rgba(232,198,106,0.4) | **rgba(243,198,94,0.48)** |
+| dustWhite | rgba(255,255,255,0.3) | rgba(255,255,255,0.3) |
+| orbGold | rgba(212,168,67,0.03) | **rgba(217,154,38,0.08)** |
+| orbBlue | rgba(30,58,95,0.25) | **rgba(4,38,54,0.18)** |
 
 ## Efeitos Visuais Premium (Mobile v3)
 
@@ -136,43 +142,45 @@ Circulos grandes semi-transparentes no fundo:
 | PageHeader | Botao voltar glass |
 | HexLogo | Shadow glow dourada |
 
-## Componentes Web Admin
+## Componentes Web Admin (v4)
 
 | Componente | Descricao |
 |---|---|
-| AdminShell | Sidebar navyCard com brand gold, links ativos com borda gold |
+| AdminShell | Sidebar `rgba(0,9,15,0.96)` com blur 18px, borda gold, shadow dark |
 | Login | Painel dark com logo Josefin Sans, botao gold |
-| DataTable | Tabela dark com headers navyLight |
+| DataTable | Tabela dark com headers `rgba(0,21,34,0.74)`, borda-gold |
 | StatusPill | Badges semi-transparentes coloridos |
+| Buttons | Gradiente gold-light → gold → gold-dark, hover translateY(-1px) |
+| Cards | backdrop-filter blur, box-shadow dark 16px 36px |
 
 ## Badges de tipo de usuario
 
 | Tipo | Cor | Label |
 |---|---|---|
-| personal | Gold (#D4A843) | Aluno |
+| personal | Gold (#D99A26) | Aluno |
 | business | Laranja (#FB923C) | Empresa |
 | sub_business | Roxo (#C084FC) | Professor |
 | system | Vermelho (#FCA5A5) | Administrador |
 
-## Telas Mobile (v3)
+## Telas Mobile (v4)
 
-1. **Login** — Screen com dust + orbs, TextLogo, inputs glass, goldLine com glow, link convite
-2. **Invite** — Input glass grande (letras tracking 4), result card glass com glow
-3. **Register** — Org badge glass, inputs glass, botao com glow
-4. **Pending Approval** — Icone com glow dourado
-5. **Home** — Orbs + GoldDust, GlassCard glow no saldo (textShadow), action circles glass, TransactionRows glass
-6. **Org-Home** — Mesmo que Home + org badge GlassCard, role badge glow
-7. **Transfer** — Valor com textShadow, inputs glass
-8. **Transfer Confirm** — Card glass com blur, valor textShadow, divider glass
-9. **Receipt** — Header glass escuro, card glass com shadow, titulo textShadow, dividers glass
-10. **Pay** — Scanner com bordas arredondadas, inputs glass
-11. **Receive** — QR card com glow shadow, chave textShadow, botao copiar com glow
-12. **Statement** — Saldo textShadow, filter pills glass (ativo com glow), TransactionRows glass
-13. **Notifications** — Cards glass, botao limpar glass com borda glow danger
-14. **Profile** — Orbs, avatar com glow, info list em GlassCard, escola em GlassCard, sobre em GlassCard, botoes com borda glass
-15. **Students** — Cards glass com botoes Transferir/Receber por aluno, PIN input glass, botao "Receber pagamento" gold no topo
+1. **Login** — Removidos campos email/senha/Microsoft. Titulo "Bem-vindo(a)!", botao Google social, link "Criar conta". Tagline "Empreendedorismo + Educacao Financeira"
+2. **Invite** — Sem mudancas v4
+3. **Register** — Sem mudancas v4
+4. **Pending Approval** — Sem mudancas v4
+5. **Home** — Header com avatar+greeting+notif dot; card saldo com "Ver extrato"; 2 acoes (Transferir+Receber); lista em GlassCard container; transacoes ordenadas por data
+6. **Org-Home** — Idem Home + org badge; `maxWidth: 430`; lista em GlassCard container; transacoes ordenadas por data
+7. **Transfer** — Atalhos +10/+50/+100/+200 adicionados
+8. **Transfer Confirm** — Sem mudancas v4
+9. **Receipt** — Sem mudancas v4
+10. **Pay** — Sem mudancas v4
+11. **Receive** — Icones em branco; `borderColor: borderGold` no QR card
+12. **Statement** — Saldo em GlassCard; transacoes ordenadas por data
+13. **Notifications** — Transacoes ordenadas por data (welcome por ultimo)
+14. **Profile** — `maxWidth: 430`; icones com fundo `input`; botoes radius 12
+15. **Students** — Sem mudancas v4
 
-## Navegacao Mobile (v3)
+## Navegacao Mobile (v4)
 
 ```
 login -> invite -> register -> pending-approval -> home/org-home
@@ -180,6 +188,12 @@ login -> home (se ja tem sessao)
 home/org-home -> transfer | pay | receive | statement | profile | notifications | students
 transfer -> transfer-confirm -> receipt -> home
 ```
+
+### BottomNav (v4)
+
+**Personal:** Inicio | Extrato | YC (central, /transfer) | QR Code (/receive) | Perfil
+**Staff:** Inicio | Extrato | YC (central, /transfer) | QR Code (/receive) | Perfil
+(Aba Alunos removida do staff em v4 — acessivel via quick actions em org-home)
 
 ## Como testar
 

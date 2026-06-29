@@ -2,7 +2,7 @@
 
 ## Estrutura
 
-`apps/mobile` usa Expo Router, TypeScript, Supabase client, services e componentes reutilizaveis. Tema visual dark navy (#0A1628) + gold (#D4A843) com efeitos premium (glassmorphism, energia, poeira de ouro). Marca MoneYoung em Josefin Sans 700 Bold.
+`apps/mobile` usa Expo Router, TypeScript, Supabase client, services e componentes reutilizaveis. Tema visual dark navy (#00070D) + gold (#D99A26) com efeitos premium (glassmorphism, energia, poeira de ouro). Marca MoneYoung em Josefin Sans 700 Bold.
 
 ```
 apps/mobile/
@@ -50,11 +50,12 @@ apps/mobile/
 ## Telas do App
 
 ### Login (`/login`)
-Tela inicial do aplicativo. Exibe a marca MoneYoung com tagline "Sua carteira digital educacional" e particulas douradas animadas ao fundo.
+Tela inicial do aplicativo. Exibe a marca MoneYoung com tagline "Empreendedorismo + Educacao Financeira" e particulas douradas animadas ao fundo.
 
+- **Titulo "Bem-vindo(a)!"** e subtitulo "Faca login para continuar" acima do botao principal.
 - **Botao "Entrar"** — inicia o login via Google OAuth. Apos autenticar, o sistema verifica se o usuario ja tem perfil. Se tiver, redireciona para a home adequada (aluno ou colaborador). Se nao tiver perfil, exige codigo convite.
-- **Link "Codigo Convite"** — navega para a tela de validacao de codigo convite. Usado por novos usuarios que receberam um codigo da escola.
-- Campos email/senha estao visiveis mas desabilitados (reservados para implementacao futura).
+- **Botao "Google"** — login com conta Google (mesmo fluxo do botao "Entrar", exibido na secao social com separador).
+- **Link "Ainda nao tem conta? Criar conta"** — navega para a tela de validacao de codigo convite.
 
 Apos login, o redirecionamento depende do tipo de conta:
 - `personal` → `/home` (dashboard do aluno)
@@ -94,31 +95,34 @@ Tela exibida apos o cadastro via convite, enquanto o banco nao aprova o usuario.
 ### Home do Aluno (`/home`)
 Dashboard principal para usuarios com conta pessoal (alunos). Exibe particulas douradas e orbs ambientais ao fundo.
 
-- **Header** — logo MoneYoung, sino de notificacoes (navega para `/notifications`) e avatar do usuario (navega para `/profile`).
-- **Saudacao** — "Bom dia/Boa tarde/Boa noite, [nome]" com horario dinamico.
-- **Card de Saldo** — card em vidro com glow dourado mostrando "Saldo disponivel" em YC (Youngcoin), com a chave MoneYoung abaixo. Botoes "Enviar" e "Receber" no rodape do card.
-- **Acoes rapidas** — 4 botoes circulares: Transferir, Pagar, Receber, Extrato.
-- **Ultimas transacoes** — lista das 5 transacoes mais recentes com link "Ver tudo" para o extrato completo.
+- **Header** — avatar circulo dourado (inicial do nome, navega para `/profile`) + "Ola, [primeiro nome]!" + "Aluno" abaixo + sino de notificacoes com ponto vermelho no canto direito (navega para `/notifications`).
+- **Card de Saldo** — card em vidro com glow dourado mostrando "Saldo disponivel" em YC (Youngcoin). Link "Ver extrato" no canto superior direito do card. Chave MoneYoung abaixo do valor.
+- **Acoes rapidas** — 2 botoes com cantos arredondados: Transferir e Receber.
+- **Ultimas transacoes** — lista das 5 transacoes mais recentes (ordenadas por data, mais recente primeiro) dentro de container glass. Link "Ver todas >" para o extrato completo.
 - **Pull-to-refresh** — puxar para baixo atualiza saldo e transacoes.
 
-Barra de navegacao inferior (BottomNav): Inicio | Transferir | Pagar | Extrato | Perfil.
+Barra de navegacao inferior (BottomNav): Inicio | Extrato | **YC** (botao central dourado elevado, abre /transfer) | QR Code (abre /receive) | Perfil.
 
 ### Home do Colaborador (`/org-home`)
 Dashboard para usuarios com conta `sub_business` (professores, funcionarios, diretores). Mostra o saldo da conta da escola, nao da conta pessoal.
 
-- **Header** — identico ao do aluno (logo, notificacoes, avatar).
-- **Badge da escola** — card em vidro com icone de escola, nome da organizacao e role do colaborador (Professor, Funcionario, Diretor).
-- **Card de Saldo** — mostra "Saldo da Escola" em YC. Botoes "Enviar" e "Receber" transferem da conta da escola.
-- **Acoes rapidas** — 4 botoes: Transferir, Receber, Alunos, Extrato.
-- **Ultimas transacoes** — transacoes da conta da escola.
+- **Header** — mesmo padrao do aluno: avatar + "Ola, [nome da org]!" + role do colaborador + sino com ponto vermelho.
+- **Badge da escola** — card em vidro com icone de escola, nome da organizacao e role badge dourado.
+- **Card de Saldo** — mostra "Saldo da escola" em YC com link "Ver extrato" no canto.
+- **Acoes rapidas** — 4 botoes: Transferir, Receber, Alunos, Extrato (quick actions da tela).
+- **Ultimas transacoes** — transacoes da conta da escola, ordenadas por data mais recente.
+- Conteudo limitado a `maxWidth: 430`.
 
-Barra de navegacao inferior (BottomNav staff): Inicio | Transferir | Receber | Alunos | Perfil.
+Barra de navegacao inferior (BottomNav staff): Inicio | Extrato | **YC** (botao central dourado elevado, abre /transfer) | QR Code (abre /receive) | Perfil.
+
+> Nota: A aba "Alunos" foi removida do BottomNav. A tela `/students` permanece acessivel via quick actions em /org-home.
 
 ### Transferir (`/transfer`)
 Tela para iniciar uma transferencia de Youngcoins. Usada tanto por alunos (da conta pessoal) quanto por colaboradores (da conta da escola).
 
-- **Display do valor** — mostra o valor digitado em tamanho grande com sufixo "YC" e glow dourado.
+- **Display do valor** — mostra o valor digitado em tamanho grande com sufixo "YC".
 - **Campo de valor** — input numerico para digitar o valor da transferencia.
+- **Atalhos de valor** — 4 botoes `+10`, `+50`, `+100`, `+200` que preenchem automaticamente o campo de valor.
 - **Campo "Chave MoneYoung"** — chave de destino (ex: @ALN-joao1234). Pode vir pre-preenchida quando o colaborador clica "Transferir" na tela de alunos.
 - **Campo "Descricao"** — opcional, texto livre para descrever a transferencia.
 - **Botao "Transferir"** — valida os campos (chave obrigatoria, valor maior que zero) e navega para a tela de confirmacao.
@@ -172,9 +176,9 @@ Funciona tanto para alunos (chave pessoal) quanto para colaboradores (chave do p
 ### Extrato (`/statement`)
 Tela com o historico completo de transacoes. Adapta-se automaticamente ao tipo de conta: alunos veem transacoes pessoais, colaboradores veem transacoes da escola.
 
-- **Saldo atual** — valor em destaque no topo com glow dourado.
-- **Filtros** — 3 botoes estilo "pill" em vidro: "Tudo" (todas as transacoes), "Entradas" (recebimentos) e "Saidas" (envios). Filtro ativo em gold solido.
-- **Lista de transacoes** — cada transacao e um card em vidro (TransactionRow) com: nome do participante, badge de tipo (Aluno, Empresa, Professor, Admin), chave MoneYoung, valor (verde para entradas, vermelho para saidas) e data.
+- **Saldo atual** — encapsulado em GlassCard com glow, valor em destaque no topo.
+- **Filtros** — 3 botoes estilo "pill": "Tudo" (todas as transacoes), "Entradas" (recebimentos) e "Saidas" (envios). Filtro ativo em gold.
+- **Lista de transacoes** — ordenadas por data mais recente, dentro de container glass. Cada linha (TransactionRow) mostra: nome do participante, badge de tipo (Aluno, Empresa, Professor, Admin), chave MoneYoung, valor (verde para entradas, vermelho para saidas) e data.
 
 Se nao houver transacoes para o filtro selecionado, exibe "Nenhuma transacao para este filtro."
 
@@ -187,7 +191,7 @@ Tipos de notificacao:
 - **Enviou [valor]** — quando o usuario envia uma transferencia. Icone de seta para cima em vermelho. Mostra "Para [nome do destinatario]".
 - **Credito inicial** — quando o banco credita Youngcoins na carteira. Icone de carteira em amarelo.
 
-Cada notificacao exibe o tempo relativo (Agora, 5min, 2h, Ontem, ou data completa).
+Cada notificacao exibe o tempo relativo (Agora, 5min, 2h, Ontem, ou data completa). Ordenadas por data mais recente. A notificacao de boas-vindas aparece por ultimo (data base 1970).
 
 - **Botao "Limpar tudo"** — remove todas as notificacoes da tela (visual, nao deleta do banco).
 
@@ -235,23 +239,26 @@ Tela com os dados pessoais do usuario. Funciona para todos os tipos de conta.
 ## Navegacao
 
 ### BottomNav Personal (5 abas)
-Inicio (`/home`) | Transferir (`/transfer`) | Pagar (`/pay`) | Extrato (`/statement`) | Perfil (`/profile`)
+Inicio (`/home`) | Extrato (`/statement`) | **YC** (central dourado elevado, `/transfer`) | QR Code (`/receive`) | Perfil (`/profile`)
 
 ### BottomNav Staff (5 abas)
-Inicio (`/org-home`) | Transferir (`/transfer`) | Receber (`/receive`) | Alunos (`/students`) | Perfil (`/profile`)
+Inicio (`/org-home`) | Extrato (`/statement`) | **YC** (central dourado elevado, `/transfer`) | QR Code (`/receive`) | Perfil (`/profile`)
 
-Aba ativa: icone e label em gold com linha indicadora dourada no topo + fundo glow suave.
-Barra: fundo glass com blur, borda luminosa sutil.
+> Nota: Aba "Alunos" removida do BottomNav em 2026-06-29. Tela `/students` acessivel via quick actions em `/org-home`.
+
+Aba ativa: icone e label em gold com linha indicadora dourada no topo.
+Botao YC: circulo 58x58 dourado elevado -26px acima da barra, texto "YC" em navy, sem label.
+Barra: fundo glass com blur, borda luminosa sutil, sombra no topo.
 
 ## Sistema Visual Premium
 
 ### Glassmorphism
 Cards e superficies usam `GlassCard.tsx` com:
-- Fundo semi-transparente: `rgba(15,32,53,0.45)`
+- Fundo semi-transparente: `rgba(3,19,29,0.76)`
 - Blur CSS: `backdrop-filter: blur(16px)` (funciona no Expo Web)
-- Borda luminosa: `rgba(212,168,67,0.12)`
-- Linha highlight no topo (1px branco 5% opacidade)
-- Opcao `glow`: shadow dourada para cards de destaque (ex: saldo)
+- Borda luminosa: `rgba(243,198,94,0.18)`
+- `borderRadius: 16`, shadow dark `0 10 24 rgba(0,0,0,0.18)`
+- Opcao `glow`: shadow dourada + `borderColor: borderGold` para cards de destaque (ex: saldo)
 
 ### Energia (Glow/Pulse)
 - Botoes primarios: shadow dourada que pulsa (Animated API, ciclo 3.6s)
@@ -274,24 +281,29 @@ Cards e superficies usam `GlassCard.tsx` com:
 
 | Token | Cor | Uso |
 |---|---|---|
-| `navyDeep` | `#0A1628` | Fundo principal (Screen) |
-| `navyCard` | `#0F2035` | Legacy (substituido por glass) |
-| `navyLight` | `#162D4A` | Fallback para inputs |
-| `gold` | `#D4A843` | Acentos, botoes, BottomNav ativo |
-| `goldLight` | `#E8C66A` | Destaques |
+| `navyDeep` | `#00070D` | Fundo principal (Screen) |
+| `navyInk` | `#000306` | Base quase preta |
+| `navyCard` | `#03131D` | Cards e superficies |
+| `navyLight` | `#061E2A` | Azul secundario |
+| `gold` | `#D99A26` | Acentos, botoes, BottomNav ativo |
+| `goldLight` | `#F3C65E` | Destaques, links |
+| `goldPale` | `#FFE2A1` | Dourado palido |
 | `textPrimary` | `#FFFFFF` | Texto principal |
-| `textSecondary` | `#8B9DC3` | Texto secundario |
-| `glass` | `rgba(15,32,53,0.45)` | Fundo glassmorphism |
-| `glassBorder` | `rgba(212,168,67,0.12)` | Borda luminosa glass |
-| `glassHighlight` | `rgba(255,255,255,0.05)` | Highlight topo card |
-| `glassStrong` | `rgba(15,32,53,0.7)` | Glass escuro (nav, toast) |
-| `glowGold` | `rgba(212,168,67,0.30)` | Glow em shadows/text |
-| `glowGoldSoft` | `rgba(212,168,67,0.12)` | Glow suave (icon bg) |
-| `dustGold` | `rgba(212,168,67,0.6)` | Particula dourada |
-| `dustGoldLight` | `rgba(232,198,106,0.4)` | Particula clara |
+| `textSecondary` | `#A7B4C0` | Texto secundario |
+| `textMuted` | `#6F8594` | Texto atenuado |
+| `input` | `rgba(0,10,16,0.74)` | Fundo de inputs e acoes |
+| `glass` | `rgba(3,19,29,0.76)` | Fundo glassmorphism |
+| `glassBorder` | `rgba(243,198,94,0.18)` | Borda luminosa glass |
+| `glassHighlight` | `rgba(255,255,255,0.08)` | Highlight topo card |
+| `glassStrong` | `rgba(0,9,15,0.94)` | Glass escuro (nav, toast) |
+| `borderGold` | `rgba(217,154,38,0.42)` | Borda dourada mais visivel (glow cards) |
+| `glowGold` | `rgba(217,154,38,0.34)` | Glow em shadows/text |
+| `glowGoldSoft` | `rgba(217,154,38,0.14)` | Glow suave (icon bg) |
+| `dustGold` | `rgba(217,154,38,0.72)` | Particula dourada |
+| `dustGoldLight` | `rgba(243,198,94,0.48)` | Particula clara |
 | `dustWhite` | `rgba(255,255,255,0.3)` | Particula branca |
-| `orbGold` | `rgba(212,168,67,0.03)` | Orb dourado |
-| `orbBlue` | `rgba(30,58,95,0.25)` | Orb azul |
+| `orbGold` | `rgba(217,154,38,0.08)` | Orb dourado |
+| `orbBlue` | `rgba(4,38,54,0.18)` | Orb azul |
 
 ## Componentes
 
