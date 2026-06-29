@@ -54,6 +54,11 @@ export default function Home() {
       setSummary(await getWalletSummary());
     } catch (err) {
       const message = err instanceof Error ? err.message : "Nao foi possivel carregar sua carteira.";
+      if (message.includes("ACCOUNT_DELETED")) {
+        await signOut();
+        router.replace("/login");
+        return;
+      }
       setError(message);
       if (message.toLowerCase().includes("unauth")) router.replace("/login");
     } finally {

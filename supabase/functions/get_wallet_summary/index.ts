@@ -11,6 +11,7 @@ Deno.serve(async (req) => {
       .eq("id", user.id)
       .single();
     if (profileError) return error("NOT_FOUND", "Profile Moneyoung nao encontrado.", 404);
+    if (profile.status === "deleted") return error("ACCOUNT_DELETED", "Esta conta foi desativada.", 403);
 
     const { data: wallet, error: walletError } = await serviceClient
       .from("wallets")

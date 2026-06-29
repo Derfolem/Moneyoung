@@ -10,6 +10,7 @@ import { BottomNav } from "../src/components/BottomNav";
 import { GlassCard } from "../src/components/GlassCard";
 import { AmbientOrbs, GoldDust } from "../src/components/GoldDust";
 import { getOrgWalletSummary } from "../src/services/moneyoung";
+import { signOut } from "../src/services/auth";
 import { colors } from "../src/theme/colors";
 
 const roleLabel: Record<string, string> = {
@@ -36,6 +37,11 @@ export default function OrgHome() {
       setData(await getOrgWalletSummary());
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Erro ao carregar dados da escola.";
+      if (msg.includes("ACCOUNT_DELETED") || msg.includes("colaborador ativo")) {
+        await signOut();
+        router.replace("/login");
+        return;
+      }
       setError(msg);
       if (msg.toLowerCase().includes("unauth")) router.replace("/login");
     } finally {
