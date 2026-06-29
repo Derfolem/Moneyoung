@@ -172,7 +172,8 @@ ba6dc6c  feat: bloqueia transferencia entre alunos (personal → personal)
 ### Commits da sessao 4
 
 ```
-(pendente commit)  fix: carteira sub_business para colaboradores + edge function v6
+d45a4d1  fix+feat: carteira colaborador, dashboard e sistema de alertas
+(pendente commit)  fix: destino exibe nome da escola em transacoes da org
 ```
 
 ---
@@ -226,6 +227,7 @@ c18eb5e  feat(admin): soft-delete e purge de orgs/contas com modais de confirmac
 - **NOVO:** Banner "Educacao Financeira — Em breve" na home do aluno
 - **NOVO:** Aviso YC sem valor monetario contextual (saldo, transferencia, QR code)
 - **FIX:** Transferencia para colaborador funciona — wallet sub_business criada para todos os colaboradores existentes
+- **FIX:** Transacoes no painel: nome do professor como origem, nome da escola como destino
 
 ### Web Admin (Next.js)
 - Tema dark navy-black + gold
@@ -233,6 +235,9 @@ c18eb5e  feat(admin): soft-delete e purge de orgs/contas com modais de confirmac
 - **NOVO:** Soft-delete e hard-purge com modais de confirmacao dupla
 - **NOVO:** Badges pt-BR (Excluida, Ativo, Bloqueado, etc.)
 - **NOVO:** Toggle "Mostrar excluidas" e filtro de status deleted
+- **FIX:** Dashboard: "Escolas" corrigido (organizations); "Alunos" → "Total de Usuarios" (personal + sub_business)
+- **FIX:** Transacoes: nome do professor como origem + nome da escola como destino; badge "Escola" em vez de "Empresa"
+- **NOVO:** Pagina /alerts com todos os erros do app; metrica "Erros Hoje" no dashboard
 
 ---
 

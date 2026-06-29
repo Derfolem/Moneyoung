@@ -7,7 +7,7 @@ import { AdminShell } from "../../src/components/AdminShell";
 import { StatusPill, StateMessage } from "../../src/components/DataTable";
 import { exportCsv, listTransactions, toCsvRows } from "../../src/services/admin";
 
-const accountTypeLabel: Record<string, string> = { personal: "Aluno", business: "Empresa", sub_business: "Professor", system: "Admin" };
+const accountTypeLabel: Record<string, string> = { personal: "Aluno", business: "Escola", sub_business: "Professor", system: "Admin" };
 
 export default function TransactionsPage() {
   const [rows, setRows] = useState<LedgerTransaction[]>([]);

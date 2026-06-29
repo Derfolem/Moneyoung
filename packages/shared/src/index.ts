@@ -58,7 +58,7 @@ export type LedgerTransaction = {
 
 export const accountTypeLabels: Record<AccountType, string> = {
   personal: "Aluno",
-  business: "Empresa",
+  business: "Escola",
   sub_business: "Professor",
   system: "Administrador",
 };

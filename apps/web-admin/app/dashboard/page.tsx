@@ -70,7 +70,7 @@ export default function DashboardPage() {
   );
 }
 
-const accountTypeLabel: Record<string, string> = { personal: "Aluno", business: "Empresa", sub_business: "Professor", system: "Admin" };
+const accountTypeLabel: Record<string, string> = { personal: "Aluno", business: "Escola", sub_business: "Professor", system: "Admin" };
 
 function TxParty({ name, fallbackName, accountType, fallbackType }: { name: string | null; fallbackName?: string | null; accountType: string | null; fallbackType?: string | null }) {
   const displayName = name ?? fallbackName ?? "-";

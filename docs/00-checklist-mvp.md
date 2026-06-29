@@ -282,6 +282,24 @@
 - [x] Banner educacional "Educacao Financeira — Em breve" na home do aluno (2026-06-29 — testado e aprovado)
 - [x] Aviso "YoungCoin nao possui valor monetario real" contextual: abaixo do saldo (home e org-home), abaixo do valor (transfer e transfer-confirm), abaixo do QR code (receive) (2026-06-29 — testado e aprovado)
 
+### 3.1f Painel Admin — Dashboard e Transacoes (2026-06-29)
+
+- [x] Fix: transferencia para colaborador funcionando — carteira sub_business criada para colaboradores existentes e novos (migration create_wallet_for_staff); transfer_youngcoin v6 trata DESTINATION_WALLET_NOT_FOUND com 404 amigavel (2026-06-29 — testado e aprovado)
+- [x] Fix dashboard: contagem de escolas corrigida (query na tabela organizations, nao em profiles business que sempre retornava 0) (2026-06-29)
+- [x] Fix dashboard: "Alunos" → "Total de Usuarios" contando personal + sub_business ativos (2026-06-29)
+- [x] Transacoes do painel: origem exibe nome e tag do professor quando transferencia vem da carteira da escola (created_by_display_name como fallback quando from_display_name e null) (2026-06-29 — testado e aprovado)
+- [x] Transacoes do painel: destino exibe nome da escola quando a wallet destino e da organizacao (COALESCE com organizations.name na view enriched_transactions) (2026-06-29 — testado e aprovado)
+- [x] Label "Empresa" → "Escola" no badge de tipo de conta em toda a interface admin (2026-06-29)
+- [x] Metrica "Erros Hoje" no dashboard (contagem de client_error_reports do dia) (2026-06-29)
+
+### 3.1g Sistema de Alertas (2026-06-29)
+
+- [x] Tabela client_error_reports: registra erros do app com tela, acao, codigo, mensagem, plataforma, profile_id (2026-06-29)
+- [x] Edge function report_client_error (sem JWT, falha silenciosa): recebe erros do app mobile e insere na tabela via service role (2026-06-29)
+- [x] Mobile reportError() em moneyoung.ts: funcao assíncrona silenciosa para relato de erros nas telas (2026-06-29)
+- [x] Pagina /alerts no painel admin: tabela com todos os erros do app, filtro por plataforma e tela (2026-06-29)
+- [x] Menu admin: novo item "Alertas" com icone de sino (BellRing) (2026-06-29)
+
 ### 3.2 Testes Funcionais Admin
 
 - [x] Login admin → Dashboard com dados reais (2026-06-24 — 3 wallets, 3 profiles, 1 org, metricas OK)
