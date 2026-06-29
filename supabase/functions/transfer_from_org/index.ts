@@ -1,5 +1,5 @@
 import { error, json, corsHeaders, parseBody } from "../_shared/http.ts";
-import { requireUser, requestMeta } from "../_shared/supabase.ts";
+import { requireUser, requestMeta, assertActiveProfile } from "../_shared/supabase.ts";
 
 type Body = {
   to_young_key?: string;
@@ -13,6 +13,7 @@ Deno.serve(async (req) => {
   if (req.method !== "POST") return error("METHOD_NOT_ALLOWED", "Use POST.", 405);
   try {
     const { user, serviceClient } = await requireUser(req);
+    await assertActiveProfile(serviceClient, user.id);
     const body = await parseBody<Body>(req);
 
     if (!body.to_young_key) return error("INVALID_INPUT", "Informe a chave do destinatario.", 422);

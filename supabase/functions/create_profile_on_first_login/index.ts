@@ -8,6 +8,16 @@ Deno.serve(async (req) => {
     const email = user.email;
     if (!email) return error("INVALID_INPUT", "Conta OAuth sem e-mail confirmado.", 422);
 
+    // Bloqueia conta deletada antes mesmo de tentar criar/upsert
+    const { data: existing } = await serviceClient
+      .from("profiles")
+      .select("status")
+      .eq("id", user.id)
+      .maybeSingle();
+    if (existing?.status === "deleted") {
+      return error("INVITE_REQUIRED", "Cadastro requer codigo convite. Solicite o codigo da sua escola.", 403);
+    }
+
     const { data, error: rpcError } = await serviceClient.rpc("create_profile_and_wallet", {
       p_user_id: user.id,
       p_email: email,

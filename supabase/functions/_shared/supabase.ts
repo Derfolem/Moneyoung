@@ -42,6 +42,20 @@ export function requestMeta(req: Request) {
   };
 }
 
+export async function assertActiveProfile(serviceClient: ReturnType<typeof createClient>, userId: string) {
+  const { data } = await serviceClient
+    .from("profiles")
+    .select("status")
+    .eq("id", userId)
+    .single();
+  if (!data || data.status === "deleted") {
+    throw new Response(JSON.stringify({ error: { code: "INVITE_REQUIRED", message: "Cadastro requer codigo convite. Solicite o codigo da sua escola." } }), {
+      status: 403,
+      headers: { ...corsHeaders, "Content-Type": "application/json" }
+    });
+  }
+}
+
 export async function assertBankAdmin(serviceClient: ReturnType<typeof createClient>, profileId: string) {
   const { data, error } = await serviceClient
     .from("profiles")

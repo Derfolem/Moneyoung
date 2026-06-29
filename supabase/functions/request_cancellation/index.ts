@@ -1,5 +1,5 @@
 import { error, json, corsHeaders, parseBody } from "../_shared/http.ts";
-import { requireUser, requestMeta } from "../_shared/supabase.ts";
+import { requireUser, requestMeta, assertActiveProfile } from "../_shared/supabase.ts";
 
 type Body = { reason?: string };
 
@@ -8,6 +8,7 @@ Deno.serve(async (req) => {
   if (req.method !== "POST") return error("METHOD_NOT_ALLOWED", "Use POST.", 405);
   try {
     const { user, serviceClient } = await requireUser(req);
+    await assertActiveProfile(serviceClient, user.id);
     const body = await parseBody<Body>(req);
 
     const { data, error: rpcError } = await serviceClient.rpc("request_account_cancellation", {
