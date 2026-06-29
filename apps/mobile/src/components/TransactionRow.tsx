@@ -66,28 +66,28 @@ export function TransactionRow({ tx, walletId }: Props) {
 
 const styles = StyleSheet.create({
   row: {
-    backgroundColor: colors.glass,
-    borderRadius: 16,
+    backgroundColor: "transparent",
+    borderRadius: 0,
     padding: 14,
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    borderWidth: 1,
-    borderColor: colors.glassBorder,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.glassBorder,
     // @ts-ignore
     backdropFilter: "blur(12px)",
     // @ts-ignore
     WebkitBackdropFilter: "blur(12px)",
   },
   iconCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     alignItems: "center",
     justifyContent: "center",
   },
   copy: { flex: 1, gap: 3 },
-  name: { color: colors.textPrimary, fontWeight: "800", fontSize: 15 },
+  name: { color: colors.textPrimary, fontWeight: "900", fontSize: 14 },
   metaRow: { flexDirection: "row", alignItems: "center", gap: 6 },
   badge: {
     paddingHorizontal: 6,
@@ -101,5 +101,5 @@ const styles = StyleSheet.create({
   },
   meta: { color: colors.textSecondary, fontSize: 12, flex: 1 },
   date: { color: colors.textSecondary, fontSize: 11 },
-  amount: { fontWeight: "900", textAlign: "right", fontSize: 15 },
+  amount: { fontWeight: "900", textAlign: "right", fontSize: 13 },
 });

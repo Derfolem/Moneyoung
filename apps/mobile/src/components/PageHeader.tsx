@@ -30,18 +30,16 @@ export function PageHeader({ title, subtitle, backTo = "/home" }: Props) {
 }
 
 const styles = StyleSheet.create({
-  root: { flexDirection: "row", alignItems: "center", gap: 12 },
+  root: { flexDirection: "row", alignItems: "center", gap: 12, paddingTop: 6 },
   back: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: colors.glass,
-    borderWidth: 1,
-    borderColor: colors.glassBorder,
+    backgroundColor: "transparent",
   },
   copy: { flex: 1, gap: 4 },
-  title: { fontSize: 28, fontWeight: "900", color: colors.textPrimary },
+  title: { fontSize: 18, fontWeight: "900", color: colors.textPrimary },
   subtitle: { lineHeight: 21, color: colors.textSecondary },
 });

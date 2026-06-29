@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Animated, StyleSheet, View } from "react-native";
+import Svg, { Path } from "react-native-svg";
 import { colors } from "../theme/colors";
 
 const PARTICLE_COUNT = 14;
@@ -99,6 +100,12 @@ export function AmbientOrbs() {
       <View style={[styles.orb, styles.orbTopRight]} />
       <View style={[styles.orb, styles.orbBottomLeft]} />
       <View style={[styles.orb, styles.orbCenter]} />
+      <Svg style={styles.waves} viewBox="0 0 420 190" preserveAspectRatio="none">
+        <Path d="M-20 112 C 72 32, 126 184, 220 104 S 360 54, 450 128" stroke="rgba(217,154,38,0.22)" strokeWidth="1" fill="none" />
+        <Path d="M-24 128 C 68 54, 134 196, 228 116 S 360 76, 450 142" stroke="rgba(217,154,38,0.16)" strokeWidth="1" fill="none" />
+        <Path d="M-28 144 C 74 74, 132 210, 238 130 S 366 96, 454 156" stroke="rgba(243,198,94,0.10)" strokeWidth="1" fill="none" />
+        <Path d="M-34 160 C 76 98, 138 224, 246 144 S 372 118, 462 170" stroke="rgba(217,154,38,0.08)" strokeWidth="1" fill="none" />
+      </Svg>
     </View>
   );
 }
@@ -113,17 +120,17 @@ const styles = StyleSheet.create({
     borderRadius: 999,
   },
   orbTopRight: {
-    width: 300,
-    height: 300,
-    top: -80,
-    right: -80,
+    width: 260,
+    height: 260,
+    top: -90,
+    right: -120,
     backgroundColor: colors.orbGold,
   },
   orbBottomLeft: {
-    width: 250,
-    height: 250,
-    bottom: 100,
-    left: -100,
+    width: 320,
+    height: 320,
+    bottom: -80,
+    left: -160,
     backgroundColor: colors.orbBlue,
   },
   orbCenter: {
@@ -132,5 +139,13 @@ const styles = StyleSheet.create({
     top: "40%",
     right: -60,
     backgroundColor: colors.orbGold,
+  },
+  waves: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: -10,
+    height: 190,
+    opacity: 0.9,
   },
 });

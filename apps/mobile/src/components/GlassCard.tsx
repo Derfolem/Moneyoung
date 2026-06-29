@@ -26,11 +26,15 @@ export function GlassCard({ children, style, intensity = "medium", glow, noPaddi
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: 20,
-    padding: 20,
+    borderRadius: 16,
+    padding: 18,
     borderWidth: 1,
     borderColor: colors.glassBorder,
     overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.18,
+    shadowRadius: 24,
     // @ts-ignore — web-only property
     backdropFilter: "blur(16px)",
     // @ts-ignore
@@ -47,10 +51,10 @@ const styles = StyleSheet.create({
   glow: {
     shadowColor: colors.gold,
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.2,
-    shadowRadius: 20,
+    shadowOpacity: 0.24,
+    shadowRadius: 24,
     elevation: 8,
-    borderColor: colors.glowGoldSoft,
+    borderColor: colors.borderGold,
   },
   noPad: {
     padding: 0,

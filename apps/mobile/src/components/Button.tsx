@@ -26,9 +26,9 @@ export function Button({ title, onPress, loading, disabled, tone = "primary" }: 
     return () => loop.stop();
   }, [tone, inactive]);
 
-  const spinnerColor = tone === "primary" ? colors.navyDeep : colors.gold;
+  const spinnerColor = tone === "primary" ? colors.textPrimary : colors.gold;
   const textColor =
-    tone === "primary" ? colors.navyDeep :
+    tone === "primary" ? colors.textPrimary :
     tone === "ghost" ? colors.gold :
     tone === "danger" ? "#fff" :
     colors.textPrimary;
@@ -50,6 +50,7 @@ export function Button({ title, onPress, loading, disabled, tone = "primary" }: 
         onPress={onPress}
         disabled={inactive}
       >
+        {tone === "primary" ? <Animated.View pointerEvents="none" style={styles.primaryShine} /> : null}
         {loading ? (
           <ActivityIndicator color={spinnerColor} />
         ) : (
@@ -62,21 +63,32 @@ export function Button({ title, onPress, loading, disabled, tone = "primary" }: 
 
 const styles = StyleSheet.create({
   glowWrap: {
-    borderRadius: 16,
+    borderRadius: 14,
     elevation: 8,
   },
   button: {
     minHeight: 52,
-    borderRadius: 16,
+    borderRadius: 14,
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 18,
+    overflow: "hidden",
+    borderWidth: 1,
   },
   primary: {
     backgroundColor: colors.gold,
+    borderColor: colors.goldLight,
+  },
+  primaryShine: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: "45%",
+    backgroundColor: "rgba(255,255,255,0.18)",
   },
   secondary: {
-    backgroundColor: colors.glass,
+    backgroundColor: colors.input,
     borderWidth: 1,
     borderColor: colors.glassBorder,
     // @ts-ignore
@@ -84,8 +96,8 @@ const styles = StyleSheet.create({
     // @ts-ignore
     WebkitBackdropFilter: "blur(12px)",
   },
-  danger: { backgroundColor: colors.danger },
-  ghost: { backgroundColor: "transparent" },
+  danger: { backgroundColor: colors.danger, borderColor: colors.danger },
+  ghost: { backgroundColor: "transparent", borderColor: "transparent" },
   disabled: { opacity: 0.55 },
-  text: { fontWeight: "800", fontSize: 16 },
+  text: { fontWeight: "900", fontSize: 15 },
 });

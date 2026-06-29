@@ -1,48 +1,52 @@
 export const colors = {
   // Backgrounds
-  navyDeep: "#0A1628",
-  navyCard: "#0F2035",
-  navyLight: "#162D4A",
+  navyDeep: "#00070D",
+  navyInk: "#000306",
+  navyCard: "#03131D",
+  navyLight: "#061E2A",
 
   // Gold accent
-  gold: "#D4A843",
-  goldDark: "#B8912F",
-  goldLight: "#E8C66A",
+  gold: "#D99A26",
+  goldDark: "#9F6508",
+  goldLight: "#F3C65E",
+  goldPale: "#FFE2A1",
 
   // Text
   textPrimary: "#FFFFFF",
-  textSecondary: "#8B9DC3",
+  textSecondary: "#A7B4C0",
+  textMuted: "#6F8594",
 
   // Borders
-  border: "#1E3A5F",
-  borderGold: "rgba(212,168,67,0.3)",
+  border: "#0A2936",
+  borderGold: "rgba(217,154,38,0.42)",
 
   // Glass / Glassmorphism
-  glass: "rgba(15,32,53,0.45)",
-  glassBorder: "rgba(212,168,67,0.12)",
-  glassHighlight: "rgba(255,255,255,0.05)",
-  glassStrong: "rgba(15,32,53,0.7)",
+  glass: "rgba(3,19,29,0.76)",
+  glassBorder: "rgba(243,198,94,0.18)",
+  glassHighlight: "rgba(255,255,255,0.08)",
+  glassStrong: "rgba(0,9,15,0.94)",
+  input: "rgba(0,10,16,0.74)",
 
   // Energy / Glow
-  glowGold: "rgba(212,168,67,0.30)",
-  glowGoldSoft: "rgba(212,168,67,0.12)",
-  glowGoldStrong: "rgba(232,198,106,0.50)",
+  glowGold: "rgba(217,154,38,0.34)",
+  glowGoldSoft: "rgba(217,154,38,0.14)",
+  glowGoldStrong: "rgba(243,198,94,0.52)",
   glowSuccess: "rgba(34,197,94,0.25)",
   glowDanger: "rgba(239,68,68,0.25)",
 
   // Gold Dust particles
-  dustGold: "rgba(212,168,67,0.6)",
-  dustGoldLight: "rgba(232,198,106,0.4)",
+  dustGold: "rgba(217,154,38,0.72)",
+  dustGoldLight: "rgba(243,198,94,0.48)",
   dustWhite: "rgba(255,255,255,0.3)",
 
   // Ambient orbs
-  orbGold: "rgba(212,168,67,0.03)",
-  orbBlue: "rgba(30,58,95,0.25)",
+  orbGold: "rgba(217,154,38,0.08)",
+  orbBlue: "rgba(4,38,54,0.18)",
 
   // Semantic
-  primary: "#D4A843",
-  primaryDark: "#B8912F",
-  accent: "#D4A843",
+  primary: "#D99A26",
+  primaryDark: "#9F6508",
+  accent: "#D99A26",
   success: "#22C55E",
   danger: "#EF4444",
   warning: "#F59E0B",
@@ -50,7 +54,7 @@ export const colors = {
   // Legacy aliases
   ink: "#FFFFFF",
   muted: "#8B9DC3",
-  surface: "#0F2035",
-  background: "#0A1628",
+  surface: "#03131D",
+  background: "#00070D",
   cardShadow: "rgba(0,0,0,0.3)",
 };
