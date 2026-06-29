@@ -204,6 +204,96 @@
 - [ ] Gerar APK/AAB de producao
 - [ ] Publicar na Google Play Store (conta de US$ 25)
 
+### 2.10 Build e Publicacao iOS — Apple App Store
+
+> **Custo:** Apple Developer Program US$ 99/ano (obrigatorio para distribuir na App Store)
+
+#### 2.10.1 Conta e Certificados
+
+- [ ] Criar conta no Apple Developer Program (developer.apple.com — US$ 99/ano, requer cartao de credito ou conta bancaria)
+- [ ] Aceitar os termos do programa no Apple Developer Portal
+- [ ] Configurar `apple_id` e `asc_app_id` no `eas.json`
+
+#### 2.10.2 Configuracao do Projeto Expo para iOS
+
+- [ ] Definir `ios.bundleIdentifier` no `app.json` (ex: `com.moneyoung.app`) — deve ser unico na App Store
+- [ ] Definir `ios.buildNumber` inicial (ex: `"1"`) no `app.json`
+- [ ] Adicionar textos de permissao no `app.json`:
+  - `NSCameraUsageDescription`: "Necessario para escanear QR Codes de transferencia"
+  - `NSPhotoLibraryUsageDescription`: "Necessario para salvar comprovantes"
+  - `NSClipboardUsageDescription`: "Necessario para copiar a chave MoneYoung"
+- [ ] Adicionar `"Sign in with Apple"` como metodo de login (OBRIGATORIO pela Apple quando o app oferece login social como Google OAuth)
+  - Configurar no Supabase: Authentication > Providers > Apple
+  - Obter `Services ID` e chave privada `.p8` no Apple Developer Portal
+  - Adicionar `expo-apple-authentication` ao projeto mobile
+- [ ] Adicionar perfil iOS no `eas.json`:
+  ```json
+  "production": {
+    "ios": { "simulator": false }
+  }
+  ```
+- [ ] Configurar credenciais EAS automaticas: `eas credentials --platform ios` (gera certificados e provisioning profiles automaticamente)
+
+#### 2.10.3 App Store Connect — Criar App
+
+- [ ] Acessar App Store Connect (appstoreconnect.apple.com) com a conta Apple Developer
+- [ ] Criar novo app: botao "+" > "Nova app"
+  - Plataformas: iOS
+  - Nome: MoneYoung (maximo 30 caracteres)
+  - Idioma principal: Portugues (Brasil)
+  - Bundle ID: selecionar o configurado no passo 2.10.2
+  - SKU: moneyoung-app (identificador interno unico)
+- [ ] Definir categoria principal: **Financas** (Finance)
+- [ ] Definir categoria secundaria: **Educacao** (Education)
+
+#### 2.10.4 Metadados e Assets
+
+- [ ] Escrever descricao do app em PT-BR (maximo 4000 caracteres)
+- [ ] Escrever descricao curta/subtitulo (maximo 30 caracteres, ex: "Banco educacional para alunos")
+- [ ] Definir palavras-chave SEO (maximo 100 caracteres, separadas por virgula)
+- [ ] URL de suporte (ex: email ou pagina de contato)
+- [ ] URL de politica de privacidade — **OBRIGATORIO** (criar pagina publica; pode ser no GitHub Pages ou Vercel)
+- [ ] Preparar icone do app: 1024x1024px PNG sem transparencia e sem cantos arredondados (a Apple arredonda automaticamente)
+- [ ] Capturar screenshots obrigatorios:
+  - iPhone 6.9" (1320x2868px): telas home, transferencia, extrato, QR code — minimo 3 screenshots
+  - iPhone 6.5" (1284x2778px): mesmas telas (pode reutilizar se resolucao permitir)
+  - iPad 12.9" (2048x2732px): necessario se o app suportar iPad (pode desabilitar no `app.json` com `"supportsTablet": false`)
+- [ ] Preencher classificacao indicativa (faixa etaria): selecionar 4+ (app educacional sem conteudo restrito)
+- [ ] Declarar informacoes de privacidade (Privacy Nutrition Label):
+  - Dados coletados: email (vinculado ao usuario), identificador de usuario
+  - Finalidade: funcionalidade do app, autenticacao
+  - Dados NAO vendidos a terceiros
+
+#### 2.10.5 Criptografia e Conformidade
+
+- [ ] Declarar uso de criptografia: SIM (HTTPS/TLS padrao — marcar "Sim, meu app usa criptografia" e depois "Algoritmos padrao/iOS")
+  - Isso NAO requer licenca CCATS pois usa apenas HTTPS/TLS padrao do iOS
+- [ ] Confirmar que o app NAO contem conteudo para maiores de 17 anos
+
+#### 2.10.6 Build e TestFlight
+
+- [ ] Gerar build iOS de producao: `eas build --platform ios --profile production`
+  - O EAS sobe automaticamente para o App Store Connect via TestFlight
+- [ ] Acessar TestFlight no App Store Connect e confirmar que o build apareceu
+- [ ] Testar via TestFlight em pelo menos 1 iPhone fisico (convite interno — sem precisar de aprovacao da Apple)
+- [ ] Verificar: login Google funciona no iPhone fisico
+- [ ] Verificar: login Apple funciona no iPhone fisico (Sign in with Apple)
+- [ ] Verificar: camera abre e lê QR Code corretamente
+- [ ] Verificar: copiar chave MoneYoung funciona
+- [ ] Verificar: transferencia completa funciona (ponta a ponta)
+
+#### 2.10.7 Submissao para Revisao
+
+- [ ] Selecionar o build do TestFlight na secao "Build" do app no App Store Connect
+- [ ] Preencher "Notas para o revisor da Apple" (em ingles):
+  - Explicar que e um app educacional de moeda virtual sem valor monetario real
+  - Informar que o login requer codigo de convite da escola (nao e aberto ao publico)
+  - Fornecer conta de teste: email e senha de um aluno de teste
+- [ ] Submeter para revisao: botao "Enviar para revisao"
+- [ ] Aguardar revisao da Apple (tipicamente 1 a 3 dias uteis)
+- [ ] Responder eventuais rejeicoes ou perguntas do time de revisao
+- [ ] Apos aprovacao: definir data de lancamento (imediato ou agendado)
+
 ---
 
 ## Fase 3 — Painel Web Admin Funcional
@@ -426,7 +516,7 @@
 - [ ] Contrato de manutencao mensal definido
 - [ ] Notificacoes push reais (Firebase/Expo Notifications)
 - [ ] Compartilhamento de comprovante real
-- [ ] Expansao para iOS (Apple Developer $99/ano)
+- [ ] Expansao para iOS — ver secao 2.10 para checklist completo
 - [ ] Autenticacao em dois fatores (2FA)
 - [ ] Biometria e reconhecimento facial
 - [ ] Novos colegios e expansao de usuarios
