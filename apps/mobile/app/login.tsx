@@ -47,6 +47,12 @@ async function handleSession() {
       .select("status,account_type")
       .eq("id", sess.session.user.id)
       .maybeSingle();
+    if (profile?.status === "deleted") {
+      sessionHandled = false;
+      await supabase.auth.signOut();
+      toast.error("Cadastro necessario", "Voce precisa de um codigo convite para acessar. Solicite o codigo da sua escola.");
+      return false;
+    }
     routeAfterProfile(profile);
     return true;
   } catch (err) {

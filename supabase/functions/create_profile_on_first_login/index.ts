@@ -22,6 +22,16 @@ Deno.serve(async (req) => {
       }
       return error("SERVER_ERROR", msg, 500);
     }
+
+    const { data: profile } = await serviceClient
+      .from("profiles")
+      .select("status")
+      .eq("id", user.id)
+      .single();
+    if (profile?.status === "deleted") {
+      return error("INVITE_REQUIRED", "Cadastro requer codigo convite. Solicite o codigo da sua escola.", 403);
+    }
+
     return json({ data });
   } catch (err) {
     if (err instanceof Response) return err;
