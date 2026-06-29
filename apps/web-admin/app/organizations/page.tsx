@@ -6,7 +6,8 @@ import { DataTable, StateMessage, StatusPill, type Column } from "../../src/comp
 import {
   createOrganization,
   creditOrgWallet,
-  deleteOrganization,
+  softDeleteOrganization,
+  purgeOrganization,
   linkOrganizationMember,
   listOrganizations,
   listOrgMembers,
@@ -28,6 +29,7 @@ const roleLabel: Record<string, string> = {
 
 export default function OrganizationsPage() {
   const [rows, setRows] = useState<Organization[]>([]);
+  const [showDeleted, setShowDeleted] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
@@ -46,7 +48,9 @@ export default function OrganizationsPage() {
   const [memberYoungKey, setMemberYoungKey] = useState("");
   const [memberRole, setMemberRole] = useState<OrganizationMemberRole>("student");
 
-  const [confirmDelete, setConfirmDelete] = useState<Organization | null>(null);
+  const [confirmDeactivate, setConfirmDeactivate] = useState<Organization | null>(null);
+  const [confirmPurge, setConfirmPurge] = useState<Organization | null>(null);
+  const [confirmPurgeText, setConfirmPurgeText] = useState("");
 
   const [pinOrg, setPinOrg] = useState<Organization | null>(null);
   const [pinValue, setPinValue] = useState("");
@@ -69,22 +73,16 @@ export default function OrganizationsPage() {
 
   useEffect(() => { load(); }, []);
 
+  const visibleRows = showDeleted ? rows : rows.filter((r) => r.status !== "deleted");
+
   async function handleCreate() {
-    if (!name.trim()) {
-      setError("Informe o nome da escola.");
-      return;
-    }
+    if (!name.trim()) { setError("Informe o nome da escola."); return; }
     const finalSlug = slug.trim() || name.trim().toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
-    setBusy("create");
-    setError("");
-    setNotice("");
-    setCreatedResult(null);
+    setBusy("create"); setError(""); setNotice(""); setCreatedResult(null);
     try {
       const result = await createOrganization(name.trim(), finalSlug, email.trim() || undefined);
       setCreatedResult(result);
-      setName("");
-      setSlug("");
-      setEmail("");
+      setName(""); setSlug(""); setEmail("");
       setNotice("Escola criada com sucesso!");
       await load();
     } catch (err) {
@@ -94,30 +92,43 @@ export default function OrganizationsPage() {
     }
   }
 
-  async function handleDelete(org: Organization) {
-    setBusy("delete");
-    setError("");
-    setNotice("");
+  async function handleDeactivate(org: Organization) {
+    setBusy("deactivate"); setError(""); setNotice("");
     try {
-      await deleteOrganization(org.id);
-      setConfirmDelete(null);
-      if (selectedOrg?.id === org.id) {
-        setSelectedOrg(null);
-        setMembers([]);
-      }
-      setNotice(`Escola "${org.name}" excluida.`);
+      await softDeleteOrganization(org.id);
+      setConfirmDeactivate(null);
+      if (selectedOrg?.id === org.id) { setSelectedOrg(null); setMembers([]); }
+      setNotice(`Escola "${org.name}" desativada. Dados visíveis ao banco.`);
       await load();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erro ao excluir escola.");
+      setError(err instanceof Error ? err.message : "Erro ao desativar escola.");
+    } finally {
+      setBusy("");
+    }
+  }
+
+  async function handlePurge(org: Organization) {
+    if (confirmPurgeText !== org.name) {
+      setError("Nome da escola não confere. Operação cancelada.");
+      return;
+    }
+    setBusy("purge"); setError(""); setNotice("");
+    try {
+      await purgeOrganization(org.id);
+      setConfirmPurge(null);
+      setConfirmPurgeText("");
+      if (selectedOrg?.id === org.id) { setSelectedOrg(null); setMembers([]); }
+      setNotice(`Dados de "${org.name}" apagados permanentemente.`);
+      await load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro ao limpar dados.");
     } finally {
       setBusy("");
     }
   }
 
   async function openMembers(org: Organization) {
-    setSelectedOrg(org);
-    setMembersLoading(true);
-    setError("");
+    setSelectedOrg(org); setMembersLoading(true); setError("");
     try {
       setMembers(await listOrgMembers(org.id));
     } catch (err) {
@@ -129,13 +140,8 @@ export default function OrganizationsPage() {
 
   async function handleLink() {
     if (!selectedOrg) return;
-    if (!memberYoungKey.trim()) {
-      setError("Informe a chave Moneyoung do usuario (ex: @ALN-joao1234).");
-      return;
-    }
-    setBusy("link");
-    setError("");
-    setNotice("");
+    if (!memberYoungKey.trim()) { setError("Informe a chave Moneyoung do usuario (ex: @ALN-joao1234)."); return; }
+    setBusy("link"); setError(""); setNotice("");
     try {
       await linkOrganizationMember(selectedOrg.id, memberYoungKey.trim(), memberRole);
       setMemberYoungKey("");
@@ -149,9 +155,7 @@ export default function OrganizationsPage() {
   }
 
   async function handleUnlink(member: OrgMember) {
-    setBusy("unlink");
-    setError("");
-    setNotice("");
+    setBusy("unlink"); setError(""); setNotice("");
     try {
       await unlinkOrgMember(member.id);
       setNotice(`${member.display_name ?? "Usuario"} desvinculado da escola.`);
@@ -164,9 +168,7 @@ export default function OrganizationsPage() {
   }
 
   async function handleChangeRole(member: OrgMember, newRole: OrganizationMemberRole) {
-    setBusy("role");
-    setError("");
-    setNotice("");
+    setBusy("role"); setError(""); setNotice("");
     try {
       await updateMemberRole(member.id, newRole);
       setNotice(`Funcao de ${member.display_name ?? "usuario"} alterada para ${roleLabel[newRole]}.`);
@@ -180,17 +182,11 @@ export default function OrganizationsPage() {
 
   async function handleSavePin() {
     if (!pinOrg) return;
-    if (!pinValue.trim() || pinValue.trim().length < 4) {
-      setError("O PIN deve ter pelo menos 4 digitos.");
-      return;
-    }
-    setBusy("pin");
-    setError("");
-    setNotice("");
+    if (!pinValue.trim() || pinValue.trim().length < 4) { setError("O PIN deve ter pelo menos 4 digitos."); return; }
+    setBusy("pin"); setError(""); setNotice("");
     try {
       await updateOrgAccessPin(pinOrg.id, pinValue.trim());
-      setPinOrg(null);
-      setPinValue("");
+      setPinOrg(null); setPinValue("");
       setNotice("PIN atualizado com sucesso!");
       await load();
     } catch (err) {
@@ -203,18 +199,11 @@ export default function OrganizationsPage() {
   async function handleCredit() {
     if (!creditOrg) return;
     const amount = Number(creditAmount);
-    if (!amount || amount <= 0) {
-      setError("Informe um valor valido.");
-      return;
-    }
-    setBusy("credit");
-    setError("");
-    setNotice("");
+    if (!amount || amount <= 0) { setError("Informe um valor valido."); return; }
+    setBusy("credit"); setError(""); setNotice("");
     try {
       await creditOrgWallet(creditOrg.id, amount, creditDesc.trim());
-      setCreditOrg(null);
-      setCreditAmount("");
-      setCreditDesc("");
+      setCreditOrg(null); setCreditAmount(""); setCreditDesc("");
       setNotice(`${amount} YC creditados para ${creditOrg.name}!`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erro ao creditar YC.");
@@ -224,7 +213,19 @@ export default function OrganizationsPage() {
   }
 
   const columns: Column<Organization>[] = [
-    { key: "name", header: "Nome da Escola" },
+    {
+      key: "name", header: "Nome da Escola",
+      render: (row) => (
+        <span>
+          {row.name}
+          {row.status === "deleted" && (
+            <span style={{ marginLeft: 8, fontSize: "0.72rem", background: "rgba(107,114,128,0.18)", color: "#9CA3AF", borderRadius: 4, padding: "1px 6px", fontWeight: 700 }}>
+              Excluída
+            </span>
+          )}
+        </span>
+      ),
+    },
     {
       key: "email", header: "Email",
       render: (row) => <span className="muted">{row.email || "—"}</span>,
@@ -251,26 +252,38 @@ export default function OrganizationsPage() {
     },
     {
       key: "id", header: "Acoes",
-      render: (row) => (
-        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-          <button className="secondary" style={{ fontSize: "0.8rem", padding: "4px 10px" }}
-            onClick={() => openMembers(row)}>
-            Membros
-          </button>
-          <button style={{ fontSize: "0.8rem", padding: "4px 10px" }}
-            onClick={() => { setCreditOrg(row); setCreditAmount(""); setCreditDesc(""); }}>
-            Creditar YC
-          </button>
-          <button className="secondary" style={{ fontSize: "0.8rem", padding: "4px 10px" }}
-            onClick={() => { setPinOrg(row); setPinValue(row.access_pin ?? ""); }}>
-            PIN
-          </button>
-          <button className="danger sm"
-            onClick={() => setConfirmDelete(row)}>
-            Excluir
-          </button>
-        </div>
-      ),
+      render: (row) => {
+        if (row.status === "deleted") {
+          return (
+            <button
+              className="danger sm"
+              style={{ fontSize: "0.8rem", padding: "4px 10px" }}
+              onClick={() => { setConfirmPurge(row); setConfirmPurgeText(""); }}>
+              Limpar Dados
+            </button>
+          );
+        }
+        return (
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            <button className="secondary" style={{ fontSize: "0.8rem", padding: "4px 10px" }}
+              onClick={() => openMembers(row)}>
+              Membros
+            </button>
+            <button style={{ fontSize: "0.8rem", padding: "4px 10px" }}
+              onClick={() => { setCreditOrg(row); setCreditAmount(""); setCreditDesc(""); }}>
+              Creditar YC
+            </button>
+            <button className="secondary" style={{ fontSize: "0.8rem", padding: "4px 10px" }}
+              onClick={() => { setPinOrg(row); setPinValue(row.access_pin ?? ""); }}>
+              PIN
+            </button>
+            <button className="danger sm"
+              onClick={() => setConfirmDeactivate(row)}>
+              Desativar
+            </button>
+          </div>
+        );
+      },
     },
   ];
 
@@ -390,8 +403,19 @@ export default function OrganizationsPage() {
         </section>
       )}
 
-      <h2 style={{ marginTop: 24 }}>Escolas Cadastradas</h2>
-      <DataTable rows={rows} columns={columns} loading={loading} error={loading ? undefined : error} />
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 24, marginBottom: 8 }}>
+        <h2 style={{ margin: 0 }}>Escolas Cadastradas</h2>
+        <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "0.88rem", color: "var(--text-secondary)", cursor: "pointer" }}>
+          <input
+            type="checkbox"
+            checked={showDeleted}
+            onChange={(e) => setShowDeleted(e.target.checked)}
+            style={{ width: "auto", minHeight: "auto", padding: 0 }}
+          />
+          Mostrar excluídas
+        </label>
+      </div>
+      <DataTable rows={visibleRows} columns={columns} loading={loading} error={loading ? undefined : error} />
 
       {selectedOrg && (
         <section className="panel" style={{ marginTop: 24 }}>
@@ -439,10 +463,7 @@ export default function OrganizationsPage() {
       )}
 
       {pinOrg && (
-        <div style={{
-          position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)",
-          display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000,
-        }}>
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
           <div className="panel" style={{ minWidth: 360, maxWidth: 480 }}>
             <h2>PIN de Acesso — {pinOrg.name}</h2>
             <p className="hint">Este PIN protege a aba Alunos na conta dos colaboradores.</p>
@@ -468,34 +489,20 @@ export default function OrganizationsPage() {
       )}
 
       {creditOrg && (
-        <div style={{
-          position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)",
-          display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000,
-        }}>
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
           <div className="panel" style={{ minWidth: 360, maxWidth: 480 }}>
             <h2>Creditar YC — {creditOrg.name}</h2>
             <p className="hint">Insira a quantia de Youngcoins para creditar na conta da escola.</p>
             <div style={{ margin: "12px 0", display: "flex", flexDirection: "column", gap: 8 }}>
               <div>
                 <label>Valor (YC)</label>
-                <input
-                  type="number"
-                  placeholder="Ex: 1000"
-                  value={creditAmount}
-                  onChange={(e) => setCreditAmount(e.target.value)}
-                  min="1"
-                  step="0.01"
-                  style={{ width: "100%" }}
-                />
+                <input type="number" placeholder="Ex: 1000" value={creditAmount}
+                  onChange={(e) => setCreditAmount(e.target.value)} min="1" step="0.01" style={{ width: "100%" }} />
               </div>
               <div>
                 <label>Descricao (opcional)</label>
-                <input
-                  placeholder="Ex: Credito mensal junho"
-                  value={creditDesc}
-                  onChange={(e) => setCreditDesc(e.target.value)}
-                  style={{ width: "100%" }}
-                />
+                <input placeholder="Ex: Credito mensal junho" value={creditDesc}
+                  onChange={(e) => setCreditDesc(e.target.value)} style={{ width: "100%" }} />
               </div>
             </div>
             <div style={{ display: "flex", gap: 8, marginTop: 16, justifyContent: "flex-end" }}>
@@ -508,21 +515,53 @@ export default function OrganizationsPage() {
         </div>
       )}
 
-      {confirmDelete && (
-        <div style={{
-          position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)",
-          display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000,
-        }}>
-          <div className="panel" style={{ minWidth: 360, maxWidth: 480 }}>
-            <h2>Excluir Escola</h2>
-            <p>Tem certeza que deseja excluir <strong>{confirmDelete.name}</strong>?</p>
-            <p style={{ color: "var(--danger)", fontSize: "0.9rem" }}>
-              Todos os vinculos de membros serao removidos. Esta acao nao pode ser desfeita.
+      {/* Modal: Desativar (soft-delete) */}
+      {confirmDeactivate && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
+          <div className="panel" style={{ minWidth: 360, maxWidth: 500 }}>
+            <h2>Desativar Escola</h2>
+            <p>Deseja desativar <strong>{confirmDeactivate.name}</strong>?</p>
+            <p style={{ color: "var(--warning)", fontSize: "0.9rem" }}>
+              A escola e todos os seus membros serão marcados como <strong>Excluída</strong>.
+              As transações continuam visíveis para o banco. O banco pode limpar os dados depois.
             </p>
             <div style={{ display: "flex", gap: 8, marginTop: 16, justifyContent: "flex-end" }}>
-              <button className="secondary" onClick={() => setConfirmDelete(null)} disabled={busy === "delete"}>Cancelar</button>
-              <button className="danger" onClick={() => handleDelete(confirmDelete)} disabled={busy === "delete"}>
-                {busy === "delete" ? "Excluindo..." : "Confirmar Exclusao"}
+              <button className="secondary" onClick={() => setConfirmDeactivate(null)} disabled={busy === "deactivate"}>Cancelar</button>
+              <button className="danger" onClick={() => handleDeactivate(confirmDeactivate)} disabled={busy === "deactivate"}>
+                {busy === "deactivate" ? "Desativando..." : "Confirmar Desativação"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Limpar Dados (hard purge) */}
+      {confirmPurge && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.75)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
+          <div className="panel" style={{ minWidth: 380, maxWidth: 520, border: "2px solid var(--danger)" }}>
+            <h2 style={{ color: "var(--danger)" }}>⚠ Limpar Dados — {confirmPurge.name}</h2>
+            <p style={{ color: "#FCA5A5" }}>
+              Esta ação <strong>apaga permanentemente</strong> a escola, todos os perfis de membros,
+              carteiras e dados relacionados. <strong>Não pode ser desfeita.</strong>
+            </p>
+            <p style={{ fontSize: "0.9rem", color: "var(--text-secondary)", marginBottom: 12 }}>
+              Digite o nome da escola para confirmar:
+            </p>
+            <input
+              placeholder={confirmPurge.name}
+              value={confirmPurgeText}
+              onChange={(e) => setConfirmPurgeText(e.target.value)}
+              style={{ width: "100%", marginBottom: 16 }}
+            />
+            <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+              <button className="secondary" onClick={() => { setConfirmPurge(null); setConfirmPurgeText(""); }} disabled={busy === "purge"}>
+                Cancelar
+              </button>
+              <button
+                className="danger"
+                onClick={() => handlePurge(confirmPurge)}
+                disabled={busy === "purge" || confirmPurgeText !== confirmPurge.name}>
+                {busy === "purge" ? "Limpando..." : "Apagar Tudo"}
               </button>
             </div>
           </div>
