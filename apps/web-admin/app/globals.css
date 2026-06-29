@@ -117,6 +117,7 @@ button.danger:hover { background: #DC2626; filter: none; transform: none; }
 .pill-blocked, .pill-failed, .pill-critical { background: rgba(239,68,68,0.15); color: var(--danger); }
 .pill-frozen, .pill-pending, .pill-medium { background: rgba(245,158,11,0.15); color: var(--warning); }
 .pill-reversed, .pill-high { background: rgba(182,75,0,0.15); color: #FB923C; }
+.pill-deleted, .pill-cancelled { background: rgba(107,114,128,0.15); color: #9CA3AF; border: 1px solid rgba(107,114,128,0.25); }
 .pill-personal { background: rgba(212,168,67,0.12); color: var(--gold); }
 .pill-business { background: rgba(230,81,0,0.15); color: #FB923C; }
 .pill-sub_business { background: rgba(106,27,154,0.15); color: #C084FC; }

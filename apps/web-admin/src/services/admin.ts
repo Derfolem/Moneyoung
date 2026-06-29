@@ -12,6 +12,8 @@ import type {
   Wallet,
   WalletStatus
 } from "@moneyoung/shared";
+
+export type OrgStatus = "active" | "blocked" | "pending" | "deleted";
 import { isSupabaseConfigured, supabase, supabaseConfigMessage } from "./supabase";
 
 export type AdminProfile = Pick<Profile, "id" | "email" | "display_name" | "role" | "status">;
@@ -25,7 +27,8 @@ export type Organization = {
   invite_code_staff: string | null;
   access_pin: string | null;
   owner_profile_id: string | null;
-  status: ProfileStatus;
+  status: OrgStatus;
+  deleted_at: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -341,21 +344,16 @@ export async function unlinkOrgMember(memberId: string): Promise<void> {
   if (error) throw new Error(error.message);
 }
 
-export async function deleteOrganization(orgId: string): Promise<void> {
-  const { error: membersError } = await supabase
-    .from("organization_members")
-    .delete()
-    .eq("organization_id", orgId);
-  if (membersError) throw new Error(membersError.message);
+export async function softDeleteOrganization(orgId: string): Promise<void> {
+  await invokeFunction("delete_organization", { org_id: orgId });
+}
 
-  const { error: walletsError } = await supabase
-    .from("wallets")
-    .delete()
-    .eq("organization_id", orgId);
-  if (walletsError) throw new Error(walletsError.message);
+export async function purgeOrganization(orgId: string): Promise<void> {
+  await invokeFunction("purge_data", { type: "organization", id: orgId });
+}
 
-  const { error } = await supabase.from("organizations").delete().eq("id", orgId);
-  if (error) throw new Error(error.message);
+export async function purgeProfile(profileId: string): Promise<void> {
+  await invokeFunction("purge_data", { type: "profile", id: profileId });
 }
 
 export async function listAuditLogs(filters: AuditFilters): Promise<AuditLog[]> {

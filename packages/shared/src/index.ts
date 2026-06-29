@@ -1,7 +1,7 @@
 export type AccountType = "personal" | "business" | "sub_business" | "system";
 export type ProfileRole = "common_user" | "organization_admin" | "bank_admin" | "super_admin";
-export type ProfileStatus = "active" | "blocked" | "pending";
-export type WalletStatus = "active" | "blocked" | "frozen";
+export type ProfileStatus = "active" | "blocked" | "pending" | "deleted";
+export type WalletStatus = "active" | "blocked" | "frozen" | "pending" | "deleted";
 export type TransactionType = "transfer" | "payment" | "reversal" | "initial_credit" | "admin_adjustment";
 export type TransactionStatus = "pending" | "completed" | "failed" | "reversed";
 export type SecuritySeverity = "low" | "medium" | "high" | "critical";

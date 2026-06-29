@@ -56,7 +56,18 @@ export function StateMessage({ title, detail, tone = "muted" }: { title: string;
 }
 
 export function StatusPill({ value }: { value: string }) {
-  return <span className={`pill pill-${value}`}>{value}</span>;
+  const labels: Record<string, string> = {
+    active: "Ativo",
+    blocked: "Bloqueado",
+    pending: "Pendente",
+    frozen: "Congelado",
+    deleted: "Excluído",
+    cancelled: "Cancelado",
+    completed: "Concluído",
+    failed: "Falhou",
+    reversed: "Revertido",
+  };
+  return <span className={`pill pill-${value}`}>{labels[value] ?? value}</span>;
 }
 
 function format(value: unknown) {
