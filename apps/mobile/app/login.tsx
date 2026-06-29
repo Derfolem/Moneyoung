@@ -1,6 +1,7 @@
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { Platform, StyleSheet, Text, TextInput, View } from "react-native";
+import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { Button } from "../src/components/Button";
 import { Screen } from "../src/components/Screen";
 import { TextLogo } from "../src/components/TextLogo";
@@ -102,35 +103,32 @@ export default function Login() {
     <Screen scroll={false} dust>
       <View style={styles.container}>
         <View style={styles.logoArea}>
-          <TextLogo size={40} />
-          <View style={styles.goldLine} />
-          <Text style={styles.tagline}>Sua carteira digital educacional</Text>
+          <TextLogo size={38} />
+          <Text style={styles.tagline}>Empreendedorismo + Educacao Financeira</Text>
         </View>
 
         <View style={styles.form}>
-          <TextInput
-            style={styles.input}
-            placeholder="E-mail"
-            placeholderTextColor={colors.textSecondary}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            editable={false}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Senha"
-            placeholderTextColor={colors.textSecondary}
-            secureTextEntry
-            editable={false}
-          />
+          <View style={styles.formTitleGroup}>
+            <Text style={styles.formTitle}>Bem-vindo(a)!</Text>
+            <Text style={styles.formSubtitle}>Faca login para continuar</Text>
+          </View>
+
           <Button title="Entrar" onPress={handleLogin} loading={loading} />
 
-          <Text style={styles.codeLink} onPress={() => router.push("/invite")}>Codigo Convite</Text>
-        </View>
+          <View style={styles.dividerRow}>
+            <View style={styles.divider} />
+            <Text style={styles.dividerText}>ou entre com</Text>
+            <View style={styles.divider} />
+          </View>
+          <View style={styles.socialRow}>
+            <Pressable style={styles.socialBtn} onPress={handleLogin}>
+              <Ionicons name="logo-google" size={18} color={colors.textPrimary} />
+              <Text style={styles.socialText}>Google</Text>
+            </Pressable>
+          </View>
 
-        <Text style={styles.footer}>
-          Sua carteira MoneYoung para aprender, enviar, receber e pagar com seguranca.
-        </Text>
+          <Text style={styles.codeLink} onPress={() => router.push("/invite")}>Ainda nao tem conta? <Text style={styles.codeLinkStrong}>Criar conta</Text></Text>
+        </View>
       </View>
     </Screen>
   );
@@ -141,57 +139,62 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     minHeight: 600,
-    gap: 40,
+    gap: 28,
   },
   logoArea: {
     alignItems: "center",
-    gap: 12,
-  },
-  goldLine: {
-    width: 60,
-    height: 2,
-    backgroundColor: colors.gold,
-    borderRadius: 1,
-    marginTop: 4,
-    shadowColor: colors.gold,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.6,
-    shadowRadius: 8,
+    gap: 10,
   },
   tagline: {
-    fontSize: 14,
-    color: colors.gold,
-    fontWeight: "600",
-    marginTop: 4,
+    fontSize: 12,
+    color: colors.goldLight,
+    fontWeight: "800",
   },
   form: {
-    gap: 14,
+    gap: 10,
   },
-  input: {
-    backgroundColor: colors.glass,
-    borderRadius: 16,
-    minHeight: 52,
-    paddingHorizontal: 18,
+  formTitleGroup: {
+    gap: 4,
+    marginBottom: 8,
+  },
+  formTitle: {
     color: colors.textPrimary,
-    fontSize: 16,
+    fontSize: 22,
+    fontWeight: "900",
+  },
+  formSubtitle: {
+    color: colors.textPrimary,
+    fontSize: 13,
+    fontWeight: "700",
+  },
+  dividerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginTop: 8,
+  },
+  divider: { flex: 1, height: 1, backgroundColor: colors.glassBorder },
+  dividerText: { color: colors.textSecondary, fontSize: 12 },
+  socialRow: { flexDirection: "row", gap: 10 },
+  socialBtn: {
+    flex: 1,
+    minHeight: 44,
+    borderRadius: 10,
     borderWidth: 1,
     borderColor: colors.glassBorder,
-    // @ts-ignore
-    backdropFilter: "blur(12px)",
-    // @ts-ignore
-    WebkitBackdropFilter: "blur(12px)",
+    backgroundColor: colors.input,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
   },
+  socialText: { color: colors.textPrimary, fontSize: 13, fontWeight: "800" },
   codeLink: {
-    color: colors.gold,
-    textAlign: "center",
-    fontSize: 14,
-    fontWeight: "700",
-    marginTop: 4,
-  },
-  footer: {
-    color: colors.textSecondary,
+    color: colors.textPrimary,
     textAlign: "center",
     fontSize: 13,
-    lineHeight: 20,
+    fontWeight: "700",
+    marginTop: 22,
   },
+  codeLinkStrong: { color: colors.goldLight, fontWeight: "900" },
 });
