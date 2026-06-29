@@ -9,6 +9,7 @@ import { TransactionRow } from "../src/components/TransactionRow";
 import { BottomNav } from "../src/components/BottomNav";
 import { GlassCard } from "../src/components/GlassCard";
 import { AmbientOrbs, GoldDust } from "../src/components/GoldDust";
+import { DisclaimerBar } from "../src/components/DisclaimerBar";
 import { getOrgWalletSummary } from "../src/services/moneyoung";
 import { signOut } from "../src/services/auth";
 import { colors } from "../src/theme/colors";
@@ -118,6 +119,7 @@ export default function OrgHome() {
           <Text style={styles.balanceValue}>{currency.format(data?.wallet?.balance ?? 0)}</Text>
           <Text style={styles.balanceKey}>{orgName}</Text>
         </GlassCard>
+        <DisclaimerBar />
 
         <View style={styles.actionsRow}>
           <Pressable style={styles.actionItem} onPress={() => router.push("/transfer")}>

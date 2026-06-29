@@ -5,7 +5,7 @@ import { colors } from "../theme/colors";
 export function DisclaimerBar() {
   return (
     <View style={styles.bar}>
-      <Ionicons name="alert-circle-outline" size={13} color={colors.gold} />
+      <Ionicons name="alert-circle-outline" size={12} color={colors.gold} />
       <Text style={styles.text}>
         YoungCoin (YC) é uma moeda educacional e não possui valor monetário real
       </Text>
@@ -17,13 +17,14 @@ const styles = StyleSheet.create({
   bar: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
     gap: 6,
-    paddingVertical: 7,
-    paddingHorizontal: 16,
-    backgroundColor: "rgba(217,154,38,0.08)",
-    borderTopWidth: 1,
-    borderTopColor: "rgba(217,154,38,0.20)",
+    marginTop: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    backgroundColor: "rgba(217,154,38,0.07)",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "rgba(217,154,38,0.18)",
   },
   text: {
     fontSize: 10,

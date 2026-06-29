@@ -11,6 +11,7 @@ import { BottomNav } from "../src/components/BottomNav";
 import { supabase } from "../src/services/supabase";
 import { toast } from "../src/services/toast";
 import { colors } from "../src/theme/colors";
+import { DisclaimerBar } from "../src/components/DisclaimerBar";
 
 export default function Receive() {
   const [youngKey, setYoungKey] = useState("");
@@ -79,6 +80,7 @@ export default function Receive() {
           </View>
         </View>
 
+        <DisclaimerBar />
         <Text style={styles.key}>{youngKey}</Text>
 
         <Pressable

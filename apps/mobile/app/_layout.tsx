@@ -5,7 +5,6 @@ import { useFonts, JosefinSans_700Bold } from "@expo-google-fonts/josefin-sans";
 import { isSupabaseConfigured, supabase } from "../src/services/supabase";
 import { hasActiveSession } from "../src/services/auth";
 import { ToastHost } from "../src/components/Toast";
-import { DisclaimerBar } from "../src/components/DisclaimerBar";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -61,10 +60,7 @@ export default function Layout() {
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={{ flex: 1 }}>
-        <Stack screenOptions={{ headerShown: false }} />
-      </View>
-      <DisclaimerBar />
+      <Stack screenOptions={{ headerShown: false }} />
       <ToastHost />
     </View>
   );

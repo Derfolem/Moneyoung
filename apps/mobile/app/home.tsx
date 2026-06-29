@@ -9,6 +9,7 @@ import { TransactionRow } from "../src/components/TransactionRow";
 import { BottomNav } from "../src/components/BottomNav";
 import { GlassCard } from "../src/components/GlassCard";
 import { AmbientOrbs, GoldDust } from "../src/components/GoldDust";
+import { DisclaimerBar } from "../src/components/DisclaimerBar";
 import { getWalletSummary } from "../src/services/moneyoung";
 import { signOut } from "../src/services/auth";
 import { supabase } from "../src/services/supabase";
@@ -141,6 +142,7 @@ export default function Home() {
           <Text style={styles.balanceValue}>{currency.format(summary?.wallet.balance ?? 0)}</Text>
           <Text style={styles.balanceKey}>{youngKey || getGreeting()}</Text>
         </GlassCard>
+        <DisclaimerBar />
 
         <View style={styles.actionsRow}>
           {quickActions.map((a) => (

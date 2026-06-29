@@ -9,6 +9,7 @@ import { getWalletSummary, getOrgWalletSummary, parseAmount, transferMoneyoung, 
 import { supabase } from "../src/services/supabase";
 import { toast } from "../src/services/toast";
 import { colors } from "../src/theme/colors";
+import { DisclaimerBar } from "../src/components/DisclaimerBar";
 
 export default function TransferConfirm() {
   const { to, amount, description } = useLocalSearchParams<{
@@ -78,6 +79,8 @@ export default function TransferConfirm() {
           <Text style={styles.amount}>{amount}</Text>
           <Text style={styles.suffix}>YC</Text>
         </View>
+
+        <DisclaimerBar />
 
         <View style={styles.divider} />
 

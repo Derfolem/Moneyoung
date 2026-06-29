@@ -20,6 +20,7 @@ import { PageHeader } from "../src/components/PageHeader";
 import { Screen } from "../src/components/Screen";
 import { BottomNav } from "../src/components/BottomNav";
 import { parseAmount, getSchoolContacts, SchoolContact } from "../src/services/moneyoung";
+import { DisclaimerBar } from "../src/components/DisclaimerBar";
 import { toast } from "../src/services/toast";
 import { colors } from "../src/theme/colors";
 
@@ -204,6 +205,7 @@ export default function Transfer() {
           placeholder="0,00"
           placeholderTextColor={colors.textSecondary}
         />
+        <DisclaimerBar />
 
         {/* Cards de transferências recentes */}
         {recentContacts.length > 0 && (
