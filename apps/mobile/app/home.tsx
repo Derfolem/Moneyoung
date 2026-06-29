@@ -117,6 +117,20 @@ export default function Home() {
           </Pressable>
         </View>
 
+        {/* Banner de educação financeira */}
+        <Pressable style={styles.eduBanner} onPress={() => {}}>
+          <View style={styles.eduBannerLeft}>
+            <Ionicons name="school-outline" size={20} color={colors.gold} />
+            <View>
+              <Text style={styles.eduBannerTitle}>Educacao Financeira</Text>
+              <Text style={styles.eduBannerSub}>Aprenda a gerir seu dinheiro</Text>
+            </View>
+          </View>
+          <View style={styles.eduBannerBadge}>
+            <Text style={styles.eduBannerBadgeText}>Em breve</Text>
+          </View>
+        </Pressable>
+
         <GlassCard glow style={styles.balanceCard}>
           <View style={styles.balanceHeader}>
             <Text style={styles.balanceLabel}>Saldo disponivel</Text>
@@ -278,4 +292,28 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   empty: { color: colors.textSecondary, textAlign: "center", paddingVertical: 18 },
+
+  eduBanner: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "rgba(217,154,38,0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(217,154,38,0.25)",
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+  },
+  eduBannerLeft: { flexDirection: "row", alignItems: "center", gap: 12, flex: 1 },
+  eduBannerTitle: { fontSize: 13, fontWeight: "900", color: colors.textPrimary },
+  eduBannerSub: { fontSize: 11, color: colors.textSecondary, marginTop: 2 },
+  eduBannerBadge: {
+    backgroundColor: "rgba(217,154,38,0.18)",
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderWidth: 1,
+    borderColor: "rgba(217,154,38,0.35)",
+  },
+  eduBannerBadgeText: { fontSize: 11, fontWeight: "800", color: colors.gold },
 });
