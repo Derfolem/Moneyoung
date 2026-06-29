@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
-import { LayoutDashboard, Users, WalletCards, ReceiptText, School, ShieldAlert, FileSearch, SlidersHorizontal, Settings, UserCheck, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, WalletCards, ReceiptText, School, ShieldAlert, FileSearch, SlidersHorizontal, Settings, UserCheck, LogOut, BellRing } from "lucide-react";
 import { requireAdminSession } from "../services/admin";
 import { isSupabaseConfigured, supabase, supabaseConfigMessage } from "../services/supabase";
 import { StateMessage } from "./DataTable";
@@ -17,6 +17,7 @@ const nav = [
   { href: "/approvals", label: "Aprovacoes", icon: UserCheck },
   { href: "/audit", label: "Auditoria", icon: FileSearch },
   { href: "/security-events", label: "Seguranca", icon: ShieldAlert },
+  { href: "/alerts", label: "Alertas", icon: BellRing },
   { href: "/limits", label: "Limites", icon: SlidersHorizontal },
   { href: "/settings", label: "Ajustes", icon: Settings }
 ];

@@ -348,3 +348,34 @@ export async function transferMoneyoung(payload: Omit<TransferPayload, "idempote
 export async function payMoneyoung(payload: Omit<TransferPayload, "idempotency_key">) {
   return moveMoneyoung(payload, "payment");
 }
+
+export async function reportError(params: {
+  screen: string;
+  action: string;
+  error_code?: string;
+  error_message: string;
+  metadata?: Record<string, unknown>;
+}): Promise<void> {
+  if (!isSupabaseConfigured) return;
+  try {
+    const url = process.env.EXPO_PUBLIC_SUPABASE_URL;
+    const anonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+    const { data: sessionData } = await supabase.auth.getSession();
+    const profileId = sessionData?.session?.user?.id ?? undefined;
+    await fetch(`${url}/functions/v1/report_client_error`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": anonKey!,
+        "Authorization": `Bearer ${anonKey}`,
+      },
+      body: JSON.stringify({
+        ...params,
+        profile_id: profileId,
+        platform: "mobile",
+      }),
+    });
+  } catch {
+    // Silencioso — não interrompe o fluxo do usuário
+  }
+}

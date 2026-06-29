@@ -112,6 +112,26 @@ c1ada00  feat(mobile): atalhos de valor na transferencia e ajustes visuais
 
 ---
 
+## Sessao 4 — Fix: Carteira de Colaboradores (noite, 2026-06-29)
+
+### Problema
+
+Transferencia de aluno para colaborador retornava 422. Causa raiz: colaboradores (`sub_business`) nao tinham carteira pessoal — `register_with_invite` so criava wallet para alunos (code_type='student').
+
+O RPC `transfer_youngcoin_tx` buscava `wallets WHERE profile_id = colaborador.id AND status = 'active'`, nao encontrava nada, lancava `DESTINATION_WALLET_NOT_FOUND`, e o edge function (v5) nao tratava esse erro especifico → fallthrough para catch-all → 422.
+
+### O que foi implementado
+
+**Migration `20260629200000_create_wallet_for_staff`:**
+- `INSERT INTO wallets` para todos os colaboradores (`account_type = 'sub_business'`) que nao tinham wallet — restaura acesso imediato
+- `CREATE OR REPLACE FUNCTION register_with_invite`: na criacao de novo perfil e na reativacao, cria `wallet_type = v_account_type` (personal para aluno, sub_business para colaborador)
+
+**Edge function `transfer_youngcoin` v6:**
+- Novo tratamento explicito de `DESTINATION_WALLET_NOT_FOUND` → 404 com mensagem clara em vez de 422 generico
+- Ordem de precedencia no `if/else`: `DESTINATION_WALLET_NOT_FOUND` antes de `DESTINATION_NOT_FOUND` para evitar substring match incorreto
+
+---
+
 ## Sessao 3 — Controles de Transferencia (noite, 2026-06-29)
 
 ### O que foi implementado
@@ -149,6 +169,12 @@ f89295e  feat: lista suspensa com busca + cards de recentes na transferencia
 ba6dc6c  feat: bloqueia transferencia entre alunos (personal → personal)
 ```
 
+### Commits da sessao 4
+
+```
+(pendente commit)  fix: carteira sub_business para colaboradores + edge function v6
+```
+
 ---
 
 ## Sessao 2 — Sistema de Exclusao e Purge (tarde, 2026-06-29)
@@ -175,9 +201,9 @@ c18eb5e  feat(admin): soft-delete e purge de orgs/contas com modais de confirmac
 
 ### Backend (Supabase)
 - Projeto ativo (regiao South America)
-- 17 migrations aplicadas
+- 18 migrations aplicadas
 - 8+ tabelas com RLS, 2 views enriquecidas
-- 15 Edge Functions deployadas (todas ACTIVE)
+- 15 Edge Functions deployadas (todas ACTIVE) — transfer_youngcoin em v6
 - Google OAuth configurado
 - 4 tipos de conta: personal, business, sub_business, system
 - Sistema completo de convite, cadastro, aprovacao, reativacao
@@ -199,6 +225,7 @@ c18eb5e  feat(admin): soft-delete e purge de orgs/contas com modais de confirmac
 - **NOVO:** Tela de transferencia com modal de busca por nome + cards de recentes (ate 5)
 - **NOVO:** Banner "Educacao Financeira — Em breve" na home do aluno
 - **NOVO:** Aviso YC sem valor monetario contextual (saldo, transferencia, QR code)
+- **FIX:** Transferencia para colaborador funciona — wallet sub_business criada para todos os colaboradores existentes
 
 ### Web Admin (Next.js)
 - Tema dark navy-black + gold

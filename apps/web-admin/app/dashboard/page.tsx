@@ -36,8 +36,9 @@ export default function DashboardPage() {
 
       <h2 style={{ marginTop: 20, marginBottom: 8, fontSize: 14, color: "var(--muted)" }}>Contas Ativas</h2>
       <div className="grid">
-        <Metric label="Alunos" value={summary?.active_students} loading={loading} />
+        <Metric label="Total de Usuarios" value={summary?.active_users} loading={loading} />
         <Metric label="Escolas" value={summary?.active_schools} loading={loading} />
+        <Metric label="Erros Hoje" value={summary?.app_errors_today} loading={loading} tone="danger" />
       </div>
 
       <h2 style={{ marginTop: 20, marginBottom: 8, fontSize: 14, color: "var(--muted)" }}>Transacoes</h2>
@@ -71,11 +72,24 @@ export default function DashboardPage() {
 
 const accountTypeLabel: Record<string, string> = { personal: "Aluno", business: "Empresa", sub_business: "Professor", system: "Admin" };
 
+function TxParty({ name, fallbackName, accountType, fallbackType }: { name: string | null; fallbackName?: string | null; accountType: string | null; fallbackType?: string | null }) {
+  const displayName = name ?? fallbackName ?? "-";
+  const displayType = name ? accountType : (fallbackType ?? accountType);
+  return <>{displayName}{displayType ? <span className={`pill pill-${displayType}`} style={{ marginLeft: 4 }}>{accountTypeLabel[displayType] ?? displayType}</span> : null}</>;
+}
+
 const transactionColumns: Column<LedgerTransaction>[] = [
   { key: "type", header: "tipo" },
   { key: "status", header: "status", render: (row) => <StatusPill value={row.status} /> },
-  { key: "from_display_name", header: "origem", render: (row) => <>{row.from_display_name ?? "-"}{row.from_account_type ? <span className={`pill pill-${row.from_account_type}`} style={{ marginLeft: 4 }}>{accountTypeLabel[row.from_account_type] ?? row.from_account_type}</span> : null}</> },
-  { key: "to_display_name", header: "destino", render: (row) => <>{row.to_display_name ?? "-"}{row.to_account_type ? <span className={`pill pill-${row.to_account_type}`} style={{ marginLeft: 4 }}>{accountTypeLabel[row.to_account_type] ?? row.to_account_type}</span> : null}</> },
+  { key: "from_display_name", header: "origem", render: (row) => (
+    <TxParty
+      name={row.from_display_name}
+      fallbackName={row.created_by_display_name}
+      accountType={row.from_account_type}
+      fallbackType={row.created_by_account_type}
+    />
+  )},
+  { key: "to_display_name", header: "destino", render: (row) => <TxParty name={row.to_display_name} accountType={row.to_account_type} /> },
   { key: "amount", header: "valor", render: (row) => currency.format(row.amount) },
   { key: "created_at", header: "data", render: (row) => new Date(row.created_at).toLocaleString("pt-BR") }
 ];

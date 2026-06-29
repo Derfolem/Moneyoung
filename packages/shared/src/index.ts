@@ -51,6 +51,9 @@ export type LedgerTransaction = {
   to_young_key: string | null;
   to_account_type: AccountType | null;
   to_role: string | null;
+  created_by_display_name: string | null;
+  created_by_young_key: string | null;
+  created_by_account_type: AccountType | null;
 };
 
 export const accountTypeLabels: Record<AccountType, string> = {

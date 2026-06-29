@@ -57,7 +57,14 @@ export default function TransactionsPage() {
               <tr key={tx.id}>
                 <td>{tx.type}</td>
                 <td><StatusPill value={tx.status} /></td>
-                <td>{tx.from_display_name ?? tx.from_wallet_id ?? "-"}{tx.from_account_type ? <span className={`pill pill-${tx.from_account_type}`} style={{ marginLeft: 4 }}>{accountTypeLabel[tx.from_account_type] ?? tx.from_account_type}</span> : null}</td>
+                <td>
+                  {(tx.from_display_name ?? tx.created_by_display_name ?? tx.from_wallet_id ?? "-")}
+                  {(tx.from_display_name ? tx.from_account_type : tx.created_by_account_type) && (
+                    <span className={`pill pill-${tx.from_display_name ? tx.from_account_type : tx.created_by_account_type}`} style={{ marginLeft: 4 }}>
+                      {accountTypeLabel[(tx.from_display_name ? tx.from_account_type : tx.created_by_account_type)!] ?? (tx.from_display_name ? tx.from_account_type : tx.created_by_account_type)}
+                    </span>
+                  )}
+                </td>
                 <td>{tx.to_display_name ?? tx.to_wallet_id ?? "-"}{tx.to_account_type ? <span className={`pill pill-${tx.to_account_type}`} style={{ marginLeft: 4 }}>{accountTypeLabel[tx.to_account_type] ?? tx.to_account_type}</span> : null}</td>
                 <td>{currency.format(tx.amount)}</td>
                 <td>{new Date(tx.created_at).toLocaleString("pt-BR")}</td>

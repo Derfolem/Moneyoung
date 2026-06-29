@@ -41,6 +41,7 @@ Deno.serve(async (req) => {
     if (rpcError) {
       const msg = rpcError.message ?? "";
       if (msg.includes("PEER_TRANSFER_BLOCKED")) return error("PEER_TRANSFER_BLOCKED", "Transferencias entre alunos nao sao permitidas. Envie para a chave da escola ou de um colaborador.", 403);
+      if (msg.includes("DESTINATION_WALLET_NOT_FOUND")) return error("NOT_FOUND", "Destinatario nao encontrado ou sem carteira ativa.", 404);
       if (msg.includes("DESTINATION_NOT_FOUND")) return error("NOT_FOUND", "Destinatario nao encontrado.", 404);
       if (msg.includes("INSUFFICIENT_FUNDS")) return error("INSUFFICIENT_FUNDS", "Saldo insuficiente.", 422);
       if (msg.includes("RATE_LIMITED")) return error("RATE_LIMITED", "Muitas transferencias. Aguarde.", 429);

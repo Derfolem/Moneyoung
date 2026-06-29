@@ -70,7 +70,7 @@ export type SecurityEvent = {
 
 export type DashboardSummary = {
   current_value: number;
-  active_students: number;
+  active_users: number;
   active_schools: number;
   transactions_today: number;
   transactions_month: number;
@@ -79,8 +79,22 @@ export type DashboardSummary = {
   total_wallets: number;
   blocked_wallets: number;
   critical_events: number;
+  app_errors_today: number;
   transactions_by_day: Record<string, number>;
   latest_transactions: LedgerTransaction[];
+};
+
+export type ClientErrorReport = {
+  id: string;
+  profile_id: string | null;
+  screen: string | null;
+  action: string | null;
+  error_code: string | null;
+  error_message: string;
+  platform: string;
+  app_version: string | null;
+  metadata: Record<string, unknown>;
+  created_at: string;
 };
 
 export type AccountsFilters = {
@@ -384,6 +398,16 @@ export async function listSecurityEvents(filters: SecurityFilters): Promise<Secu
   const { data, error } = await request;
   if (error) throw new Error(error.message);
   return (data ?? []) as SecurityEvent[];
+}
+
+export async function listClientErrors(): Promise<ClientErrorReport[]> {
+  const { data, error } = await supabase
+    .from("client_error_reports")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(300);
+  if (error) throw new Error(error.message);
+  return (data ?? []) as ClientErrorReport[];
 }
 
 export async function listTransferLimits(): Promise<TransferLimit[]> {

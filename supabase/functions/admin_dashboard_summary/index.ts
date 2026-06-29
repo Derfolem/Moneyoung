@@ -14,7 +14,7 @@ Deno.serve(async (req) => {
 
     const [
       walletBalances,
-      activeStudents,
+      activeUsers,
       activeSchools,
       txToday,
       txMonth,
@@ -25,10 +25,14 @@ Deno.serve(async (req) => {
       criticalEvents,
       latestEnriched,
       txSeries,
+      appErrorsToday,
     ] = await Promise.all([
       serviceClient.from("wallets").select("balance").eq("status", "active"),
-      serviceClient.from("profiles").select("id", { count: "exact", head: true }).eq("account_type", "personal").eq("status", "active"),
-      serviceClient.from("profiles").select("id", { count: "exact", head: true }).eq("account_type", "business").eq("status", "active"),
+      // Total de usuários: alunos (personal) + colaboradores (sub_business)
+      serviceClient.from("profiles").select("id", { count: "exact", head: true })
+        .in("account_type", ["personal", "sub_business"]).eq("status", "active"),
+      // Escolas: conta da tabela organizations (não profiles)
+      serviceClient.from("organizations").select("id", { count: "exact", head: true }).eq("status", "active"),
       serviceClient.from("transactions").select("id", { count: "exact", head: true }).gte("created_at", todayStart),
       serviceClient.from("transactions").select("id", { count: "exact", head: true }).gte("created_at", monthStart),
       serviceClient.from("transactions").select("id", { count: "exact", head: true }).gte("created_at", yearStart),
@@ -38,6 +42,8 @@ Deno.serve(async (req) => {
       serviceClient.from("security_events").select("id", { count: "exact", head: true }).in("severity", ["high", "critical"]),
       serviceClient.from("enriched_transactions").select("*").order("created_at", { ascending: false }).limit(10),
       serviceClient.from("transactions").select("created_at").order("created_at", { ascending: false }).limit(500),
+      // Erros do app hoje
+      serviceClient.from("client_error_reports").select("id", { count: "exact", head: true }).gte("created_at", todayStart),
     ]);
 
     const currentValue = (walletBalances.data ?? []).reduce((sum, w) => sum + Number(w.balance), 0);
@@ -50,7 +56,7 @@ Deno.serve(async (req) => {
 
     return json({
       current_value: currentValue,
-      active_students: activeStudents.count ?? 0,
+      active_users: activeUsers.count ?? 0,
       active_schools: activeSchools.count ?? 0,
       transactions_today: txToday.count ?? 0,
       transactions_month: txMonth.count ?? 0,
@@ -59,6 +65,7 @@ Deno.serve(async (req) => {
       total_wallets: totalWallets.count ?? 0,
       blocked_wallets: blockedWallets.count ?? 0,
       critical_events: criticalEvents.count ?? 0,
+      app_errors_today: appErrorsToday.count ?? 0,
       transactions_by_day: byDay,
       latest_transactions: latestEnriched.data ?? [],
     });
