@@ -2,16 +2,18 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
+  Dimensions,
   FlatList,
   Keyboard,
   Modal,
   Pressable,
-  SafeAreaView,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from "react-native";
+
+const SCREEN_HEIGHT = Dimensions.get("window").height;
 import { Ionicons } from "@expo/vector-icons";
 import { Button } from "../src/components/Button";
 import { PageHeader } from "../src/components/PageHeader";
@@ -286,25 +288,33 @@ export default function Transfer() {
         />
       </Screen>
 
-      {/* Modal de busca */}
+      {/* Bottom sheet de busca */}
       <Modal
         visible={modalVisible}
         animationType="slide"
+        transparent
         onRequestClose={closeModal}
         statusBarTranslucent
       >
-        <SafeAreaView style={styles.modalRoot}>
-          {/* Cabeçalho do modal */}
+        {/* Backdrop */}
+        <Pressable style={styles.backdrop} onPress={closeModal} />
+
+        {/* Painel */}
+        <View style={styles.sheet}>
+          {/* Handle */}
+          <View style={styles.sheetHandle} />
+
+          {/* Cabeçalho */}
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>{contactsLabel}</Text>
             <Pressable onPress={closeModal} style={styles.modalClose}>
-              <Ionicons name="close" size={22} color={colors.textPrimary} />
+              <Ionicons name="close" size={20} color={colors.textPrimary} />
             </Pressable>
           </View>
 
           {/* Campo de busca */}
           <View style={styles.searchBar}>
-            <Ionicons name="search" size={16} color={colors.textSecondary} />
+            <Ionicons name="search" size={15} color={colors.textSecondary} />
             <TextInput
               ref={searchRef}
               style={styles.searchInput}
@@ -313,11 +323,10 @@ export default function Transfer() {
               value={searchQuery}
               onChangeText={setSearchQuery}
               autoCapitalize="none"
-              clearButtonMode="while-editing"
             />
             {searchQuery.length > 0 && (
               <Pressable onPress={() => setSearchQuery("")}>
-                <Ionicons name="close-circle" size={16} color={colors.textSecondary} />
+                <Ionicons name="close-circle" size={15} color={colors.textSecondary} />
               </Pressable>
             )}
           </View>
@@ -329,19 +338,17 @@ export default function Transfer() {
               : `${contacts.length} ${contactsLabel.toLowerCase()}`}
           </Text>
 
-          {/* Lista de contatos */}
+          {/* Lista */}
           {loadingContacts ? (
             <View style={styles.loadingCenter}>
-              <ActivityIndicator color={colors.gold} size="large" />
+              <ActivityIndicator color={colors.gold} />
               <Text style={styles.loadingText}>Carregando contatos...</Text>
             </View>
           ) : filtered.length === 0 ? (
             <View style={styles.loadingCenter}>
-              <Ionicons name="person-outline" size={40} color={colors.textSecondary} />
+              <Ionicons name="person-outline" size={36} color={colors.textSecondary} />
               <Text style={styles.emptyText}>
-                {searchQuery
-                  ? `Nenhum resultado para "${searchQuery}"`
-                  : "Nenhum contato disponivel."}
+                {searchQuery ? `Sem resultados para "${searchQuery}"` : "Nenhum contato disponivel."}
               </Text>
             </View>
           ) : (
@@ -360,7 +367,7 @@ export default function Transfer() {
               ItemSeparatorComponent={() => <View style={styles.separator} />}
             />
           )}
-        </SafeAreaView>
+        </View>
       </Modal>
 
       <BottomNav />
@@ -483,47 +490,66 @@ const styles = StyleSheet.create({
   },
   shortcutText: { color: colors.textPrimary, fontWeight: "900", fontSize: 13 },
 
-  // Modal
-  modalRoot: { flex: 1, backgroundColor: colors.navyDeep },
+  // Bottom sheet
+  backdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.55)",
+  },
+  sheet: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: SCREEN_HEIGHT * 0.72,
+    backgroundColor: colors.navyCard,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    overflow: "hidden",
+  },
+  sheetHandle: {
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: colors.glassBorder,
+    alignSelf: "center",
+    marginTop: 10,
+    marginBottom: 4,
+  },
   modalHeader: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingTop: 16,
-    paddingBottom: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.glassBorder,
+    paddingHorizontal: 18,
+    paddingTop: 8,
+    paddingBottom: 10,
   },
-  modalTitle: { fontSize: 17, fontWeight: "900", color: colors.textPrimary },
+  modalTitle: { fontSize: 15, fontWeight: "900", color: colors.textPrimary },
   modalClose: { padding: 4 },
 
   searchBar: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
-    marginHorizontal: 16,
-    marginTop: 14,
-    marginBottom: 4,
+    gap: 8,
+    marginHorizontal: 14,
+    marginBottom: 6,
     backgroundColor: colors.input,
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
     borderWidth: 1,
     borderColor: colors.glassBorder,
   },
-  searchInput: { flex: 1, fontSize: 15, color: colors.textPrimary, padding: 0 },
+  searchInput: { flex: 1, fontSize: 14, color: colors.textPrimary, padding: 0 },
 
   contactCount: {
-    fontSize: 12,
+    fontSize: 11,
     color: colors.textSecondary,
-    marginHorizontal: 20,
-    marginTop: 8,
+    marginHorizontal: 18,
     marginBottom: 4,
     fontWeight: "600",
   },
 
-  modalList: { paddingHorizontal: 16, paddingBottom: 20 },
+  modalList: { paddingHorizontal: 14, paddingBottom: 16 },
 
   // Linha de contato na lista
   contactRow: {
