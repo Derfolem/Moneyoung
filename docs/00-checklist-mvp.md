@@ -299,6 +299,7 @@
 - [x] Mobile reportError() em moneyoung.ts: funcao assíncrona silenciosa para relato de erros nas telas (2026-06-29)
 - [x] Pagina /alerts no painel admin: tabela com todos os erros do app, filtro por plataforma e tela (2026-06-29)
 - [x] Menu admin: novo item "Alertas" com icone de sino (BellRing) (2026-06-29)
+- [x] suppressHydrationWarning no layout.tsx do web-admin: elimina warning de extensoes de browser no console (2026-06-29)
 
 ### 3.2 Testes Funcionais Admin
 

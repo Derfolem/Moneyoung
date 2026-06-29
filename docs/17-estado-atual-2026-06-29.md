@@ -238,6 +238,7 @@ c18eb5e  feat(admin): soft-delete e purge de orgs/contas com modais de confirmac
 - **FIX:** Dashboard: "Escolas" corrigido (organizations); "Alunos" → "Total de Usuarios" (personal + sub_business)
 - **FIX:** Transacoes: nome do professor como origem + nome da escola como destino; badge "Escola" em vez de "Empresa"
 - **NOVO:** Pagina /alerts com todos os erros do app; metrica "Erros Hoje" no dashboard
+- **FIX:** suppressHydrationWarning no layout.tsx — elimina warning de extensoes de browser (LanguageTool, etc.)
 
 ---
 
