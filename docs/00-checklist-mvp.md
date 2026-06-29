@@ -259,11 +259,26 @@
 - [x] Web admin: definir/alterar PIN da escola (2026-06-24)
 - [x] Web admin: alterar role de membro (aluno → professor/funcionario/diretor) (2026-06-24)
 
+### 3.1d Sistema de Exclusao e Purge de Dados (2026-06-29)
+
+- [x] Migration: organizations.status e wallets.status aceitam 'deleted'; organization_members.status aceita 'deleted'; colunas deleted_at em organizations e profiles (2026-06-29)
+- [x] RPC soft_delete_organization: marca org + todos os membros + wallets + organization_members como deleted; transacoes preservadas intactas (2026-06-29)
+- [x] RPC hard_purge_organization: elimina todos os dados permanentemente (nullifica FKs em transactions antes de deletar wallets/profiles) (2026-06-29)
+- [x] RPC hard_purge_profile: elimina perfil individual e todos os dados permanentemente (2026-06-29)
+- [x] Edge Function delete_organization (soft-delete via banco) e purge_data (hard-purge org ou perfil) — deployadas (2026-06-29)
+- [x] Web admin — organizacoes: botao "Desativar" (soft-delete) com aviso amarelo; botao "Limpar Dados" (purge) com confirmacao digitando o nome; badge "Excluida" inline; toggle "Mostrar excluidas" (2026-06-29)
+- [x] Web admin — contas: coluna Acoes com "Limpar Dados" para contas deleted; modal exige digitar o email; filtro por status deleted (2026-06-29)
+- [x] StatusPill com labels em pt-BR: Ativo, Bloqueado, Pendente, Excluido, Cancelado; pill-deleted e pill-cancelled no CSS (2026-06-29)
+- [x] Bloqueio universal de contas deleted: create_profile_on_first_login, get_wallet_summary, org_wallet_summary com pre-check; assertActiveProfile em transfer_youngcoin, transfer_from_org, request_cancellation (2026-06-29)
+- [x] Login: conta deleted recebe mesma mensagem "Cadastro necessario" que usuario sem convite; signOut automatico (2026-06-29)
+- [x] Reativacao via convite: perfil deleted pode se recadastrar com novo invite code (perfil reativado com novos dados, wallet e historico de transacoes preservados) (2026-06-29)
+- [x] Fix navegacao: useFocusEffect em home/org-home recarrega ao voltar — evita exibir perfil antigo apos signOut (2026-06-29)
+
 ### 3.2 Testes Funcionais Admin
 
 - [x] Login admin → Dashboard com dados reais (2026-06-24 — 3 wallets, 3 profiles, 1 org, metricas OK)
 - [x] Criar organizacao (colegio) pelo painel (2026-06-24 — "escola teste" com email e codigos convite)
-- [ ] Excluir organizacao pelo painel (requer teste via browser)
+- [x] Excluir (desativar) organizacao pelo painel e verificar bloqueio de acesso (2026-06-29 — soft-delete confirmado, alunos e professor bloqueados no app)
 - [x] Bloquear wallet de um usuario → verificar que nao consegue transferir (2026-06-24 — transferencia bloqueada corretamente)
 - [x] Desbloquear wallet → verificar que volta a funcionar (2026-06-24 — status retornou a active)
 - [x] Estornar transacao → verificar que saldo retorna (2026-06-24 — saldo correto, transacao marcada reversed)
@@ -402,10 +417,10 @@
 | 0 - Estrutura e Identidade | ✅ Concluida | 14 | 14 |
 | 1 - Backend Supabase | ✅ Concluida | 22 | 22 |
 | 2 - App Mobile Funcional | 🔄 Em andamento | 92 | 83 |
-| 3 - Painel Web Admin | 🔄 Em andamento | 57 | 54 |
+| 3 - Painel Web Admin | 🔄 Em andamento | 69 | 66 |
 | 4 - Preparacao 400 Alunos | 🔄 Em andamento | 37 | 22 |
 | 5 - Lancamento | ⬜ Pendente | 13 | 0 |
-| **Total MVP** | **Em andamento** | **235** | **195** |
+| **Total MVP** | **Em andamento** | **247** | **207** |
 
 ---
 
@@ -426,4 +441,4 @@
 ---
 
 *Ultima atualizacao: 2026-06-29*
-*Concluido: 195/235 itens (83%). Redesign visual v4 aplicado (paleta do mockup #00070D + #D99A26, login simplificado, BottomNav YC central, atalhos de valor, ordenacao por data). Falta: excluir org e CSV via browser, build Android, infra Pro, dados iniciais, onboarding e lancamento.*
+*Concluido: 207/247 itens (84%). Sistema de exclusao e purge implementado (soft-delete org/membros, hard-purge permanente, bloqueio universal de login, reativacao via convite). Falta: CSV via browser, build Android, infra Pro, dados iniciais, onboarding e lancamento.*
