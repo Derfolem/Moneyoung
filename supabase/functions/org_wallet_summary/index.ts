@@ -7,6 +7,14 @@ Deno.serve(async (req) => {
   try {
     const { user, serviceClient } = await requireUser(req);
 
+    const { data: profile, error: profileErr } = await serviceClient
+      .from("profiles")
+      .select("status")
+      .eq("id", user.id)
+      .single();
+    if (profileErr || !profile) return error("NOT_FOUND", "Perfil nao encontrado.", 404);
+    if (profile.status === "deleted") return error("ACCOUNT_DELETED", "Esta conta foi desativada.", 403);
+
     const { data: membership, error: memErr } = await serviceClient
       .from("organization_members")
       .select("organization_id, member_role")
