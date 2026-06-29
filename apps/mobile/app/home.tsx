@@ -6,7 +6,6 @@ import { StatusBar } from "expo-status-bar";
 import { currency, WalletSummary } from "@moneyoung/shared";
 import { StateView } from "../src/components/StateView";
 import { TransactionRow } from "../src/components/TransactionRow";
-import { TextLogo } from "../src/components/TextLogo";
 import { BottomNav } from "../src/components/BottomNav";
 import { GlassCard } from "../src/components/GlassCard";
 import { AmbientOrbs, GoldDust } from "../src/components/GoldDust";
@@ -25,10 +24,12 @@ function getGreeting(): string {
 
 const quickActions = [
   { icon: "swap-horizontal" as const, label: "Transferir", route: "/transfer" },
-  { icon: "card-outline" as const, label: "Pagar", route: "/pay" },
   { icon: "download-outline" as const, label: "Receber", route: "/receive" },
-  { icon: "document-text-outline" as const, label: "Extrato", route: "/statement" },
 ];
+
+function newestFirst(txs: WalletSummary["recent_transactions"]) {
+  return [...txs].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+}
 
 export default function Home() {
   const [summary, setSummary] = useState<WalletSummary | null>(null);
@@ -96,40 +97,35 @@ export default function Home() {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => load(true)} tintColor={colors.gold} />}
       >
         <View style={styles.header}>
-          <TextLogo size={24} />
-          <View style={styles.headerRight}>
-            <Pressable onPress={() => router.push("/notifications")} style={styles.iconBtn}>
-              <Ionicons name="notifications-outline" size={22} color={colors.gold} />
-            </Pressable>
+          <View style={styles.identity}>
             <Pressable onPress={() => router.push("/profile")} style={styles.avatar}>
               <Text style={styles.avatarText}>{name.charAt(0).toUpperCase()}</Text>
             </Pressable>
+            <View>
+              <Text style={styles.greeting}>Ola, {name.split(" ")[0]}!</Text>
+              <Text style={styles.role}>Aluno</Text>
+            </View>
           </View>
+          <Pressable onPress={() => router.push("/notifications")} style={styles.iconBtn}>
+            <Ionicons name="notifications-outline" size={22} color={colors.textPrimary} />
+            <View style={styles.notificationDot} />
+          </Pressable>
         </View>
 
-        <Text style={styles.greeting}>{getGreeting()}, <Text style={styles.greetingName}>{name}</Text></Text>
-
         <GlassCard glow style={styles.balanceCard}>
-          <Text style={styles.balanceLabel}>Saldo disponivel</Text>
-          <Text style={styles.balanceValue}>{currency.format(summary?.wallet.balance ?? 0)}</Text>
-          <Text style={styles.balanceKey}>{youngKey}</Text>
-
-          <View style={styles.tabRow}>
-            <Pressable style={styles.tab} onPress={() => router.push("/transfer")}>
-              <Ionicons name="arrow-up-outline" size={18} color={colors.gold} />
-              <Text style={styles.tabText}>Enviar</Text>
-            </Pressable>
-            <View style={styles.tabDivider} />
-            <Pressable style={styles.tab} onPress={() => router.push("/receive")}>
-              <Ionicons name="arrow-down-outline" size={18} color={colors.gold} />
-              <Text style={styles.tabText}>Receber</Text>
+          <View style={styles.balanceHeader}>
+            <Text style={styles.balanceLabel}>Saldo disponivel</Text>
+            <Pressable onPress={() => router.push("/statement")}>
+              <Text style={styles.balanceLink}>Ver extrato</Text>
             </Pressable>
           </View>
+          <Text style={styles.balanceValue}>{currency.format(summary?.wallet.balance ?? 0)}</Text>
+          <Text style={styles.balanceKey}>{youngKey || getGreeting()}</Text>
         </GlassCard>
 
         <View style={styles.actionsRow}>
           {quickActions.map((a) => (
-            <Pressable key={a.route} style={styles.actionItem} onPress={() => router.push(a.route)}>
+            <Pressable key={`${a.label}-${a.route}`} style={styles.actionItem} onPress={() => router.push(a.route)}>
               <View style={styles.actionCircle}>
                 <Ionicons name={a.icon} size={22} color={colors.gold} />
               </View>
@@ -141,13 +137,13 @@ export default function Home() {
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Ultimas transacoes</Text>
           <Pressable onPress={() => router.push("/statement")}>
-            <Text style={styles.seeAll}>Ver tudo</Text>
+            <Text style={styles.seeAll}>Ver todas &gt;</Text>
           </Pressable>
         </View>
 
         {summary?.recent_transactions.length ? (
           <View style={styles.txList}>
-            {summary.recent_transactions.slice(0, 5).map((tx) => (
+            {newestFirst(summary.recent_transactions).slice(0, 5).map((tx) => (
               <TransactionRow key={tx.id} tx={tx} walletId={summary.wallet.id} />
             ))}
           </View>
@@ -165,7 +161,14 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.navyDeep },
   body: { flex: 1, justifyContent: "center", padding: 24 },
   scroll: { flex: 1 },
-  scrollContent: { padding: 20, paddingBottom: 16, gap: 18 },
+  scrollContent: {
+    width: "100%",
+    maxWidth: 430,
+    alignSelf: "center",
+    padding: 20,
+    paddingBottom: 16,
+    gap: 18,
+  },
 
   header: {
     flexDirection: "row",
@@ -173,24 +176,36 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 8,
   },
-  headerRight: { flexDirection: "row", alignItems: "center", gap: 12 },
+  identity: { flexDirection: "row", alignItems: "center", gap: 12 },
   iconBtn: {
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: colors.glass,
+    backgroundColor: "transparent",
     alignItems: "center",
     justifyContent: "center",
+    position: "relative",
+  },
+  notificationDot: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: colors.danger,
     borderWidth: 1,
-    borderColor: colors.glassBorder,
+    borderColor: colors.navyDeep,
   },
   avatar: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
     backgroundColor: colors.gold,
     alignItems: "center",
     justifyContent: "center",
+    borderWidth: 2,
+    borderColor: colors.goldLight,
     shadowColor: colors.gold,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.35,
@@ -198,15 +213,20 @@ const styles = StyleSheet.create({
   },
   avatarText: { color: colors.navyDeep, fontWeight: "900", fontSize: 15 },
 
-  greeting: { fontSize: 16, color: colors.textSecondary },
-  greetingName: { color: colors.textPrimary, fontWeight: "800" },
+  greeting: { fontSize: 15, color: colors.textPrimary, fontWeight: "900" },
+  role: { color: colors.textSecondary, fontSize: 12, marginTop: 2 },
 
   balanceCard: {
-    gap: 6,
+    gap: 8,
+    minHeight: 110,
+    justifyContent: "center",
+    backgroundColor: "rgba(31,32,27,0.74)",
   },
-  balanceLabel: { color: colors.textSecondary, fontSize: 13 },
+  balanceHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  balanceLabel: { color: colors.textPrimary, fontSize: 13 },
+  balanceLink: { color: colors.goldLight, fontSize: 12, fontWeight: "800" },
   balanceValue: {
-    color: colors.gold,
+    color: colors.textPrimary,
     fontSize: 34,
     fontWeight: "900",
     marginVertical: 2,
@@ -214,52 +234,43 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 12,
   },
-  balanceKey: { color: colors.textSecondary, fontSize: 13, fontWeight: "600" },
-  tabRow: {
-    flexDirection: "row",
-    marginTop: 14,
-    borderTopWidth: 1,
-    borderTopColor: colors.glassBorder,
-    paddingTop: 14,
-  },
-  tab: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-  },
-  tabDivider: { width: 1, height: 24, backgroundColor: colors.glassBorder },
-  tabText: { color: colors.gold, fontSize: 14, fontWeight: "700" },
+  balanceKey: { color: colors.textSecondary, fontSize: 12, fontWeight: "600" },
 
   actionsRow: {
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
   },
-  actionItem: { alignItems: "center", gap: 6 },
+  actionItem: { alignItems: "center", gap: 7, flex: 1 },
   actionCircle: {
-    width: 54,
-    height: 54,
-    borderRadius: 27,
-    backgroundColor: colors.glass,
+    width: 48,
+    height: 48,
+    borderRadius: 14,
+    backgroundColor: colors.input,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
     borderColor: colors.glassBorder,
     shadowColor: colors.gold,
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.14,
     shadowRadius: 8,
   },
-  actionLabel: { fontSize: 11, color: colors.textSecondary, fontWeight: "600" },
+  actionLabel: { fontSize: 11, color: colors.textPrimary, fontWeight: "700" },
 
   sectionHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
-  sectionTitle: { fontSize: 18, fontWeight: "900", color: colors.textPrimary },
-  seeAll: { color: colors.gold, fontWeight: "700", fontSize: 13 },
-  txList: { gap: 8 },
+  sectionTitle: { fontSize: 16, fontWeight: "900", color: colors.textPrimary },
+  seeAll: { color: colors.goldLight, fontWeight: "800", fontSize: 12 },
+  txList: {
+    gap: 0,
+    backgroundColor: colors.glass,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: colors.glassBorder,
+    overflow: "hidden",
+  },
   empty: { color: colors.textSecondary, textAlign: "center", paddingVertical: 18 },
 });
