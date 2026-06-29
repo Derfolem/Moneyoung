@@ -1,5 +1,5 @@
-import { router } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import { useCallback, useRef, useState } from "react";
 import { Animated, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
@@ -67,7 +67,7 @@ export default function Home() {
     }
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useFocusEffect(useCallback(() => { load(); }, [load]));
 
   if (loading && !summary) {
     return (
