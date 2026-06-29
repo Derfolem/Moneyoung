@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { currency, LedgerTransaction } from "@moneyoung/shared";
+import { GlassCard } from "../src/components/GlassCard";
 import { PageHeader } from "../src/components/PageHeader";
 import { Screen } from "../src/components/Screen";
 import { StateView } from "../src/components/StateView";
@@ -12,6 +13,10 @@ import { colors } from "../src/theme/colors";
 
 type Filter = "all" | "in" | "out";
 const filterLabels: Record<Filter, string> = { all: "Tudo", in: "Entradas", out: "Saidas" };
+
+function newestFirst(txs: LedgerTransaction[]) {
+  return [...txs].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+}
 
 export default function Statement() {
   const [walletId, setWalletId] = useState("");
@@ -39,12 +44,12 @@ export default function Statement() {
         const org = await getOrgWalletSummary();
         setWalletId(org.wallet.id);
         setBalance(org.wallet.balance);
-        setTxs(org.recent_transactions ?? []);
+        setTxs(newestFirst(org.recent_transactions ?? []));
       } else {
         const s = await getWalletSummary();
         setWalletId(s.wallet.id);
         setBalance(s.wallet.balance);
-        setTxs(s.recent_transactions ?? []);
+        setTxs(newestFirst(s.recent_transactions ?? []));
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Nao foi possivel carregar o extrato.");
@@ -53,11 +58,11 @@ export default function Statement() {
     }
   }
 
-  const filtered = txs.filter(
+  const filtered = newestFirst(txs.filter(
     (tx) =>
       filter === "all" ||
       (filter === "in" ? tx.to_wallet_id === walletId : tx.from_wallet_id === walletId)
-  );
+  ));
 
   if (loading) {
     return (
@@ -83,10 +88,10 @@ export default function Statement() {
     <View style={styles.rootWrap}>
       <Screen>
         <PageHeader title="Extrato" />
-        <View style={styles.balanceSummary}>
+        <GlassCard glow style={styles.balanceSummary}>
           <Text style={styles.balanceLabel}>Saldo atual</Text>
           <Text style={styles.balanceValue}>{currency.format(balance)}</Text>
-        </View>
+        </GlassCard>
 
         <View style={styles.filters}>
           {(["all", "in", "out"] as Filter[]).map((item) => (
@@ -117,17 +122,17 @@ export default function Statement() {
 
 const styles = StyleSheet.create({
   rootWrap: { flex: 1, backgroundColor: colors.navyDeep },
-  balanceSummary: { alignItems: "center", paddingVertical: 8, gap: 4 },
-  balanceLabel: { color: colors.textSecondary, fontSize: 13 },
+  balanceSummary: { paddingVertical: 16, gap: 4, backgroundColor: "rgba(31,32,27,0.74)" },
+  balanceLabel: { color: colors.textPrimary, fontSize: 13 },
   balanceValue: {
-    color: colors.gold, fontSize: 30, fontWeight: "900",
+    color: colors.textPrimary, fontSize: 30, fontWeight: "900",
     textShadowColor: colors.glowGold, textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 10,
   },
   filters: { flexDirection: "row", gap: 10 },
   pill: {
-    paddingHorizontal: 20, paddingVertical: 10, borderRadius: 20,
-    backgroundColor: colors.glass, borderWidth: 1, borderColor: colors.glassBorder,
+    paddingHorizontal: 18, paddingVertical: 10, borderRadius: 10,
+    backgroundColor: colors.input, borderWidth: 1, borderColor: colors.glassBorder,
     // @ts-ignore
     backdropFilter: "blur(12px)",
     // @ts-ignore
@@ -139,7 +144,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3, shadowRadius: 10,
   },
   pillText: { color: colors.textSecondary, fontWeight: "800", fontSize: 14 },
-  pillTextActive: { color: colors.navyDeep },
-  txList: { gap: 8 },
+  pillTextActive: { color: colors.textPrimary },
+  txList: {
+    gap: 0,
+    backgroundColor: colors.glass,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: colors.glassBorder,
+    overflow: "hidden",
+  },
   empty: { color: colors.textSecondary, textAlign: "center", paddingVertical: 24 },
 });

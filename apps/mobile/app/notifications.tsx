@@ -30,7 +30,12 @@ type Notif = {
   message: string;
   time: string;
   type: "tx" | "bank" | "school";
+  createdAt?: string;
 };
+
+function newestFirst(txs: LedgerTransaction[]) {
+  return [...txs].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+}
 
 function txToNotif(tx: LedgerTransaction, walletId: string): Notif {
   const incoming = tx.to_wallet_id === walletId;
@@ -41,6 +46,7 @@ function txToNotif(tx: LedgerTransaction, walletId: string): Notif {
       title: "Credito inicial",
       message: `${currency.format(tx.amount)} creditados na carteira.`,
       time: relativeTime(tx.created_at),
+      createdAt: tx.created_at,
     };
   }
   if (incoming) {
@@ -50,6 +56,7 @@ function txToNotif(tx: LedgerTransaction, walletId: string): Notif {
       title: `Recebeu ${currency.format(tx.amount)}`,
       message: tx.from_display_name ? `De ${tx.from_display_name}` : tx.description || "Transferencia recebida.",
       time: relativeTime(tx.created_at),
+      createdAt: tx.created_at,
     };
   }
   return {
@@ -58,6 +65,7 @@ function txToNotif(tx: LedgerTransaction, walletId: string): Notif {
     title: `Enviou ${currency.format(tx.amount)}`,
     message: tx.to_display_name ? `Para ${tx.to_display_name}` : tx.description || "Transferencia enviada.",
     time: relativeTime(tx.created_at),
+    createdAt: tx.created_at,
   };
 }
 
@@ -88,25 +96,27 @@ export default function Notifications() {
         setIsStaff(true);
         const org = await getOrgWalletSummary();
         walletId = org.wallet.id;
-        txs = org.recent_transactions ?? [];
+        txs = newestFirst(org.recent_transactions ?? []);
       } else {
         const s = await getWalletSummary();
         walletId = s.wallet.id;
-        txs = s.recent_transactions ?? [];
+        txs = newestFirst(s.recent_transactions ?? []);
       }
 
+      const welcome: Notif = {
+        id: "welcome",
+        type: "bank",
+        icon: "megaphone",
+        iconColor: colors.gold,
+        title: "Bem-vindo ao MoneYoung!",
+        message: "Sua carteira digital educacional esta pronta. Use com responsabilidade.",
+        time: "",
+        createdAt: "1970-01-01T00:00:00.000Z",
+      };
       const items: Notif[] = [
-        {
-          id: "welcome",
-          type: "bank",
-          icon: "megaphone",
-          iconColor: colors.gold,
-          title: "Bem-vindo ao MoneYoung!",
-          message: "Sua carteira digital educacional esta pronta. Use com responsabilidade.",
-          time: "",
-        },
+        welcome,
         ...txs.map((tx) => txToNotif(tx, walletId)),
-      ];
+      ].sort((a, b) => new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime());
       setNotifs(items);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erro ao carregar notificacoes.");
