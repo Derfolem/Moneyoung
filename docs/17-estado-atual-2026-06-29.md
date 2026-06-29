@@ -143,6 +143,8 @@ c1ada00  feat(mobile): atalhos de valor na transferencia e ajustes visuais
 ### Commits da sessao 3
 
 ```
+8d63fc8  fix(mobile): modal de busca vira bottom sheet (72% da tela)
+f89295e  feat: lista suspensa com busca + cards de recentes na transferencia
 7280717  feat: lista de contatos da escola na tela de transferencia
 ba6dc6c  feat: bloqueia transferencia entre alunos (personal → personal)
 ```

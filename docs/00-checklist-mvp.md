@@ -278,7 +278,7 @@
 
 - [x] Bloquear transferencia aluno → aluno (personal → personal): RPC transfer_youngcoin_tx rejeita com PEER_TRANSFER_BLOCKED; registra security_event severity 'low'; mensagem amigavel na edge function transfer_youngcoin v5 (2026-06-29)
 - [x] Edge function get_school_contacts v2: retorna lista completa de contatos da escola (colaboradores para alunos, alunos para colaboradores) + ultimos 5 destinatarios recentes (baseado em historico real de transacoes) (2026-06-29)
-- [x] Tela de transferencia: cards horizontais "Recentes" (ate 5 ultimas transferencias unicas); lista suspensa com modal de busca por nome ou chave; suporta 5000+ alunos (FlatList virtualizado); selecao preenche campo e foca no valor automaticamente (2026-06-29)
+- [x] Tela de transferencia: cards horizontais "Recentes" (ate 5 ultimas transferencias unicas); bottom sheet nativo (72% da tela, backdrop semi-transparente, handle de arrasto, bordas arredondadas) com busca por nome ou chave; suporta 5000+ alunos (FlatList virtualizado); selecao preenche campo e foca no valor automaticamente (2026-06-29 — testado e aprovado)
 
 ### 3.2 Testes Funcionais Admin
 
