@@ -277,6 +277,18 @@ export async function transferFromOrg(payload: Omit<TransferPayload, "idempotenc
   });
 }
 
+export type SchoolContact = {
+  profile_id: string;
+  display_name: string;
+  young_key: string;
+  member_role: string;
+};
+
+export async function getSchoolContacts(): Promise<{ contacts: SchoolContact[]; account_type: string }> {
+  if (!isSupabaseConfigured) return { contacts: [], account_type: "personal" };
+  return invoke("get_school_contacts");
+}
+
 export async function requestCancellation(reason?: string) {
   return invoke("request_cancellation", reason ? { reason } : {});
 }
