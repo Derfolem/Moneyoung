@@ -88,7 +88,7 @@ export default function Receive() {
             toast.success("Chave copiada");
           }}
         >
-          <Ionicons name="copy-outline" size={20} color={colors.navyDeep} />
+          <Ionicons name="copy-outline" size={20} color={colors.textPrimary} />
           <Text style={styles.copyText}>Copiar chave</Text>
         </Pressable>
       </Screen>
@@ -105,13 +105,13 @@ const styles = StyleSheet.create({
   },
   qrCard: {
     backgroundColor: "#fff",
-    borderRadius: 20,
-    padding: 20,
+    borderRadius: 16,
+    padding: 18,
     alignItems: "center",
     justifyContent: "center",
     gap: 12,
     borderWidth: 2,
-    borderColor: colors.glassBorder,
+    borderColor: colors.borderGold,
     shadowColor: colors.gold,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.25,
@@ -120,9 +120,9 @@ const styles = StyleSheet.create({
   image: { width: 240, height: 240 },
   key: {
     textAlign: "center",
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: "900",
-    color: colors.gold,
+    color: colors.textPrimary,
     textShadowColor: colors.glowGold,
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 8,
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 10,
     backgroundColor: colors.gold,
-    borderRadius: 16,
+    borderRadius: 14,
     minHeight: 52,
     paddingHorizontal: 24,
     shadowColor: colors.gold,
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
   },
   copyText: {
-    color: colors.navyDeep,
+    color: colors.textPrimary,
     fontWeight: "800",
     fontSize: 16,
   },

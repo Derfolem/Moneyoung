@@ -301,7 +301,12 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.navyDeep },
   body: { flex: 1, justifyContent: "center", padding: 24 },
   scroll: { flex: 1 },
-  scrollContent: { paddingBottom: 20 },
+  scrollContent: {
+    width: "100%",
+    maxWidth: 430,
+    alignSelf: "center",
+    paddingBottom: 20,
+  },
 
   headerBar: {
     paddingHorizontal: 20,
@@ -336,7 +341,7 @@ const styles = StyleSheet.create({
   avatarText: { color: colors.navyDeep, fontSize: 36, fontWeight: "900" },
   name: { color: colors.textPrimary, fontSize: 24, fontWeight: "900" },
   key: {
-    color: colors.gold, fontSize: 14, fontWeight: "600",
+    color: colors.goldLight, fontSize: 14, fontWeight: "700",
     textShadowColor: colors.glowGoldSoft, textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 8,
   },
@@ -353,7 +358,7 @@ const styles = StyleSheet.create({
     padding: 14,
   },
   schoolName: { color: colors.textPrimary, fontSize: 16, fontWeight: "800" },
-  schoolRole: { color: colors.gold, fontSize: 13, fontWeight: "600" },
+  schoolRole: { color: colors.goldLight, fontSize: 13, fontWeight: "700" },
 
   listCard: {
     marginHorizontal: 24,
@@ -375,7 +380,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: colors.glowGoldSoft,
+    backgroundColor: colors.input,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -399,12 +404,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 24,
     marginTop: 20,
     backgroundColor: colors.glowGoldSoft,
-    borderRadius: 16,
+    borderRadius: 12,
     padding: 14,
     borderWidth: 1,
     borderColor: colors.glassBorder,
   },
-  cancelBannerText: { color: colors.gold, fontSize: 14, fontWeight: "600", flex: 1 },
+  cancelBannerText: { color: colors.goldLight, fontSize: 14, fontWeight: "700", flex: 1 },
 
   cancelBtn: {
     flexDirection: "row",
@@ -414,10 +419,10 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     marginTop: 20,
     marginHorizontal: 24,
-    borderRadius: 16,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: colors.glowDanger,
-    backgroundColor: colors.glass,
+    backgroundColor: colors.input,
   },
   cancelBtnText: { color: colors.danger, fontWeight: "700", fontSize: 15 },
 

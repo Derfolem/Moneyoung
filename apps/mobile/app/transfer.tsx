@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { Button } from "../src/components/Button";
 import { PageHeader } from "../src/components/PageHeader";
 import { Screen } from "../src/components/Screen";
@@ -72,6 +72,14 @@ export default function Transfer() {
           />
         </View>
 
+        <View style={styles.shortcuts}>
+          {["+10", "+50", "+100", "+200"].map((item) => (
+            <Pressable key={item} style={styles.shortcut} onPress={() => setAmount(item.replace("+", ""))}>
+              <Text style={styles.shortcutText}>{item}</Text>
+            </Pressable>
+          ))}
+        </View>
+
         <Button title="Transferir" onPress={goToConfirm} disabled={!to.trim() || !amount.trim()} />
       </Screen>
       <BottomNav />
@@ -84,14 +92,15 @@ const styles = StyleSheet.create({
   amountArea: {
     flexDirection: "row",
     alignItems: "baseline",
-    justifyContent: "center",
-    paddingVertical: 20,
+    justifyContent: "flex-start",
+    paddingTop: 22,
+    paddingBottom: 8,
     gap: 8,
   },
   amountDisplay: {
-    fontSize: 48,
+    fontSize: 40,
     fontWeight: "900",
-    color: colors.gold,
+    color: colors.textPrimary,
     textShadowColor: colors.glowGold,
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 14,
@@ -99,14 +108,14 @@ const styles = StyleSheet.create({
   amountSuffix: {
     fontSize: 24,
     fontWeight: "700",
-    color: colors.textSecondary,
+    color: colors.textPrimary,
   },
   hiddenInput: {
-    backgroundColor: colors.glass,
-    borderRadius: 16,
-    padding: 16,
-    fontSize: 18,
-    textAlign: "center",
+    backgroundColor: colors.input,
+    borderRadius: 10,
+    padding: 14,
+    fontSize: 16,
+    textAlign: "left",
     color: colors.textPrimary,
     borderWidth: 1,
     borderColor: colors.glassBorder,
@@ -121,12 +130,31 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   input: {
-    backgroundColor: colors.glass,
-    borderRadius: 16,
-    padding: 16,
+    backgroundColor: colors.input,
+    borderRadius: 10,
+    padding: 14,
     fontSize: 16,
     color: colors.textPrimary,
     borderWidth: 1,
     borderColor: colors.glassBorder,
+  },
+  shortcuts: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  shortcut: {
+    flex: 1,
+    minHeight: 38,
+    borderRadius: 10,
+    backgroundColor: colors.input,
+    borderWidth: 1,
+    borderColor: colors.glassBorder,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  shortcutText: {
+    color: colors.textPrimary,
+    fontWeight: "900",
+    fontSize: 13,
   },
 });
