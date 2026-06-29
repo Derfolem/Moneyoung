@@ -38,7 +38,16 @@ Deno.serve(async (req) => {
       p_user_agent: meta.user_agent
     });
 
-    if (rpcError) return error("INVALID_INPUT", rpcError.message, 422);
+    if (rpcError) {
+      const msg = rpcError.message ?? "";
+      if (msg.includes("PEER_TRANSFER_BLOCKED")) return error("PEER_TRANSFER_BLOCKED", "Transferencias entre alunos nao sao permitidas. Envie para a chave da escola ou de um colaborador.", 403);
+      if (msg.includes("DESTINATION_NOT_FOUND")) return error("NOT_FOUND", "Destinatario nao encontrado.", 404);
+      if (msg.includes("INSUFFICIENT_FUNDS")) return error("INSUFFICIENT_FUNDS", "Saldo insuficiente.", 422);
+      if (msg.includes("RATE_LIMITED")) return error("RATE_LIMITED", "Muitas transferencias. Aguarde.", 429);
+      if (msg.includes("TRANSACTION_LIMIT_EXCEEDED")) return error("LIMIT_EXCEEDED", "Valor acima do limite por transacao.", 422);
+      if (msg.includes("DAILY_LIMIT_EXCEEDED")) return error("LIMIT_EXCEEDED", "Limite diario atingido.", 422);
+      return error("INVALID_INPUT", msg, 422);
+    }
     return json({ transaction: data });
   } catch (err) {
     if (err instanceof Response) return err;
