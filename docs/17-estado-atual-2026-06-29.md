@@ -2,7 +2,7 @@
 
 ## Progresso
 
-210/250 itens do checklist MVP concluidos (84%).
+212/252 itens do checklist MVP concluidos (84%).
 
 ---
 
@@ -197,6 +197,8 @@ c18eb5e  feat(admin): soft-delete e purge de orgs/contas com modais de confirmac
 - **NOVO:** useFocusEffect em home/org-home (sem perfil antigo ao voltar)
 - **NOVO:** Transferencia bloqueada entre alunos (personal → personal)
 - **NOVO:** Tela de transferencia com modal de busca por nome + cards de recentes (ate 5)
+- **NOVO:** Banner "Educacao Financeira — Em breve" na home do aluno
+- **NOVO:** Aviso YC sem valor monetario contextual (saldo, transferencia, QR code)
 
 ### Web Admin (Next.js)
 - Tema dark navy-black + gold

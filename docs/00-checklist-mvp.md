@@ -279,6 +279,8 @@
 - [x] Bloquear transferencia aluno → aluno (personal → personal): RPC transfer_youngcoin_tx rejeita com PEER_TRANSFER_BLOCKED; registra security_event severity 'low'; mensagem amigavel na edge function transfer_youngcoin v5 (2026-06-29)
 - [x] Edge function get_school_contacts v2: retorna lista completa de contatos da escola (colaboradores para alunos, alunos para colaboradores) + ultimos 5 destinatarios recentes (baseado em historico real de transacoes) (2026-06-29)
 - [x] Tela de transferencia: cards horizontais "Recentes" (ate 5 ultimas transferencias unicas); bottom sheet nativo (72% da tela, backdrop semi-transparente, handle de arrasto, bordas arredondadas) com busca por nome ou chave; suporta 5000+ alunos (FlatList virtualizado); selecao preenche campo e foca no valor automaticamente (2026-06-29 — testado e aprovado)
+- [x] Banner educacional "Educacao Financeira — Em breve" na home do aluno (2026-06-29 — testado e aprovado)
+- [x] Aviso "YoungCoin nao possui valor monetario real" contextual: abaixo do saldo (home e org-home), abaixo do valor (transfer e transfer-confirm), abaixo do QR code (receive) (2026-06-29 — testado e aprovado)
 
 ### 3.2 Testes Funcionais Admin
 
@@ -423,10 +425,10 @@
 | 0 - Estrutura e Identidade | ✅ Concluida | 14 | 14 |
 | 1 - Backend Supabase | ✅ Concluida | 22 | 22 |
 | 2 - App Mobile Funcional | 🔄 Em andamento | 92 | 83 |
-| 3 - Painel Web Admin | 🔄 Em andamento | 72 | 69 |
+| 3 - Painel Web Admin | 🔄 Em andamento | 74 | 71 |
 | 4 - Preparacao 400 Alunos | 🔄 Em andamento | 37 | 22 |
 | 5 - Lancamento | ⬜ Pendente | 13 | 0 |
-| **Total MVP** | **Em andamento** | **250** | **210** |
+| **Total MVP** | **Em andamento** | **252** | **212** |
 
 ---
 
