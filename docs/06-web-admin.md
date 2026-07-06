@@ -201,4 +201,4 @@ Abrir http://localhost:3000. Requer `.env` na raiz com `NEXT_PUBLIC_SUPABASE_URL
 
 Configure `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_ANON_KEY` nas variaveis de ambiente do Vercel. Nao configure service_role_key no frontend.
 
-Plano Free do Vercel fornece subdominio gratuito `seuapp.vercel.app`. Dominio proprio aguarda autorizacao de Fagner.
+Producao acessivel em `https://admin.moneyoung.com` (dominio proprio, configurado em 2026-07-06 via projeto Vercel `mygbank`; DNS apontado na GoDaddy). URL do Vercel (`https://mygbank.vercel.app`) mantida como fallback.

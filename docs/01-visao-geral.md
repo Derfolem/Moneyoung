@@ -76,7 +76,7 @@ Cada usuario recebe uma chave publica unica no formato `@PREFIXO-nomeNNNN`. O pr
 Todos os custos do projeto devem ser autorizados pelo dono do projeto (**FAGNER**). O desenvolvimento deve sempre priorizar alternativas sem custo:
 - Supabase Free (suficiente para MVP com 400 alunos)
 - Vercel Free (subdominio gratuito `seuapp.vercel.app`)
-- Sem dominio proprio ate autorizacao
+- Dominio proprio moneyoung.com comprado na GoDaddy e configurado em 2026-07-06 (`admin.moneyoung.com` = painel, `moneyoung.com`/`www` = landing page)
 - Sem contas pagas (Google Play $25, Apple Developer $99, Supabase Pro $25/mes) ate autorizacao
 
 Quando um custo for inevitavel para avancar, documentar e aguardar aprovacao de Fagner.

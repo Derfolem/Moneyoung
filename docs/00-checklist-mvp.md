@@ -252,7 +252,7 @@
 - [ ] Escrever descricao curta/subtitulo (maximo 30 caracteres, ex: "Banco educacional para alunos")
 - [ ] Definir palavras-chave SEO (maximo 100 caracteres, separadas por virgula)
 - [ ] URL de suporte (ex: email ou pagina de contato)
-- [ ] URL de politica de privacidade — **OBRIGATORIO** (criar pagina publica; pode ser no GitHub Pages ou Vercel)
+- [x] URL de politica de privacidade — **OBRIGATORIO** (2026-07-06 — https://moneyoung.com/politica-de-privacidade, publicada no projeto apps/landing)
 - [ ] Preparar icone do app: 1024x1024px PNG sem transparencia e sem cantos arredondados (a Apple arredonda automaticamente)
 - [ ] Capturar screenshots obrigatorios:
   - iPhone 6.9" (1320x2868px): telas home, transferencia, extrato, QR code — minimo 3 screenshots
@@ -411,8 +411,8 @@
   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - [x] Deploy preview e testar (2026-06-20 — build OK, 14 paginas)
 - [x] Deploy producao (2026-06-20 — https://mygbank.vercel.app)
-- [ ] Configurar dominio proprio (aguardando autorizacao de Fagner)
-- [x] Adicionar URL do Vercel nos redirects do Google OAuth (2026-06-20 — Supabase + Google Cloud)
+- [x] Configurar dominio proprio (2026-07-06 — moneyoung.com comprado na GoDaddy; `admin.moneyoung.com` aponta para o painel admin via projeto Vercel `mygbank`; `moneyoung.com`/`www.moneyoung.com` apontam para novo projeto `moneyoung-landing`; DNS configurado com registros A na GoDaddy)
+- [x] Adicionar URL do Vercel nos redirects do Google OAuth (2026-06-20 — Supabase + Google Cloud; `https://admin.moneyoung.com/**` adicionado em 2026-07-06 nas Redirect URLs do Supabase Auth)
 
 ---
 
