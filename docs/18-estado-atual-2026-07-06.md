@@ -22,6 +22,11 @@ Criado um novo workspace `@moneyoung/landing` (Next.js 14, App Router), separado
 
 Deploy feito via `npx vercel` (CLI ja autenticado como `agentcodi01-1544` no time `moneyoung`, sem instalacao global necessaria).
 
+**Correcao importante (mesmo dia):** o deploy inicial foi feito por upload manual via CLI, sem conectar o projeto ao GitHub — ou seja, nao haveria deploy automatico a cada push. Corrigido:
+- `vercel git connect https://github.com/Derfolem/Moneyoung.git` — projeto `moneyoung-landing` agora linkado ao repo (mesmo repo do `mygbank`, monorepo)
+- **Root Directory** do projeto `moneyoung-landing` ajustado para `apps/landing` via API da Vercel (`PATCH /v9/projects/{id}` — nao existe comando de CLI para isso). Sem esse ajuste, um deploy disparado por push tentaria buildar a partir da raiz do repo, que nao tem Next.js configurado nesse nivel (o `mygbank` resolve isso de outro jeito, com `buildCommand` customizado no `vercel.json` da raiz apontando para `apps/web-admin`)
+- Variaveis `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_ANON_KEY` adicionadas ao projeto `moneyoung-landing` (Production, Preview e Development) — mesmas credenciais do projeto Supabase ja usado pelo `mygbank` e pelo mobile. Preparação para quando a landing page tiver funcionalidade de backend (ex: formulario de contato). Ainda nao foi adicionado `@supabase/supabase-js` ao `apps/landing/package.json` nem a `service_role_key` — isso fica para quando uma funcionalidade especifica for implementada, para nao criar codigo/acesso sem uso.
+
 A politica de privacidade inicial (resumida) foi substituida por um Aviso de Privacidade completo em conformidade com a LGPD, adaptado do modelo usado pela Tangram Educacao para o contexto do MoneYoung: MoneYoung como controlador da plataforma, instituicao de ensino como controladora dos dados de alunos/colaboradores que autoriza, suboperadores reais (Supabase para banco de dados/autenticacao, Vercel para hospedagem), dados efetivamente coletados pelo cadastro (nome completo, data de nascimento, e-mail via Google, chave MoneYoung gerada automaticamente) e sistema proprio de monitoramento de erros (nao usa Sentry). Sem CNPJ/razao social nem telefone por enquanto — a pedido do Fred, contato exclusivamente por `contato@moneyoung.com`.
 
 ## Build Android (EAS)
