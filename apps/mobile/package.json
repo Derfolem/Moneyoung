@@ -16,14 +16,14 @@
     "@expo-google-fonts/josefin-sans": "^0.4.2",
     "@expo-google-fonts/montserrat": "^0.4.2",
     "@expo/vector-icons": "^14.0.2",
-    "@react-native-async-storage/async-storage": "^1.23.1",
+    "@react-native-async-storage/async-storage": "1.23.1",
     "@supabase/supabase-js": "^2.45.4",
     "expo": "~51.0.28",
     "expo-barcode-scanner": "~13.0.1",
     "expo-clipboard": "~6.0.3",
     "expo-crypto": "~13.0.2",
-    "expo-dev-client": "^56.0.20",
-    "expo-font": "^56.0.7",
+    "expo-dev-client": "~4.0.29",
+    "expo-font": "~12.0.10",
     "expo-linking": "~6.3.1",
     "expo-router": "~3.5.23",
     "expo-secure-store": "~13.0.2",
@@ -40,6 +40,6 @@
   "devDependencies": {
     "@types/qrcode": "^1.5.5",
     "@types/react": "~18.2.79",
-    "typescript": "^5.5.4"
+    "typescript": "~5.3.3"
   }
 }
