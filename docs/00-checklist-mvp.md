@@ -194,11 +194,11 @@
 
 ### 2.9 Build Android
 
-- [ ] Configurar `EAS_PROJECT_ID` no `.env`
-- [ ] Criar conta no Expo (eas login)
-- [ ] Configurar `eas.json` com profile preview e production
-- [ ] Gerar APK preview: `npm run build:android:preview`
-- [ ] Instalar APK no dispositivo fisico e testar
+- [x] Configurar `EAS_PROJECT_ID` no `.env` (2026-07-06 — projeto `@agentcodi01/moneyoung` criado via `eas init`, ID `16888fa9-b2b9-4f32-9613-46bb7385b52e`)
+- [x] Criar conta no Expo (eas login) (2026-07-06 — logado como `agentcodi01`)
+- [x] Configurar `eas.json` com profile preview e production (2026-07-06 — profile `production` configurado com autoIncrement, `ios.simulator: false` e env vars do Supabase; `appVersionSource: remote` definido)
+- [ ] Gerar APK preview: `npm run build:android:preview` (em andamento — build disparado em 2026-07-06, aguardando fila do EAS)
+- [ ] Instalar APK no dispositivo fisico e testar (Fred nao possui Android fisico — avaliar emulador, device emprestado ou teste em nuvem)
 - [ ] Testar login Google no dispositivo fisico
 - [ ] Testar QR Code com camera real
 - [ ] Gerar APK/AAB de producao
