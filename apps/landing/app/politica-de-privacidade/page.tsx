@@ -340,8 +340,7 @@ export default function PrivacyPage() {
 
         <H2>9. Canal de comunicação sobre privacidade</H2>
         <p>
-          Por não possuir, no momento, um encarregado de dados formalmente designado,
-          disponibilizamos o e-mail{" "}
+          Disponibilizamos o e-mail{" "}
           <a href="mailto:contato@moneyoung.com" style={{ color: "#FFFFFF" }}>
             contato@moneyoung.com
           </a>{" "}
