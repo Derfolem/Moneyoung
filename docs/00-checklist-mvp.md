@@ -198,7 +198,11 @@
 - [x] Criar conta no Expo (eas login) (2026-07-06 — logado como `agentcodi01`)
 - [x] Configurar `eas.json` com profile preview e production (2026-07-06 — profile `production` configurado com autoIncrement, `ios.simulator: false` e env vars do Supabase; `appVersionSource: remote` definido)
 - [x] Gerar APK preview: `npm run build:android:preview` (2026-07-08 — sucesso na 4a tentativa apos corrigir versoes de dependencias incompativeis com o SDK 51; APK: https://expo.dev/artifacts/eas/zDnSgNk3BX3aFU8FhJuf4I2Z16TyldXf3MIi1LKFCqg.apk; historico completo em `docs/19-estado-atual-2026-07-08.md`)
+- [x] Corrigir crash `Invalid supabaseUrl` no boot do app (2026-07-08 — esse APK compilava mas crashava ao abrir; causa: `eas.json` usava sintaxe `"$VAR"` no bloco `env` do profile `preview`/`production`, que nao faz a substituicao esperada pela CLI e embute o literal `$EXPO_PUBLIC_SUPABASE_URL` no bundle JS; corrigido removendo o bloco `env` de `eas.json` e criando as variaveis via `eas env:create` nos ambientes preview/production/development)
+- [x] Corrigir autolinking de `react-native-safe-area-context` e `react-native-screens` (2026-07-08 — apos o fix acima, novo crash `RNCSafeAreaProvider was not found in the UIManager`; causa: os dois pacotes so existiam como `overrides` no `package.json` da raiz do monorepo, nunca como dependencia direta de `apps/mobile/package.json` — o autolinking do React Native Community CLI so enxerga dependencias diretas do app; corrigido adicionando os dois pacotes em `apps/mobile/package.json`)
+- [x] Testar APK no emulador Android local (2026-07-08 — AVD `Pixel_6_API_34` configurado nesta maquina, ver `docs/19-estado-atual-2026-07-08.md`; apos os 2 fixes acima, build `06138edf` abre corretamente na tela de login com o design v4 aplicado, sem crashes)
 - [ ] Instalar APK no dispositivo fisico e testar (Fred nao possui Android fisico — avaliar emulador, device emprestado ou teste em nuvem)
+- [ ] Testar fluxo completo de login (email/senha, Google, criacao de conta) no emulador — so a tela inicial foi validada ate agora
 - [ ] Testar login Google no dispositivo fisico
 - [ ] Testar QR Code com camera real
 - [ ] Gerar APK/AAB de producao
@@ -533,7 +537,7 @@
 |---|---|---|---|
 | 0 - Estrutura e Identidade | ✅ Concluida | 14 | 14 |
 | 1 - Backend Supabase | ✅ Concluida | 22 | 22 |
-| 2 - App Mobile Funcional | 🔄 Em andamento | 92 | 83 |
+| 2 - App Mobile Funcional | 🔄 Em andamento | 95 | 86 |
 | 3 - Painel Web Admin | 🔄 Em andamento | 74 | 71 |
 | 4 - Preparacao 400 Alunos | 🔄 Em andamento | 37 | 22 |
 | 5 - Lancamento | ⬜ Pendente | 13 | 0 |
@@ -557,5 +561,5 @@
 
 ---
 
-*Ultima atualizacao: 2026-06-29*
-*Concluido: 207/247 itens (84%). Sistema de exclusao e purge implementado (soft-delete org/membros, hard-purge permanente, bloqueio universal de login, reativacao via convite). Falta: CSV via browser, build Android, infra Pro, dados iniciais, onboarding e lancamento.*
+*Ultima atualizacao: 2026-07-08*
+*Concluido: 234/318 itens (73,5% — contagem via `grep -c` sobre este arquivo, mais precisa que a tabela acima, que esta desatualizada desde 2026-06-29 e precisa de recontagem completa por fase). Build Android: os 2 bugs que impediam o app de abrir (crash `Invalid supabaseUrl` e `RNCSafeAreaProvider was not found in the UIManager`) foram corrigidos e o app foi validado no emulador local ate a tela de login. Falta: teste em dispositivo fisico, fluxo de login completo, CSV via browser, infra Pro, dados iniciais, onboarding e lancamento.*
