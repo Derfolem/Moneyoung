@@ -1,0 +1,33 @@
+SUMMARY: `/auth/v1/callback` always redirects to Site URL (http://localhost:8081), ignoring `redirect_to`, even though the exact value (and several wildcard/trailing-slash variants) is present in Authentication > URL Configuration > Redirect URLs.
+
+REPRODUCTION ENDPOINT (exact, unencoded redirect_to also shown):
+GET /auth/v1/authorize?provider=google&redirect_to=moneyoung%3A%2F%2Fauth%2Fcallback
+(unencoded redirect_to: moneyoung://auth/callback)
+
+Confirmed identical behavior whether triggered via supabase-js (`signInWithOAuth({ provider:'google', options:{ redirectTo:'moneyoung://auth/callback' }})` from our Expo mobile app) or by calling /authorize directly as above — same redirect_to reaches the server both ways (confirmed byte-for-byte in logs), same failure both ways. So this is not a client-parameter-path issue.
+
+FULL REDIRECT URLS LIST (Site URL = http://localhost:8081), goal: moneyoung://auth/callback should be honored — none of these variants are:
+- moneyoung://auth/callback
+- moneyoung://auth/callback/
+- moneyoung://auth/callback/*
+- moneyoung://auth/callback/**
+- http://localhost:3000/login (+ /login/ and /login/* variants) — also fails, proving it's not scheme-specific
+- http://localhost:8081/**, http://localhost:3000/**, https://mygbank.vercel.app/**, https://mygbank.vercel.app/login, https://admin.moneyoung.com/**
+
+LOG EVIDENCE (UTC), latest clean repro after full emulator/app/browser reset, real Google login completed (ofrutofredmelo@gmail.com):
+- 14:04:37Z /authorize: "msg":"Redirecting to external provider","referer":"moneyoung://auth/callback"
+- 14:04:38Z /callback: "referer":"http://localhost:8081","status":302 (auth_event login succeeded for the user, but redirect target is wrong)
+
+KEY OBSERVATION: /authorize correctly reflects the requested redirect_to. The failure happens one step later: /callback silently discards redirect_to and falls back to Site URL — for every value tested, not just custom schemes.
+
+HYPOTHESES ALREADY RULED OUT:
+1. Exact allow-list match already present — fails
+2. Wildcard variant added — fails
+3. Config reload forced (2x re-save of Site URL, "reloading api with new configuration" confirmed in logs at 12:12:18Z/12:12:29Z) — no change
+4. Full project restart (GoTrue restart confirmed, new instance from 12:25:44Z) — no change
+5. Google provider disabled/re-enabled — no change
+6. Tested with 2 different Google accounts, full clean state each time — identical failure both
+7. Trailing-slash variants added (see list above) — no change
+8. Confirmed no cross-project mix-up (same project ref used everywhere: cohiqclhebywnzmcznoc)
+
+ASK FOR ENGINEERING: Please investigate whether (a) redirect_to is being correctly propagated/extracted from the OAuth state at the /callback step, and (b) whether the allow-list check at /callback is failing due to a stale/cached config read, or a matching bug specific to how redirect_to is compared against the configured list at that stage (vs. at /authorize, where it is read correctly). This is blocking all Google sign-in on our production mobile app (Expo/React Native).
