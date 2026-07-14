@@ -29,7 +29,7 @@ and completing the Google login, GoTrue's `/auth/v1/callback` should redirect th
 
 ## Evidence this is not a config mistake
 
-We tested exhaustively over roughly 2 hours, with log evidence for each attempt (available via Supabase's own `auth` log explorer for this project, timestamps below in UTC):
+We tested exhaustively over roughly 3 hours, with log evidence for each attempt (available via Supabase's own `auth` log explorer for this project, timestamps below in UTC):
 
 1. **Exact match already in allow list** (`moneyoung://auth/callback`) — fails. `/authorize` logs correctly show `referer: "moneyoung://auth/callback"`, but the subsequent `/callback` always logs `referer: "http://localhost:8081"`.
 2. **A second, unrelated exact-match entry that was already in the list before this issue** (`http://localhost:3000/login`) — also fails the same way. This rules out anything specific to custom URL schemes; the allow list appears to not be applied at all, for any non-Site-URL value.
@@ -39,6 +39,7 @@ We tested exhaustively over roughly 2 hours, with log evidence for each attempt 
 6. **Disabled and re-enabled the Google provider** in Authentication → Providers. Behavior unchanged.
 7. **Tested with two different Google accounts**, from a fully cleared browser/app state each time (no cached session). Both fail identically — confirmed via `auth_event` log entries for `ofrutofredmelo@gmail.com` (e.g. `2026-07-14T13:22:49Z`) and `agentcodi01@gmail.com` (e.g. `2026-07-14T13:29:53Z`).
 8. Confirmed the project ref used in testing (`cohiqclhebywnzmcznoc`) matches the project ref in the dashboard URL being edited — no cross-project confusion.
+9. **Added trailing-slash variants** to rule out normalization/tokenization mismatches in the allow-list matcher: `moneyoung://auth/callback/`, `moneyoung://auth/callback/*`, `http://localhost:3000/login/`, `http://localhost:3000/login/*` (kept alongside all prior entries, none removed). Repeated the full OAuth flow end-to-end with a real Google login (`ofrutofredmelo@gmail.com`, fully reset emulator + wiped app/browser state) at `2026-07-14T14:04:37Z`–`14:04:38Z`. `/authorize` again logged the correct `referer: "moneyoung://auth/callback"`, but `/callback` again resolved to `http://localhost:8081` — identical failure, no change from the trailing-slash variants either.
 
 ## Current URL Configuration (for reference)
 
@@ -49,9 +50,13 @@ Redirect URLs:
 - `http://localhost:3000/**`
 - `moneyoung://auth/callback`
 - `moneyoung://auth/callback/**` (added during troubleshooting)
+- `moneyoung://auth/callback/` (added during troubleshooting)
+- `moneyoung://auth/callback/*` (added during troubleshooting)
 - `https://mygbank.vercel.app/**`
 - `https://mygbank.vercel.app/login`
 - `http://localhost:3000/login`
+- `http://localhost:3000/login/` (added during troubleshooting)
+- `http://localhost:3000/login/*` (added during troubleshooting)
 - `https://admin.moneyoung.com/**`
 
 ## Additional context
