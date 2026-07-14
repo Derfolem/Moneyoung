@@ -34,6 +34,7 @@ export const supabase = createClient(
       autoRefreshToken: true,
       persistSession: true,
       detectSessionInUrl: isWeb,
+      flowType: "pkce",
     },
     global: {
       headers: { "x-moneyoung-client": "mobile" }
