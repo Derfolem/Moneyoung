@@ -202,7 +202,7 @@
 - [x] Corrigir autolinking de `react-native-safe-area-context` e `react-native-screens` (2026-07-08 — apos o fix acima, novo crash `RNCSafeAreaProvider was not found in the UIManager`; causa: os dois pacotes so existiam como `overrides` no `package.json` da raiz do monorepo, nunca como dependencia direta de `apps/mobile/package.json` — o autolinking do React Native Community CLI so enxerga dependencias diretas do app; corrigido adicionando os dois pacotes em `apps/mobile/package.json`)
 - [x] Testar APK no emulador Android local (2026-07-08 — AVD `Pixel_6_API_34` configurado nesta maquina, ver `docs/19-estado-atual-2026-07-08.md`; apos os 2 fixes acima, build `06138edf` abre corretamente na tela de login com o design v4 aplicado, sem crashes)
 - [ ] Instalar APK no dispositivo fisico e testar (Fred nao possui Android fisico — avaliar emulador, device emprestado ou teste em nuvem)
-- [ ] Testar fluxo completo de login (email/senha, Google, criacao de conta) no emulador — so a tela inicial foi validada ate agora
+- [x] Testar fluxo completo de login Google no emulador (2026-07-15 — login OAuth funcionando de ponta a ponta no build `d31fa1a0`; logado como aluno OFruto @ALN-ofrutoteste7750, home carregou com saldo 50 YC e transacoes reais. Logs Supabase confirmam `login_method: pkce`, `POST /token` 200 e `GET /user` 200. Correcao raiz em `docs/21-fix-oauth-pkce-2026-07-15.md`)
 - [ ] Testar login Google no dispositivo fisico
 - [ ] Testar QR Code com camera real
 - [ ] Gerar APK/AAB de producao
