@@ -67,3 +67,13 @@ Redirect URLs:
 Please advise on how to get the Redirect URLs allow list actually applied, or whether this requires a deeper fix on your end.
 
 Thank you.
+
+---
+
+## UPDATE 2026-07-15 — Issue appears RESOLVED on Supabase's side (text ready to paste as ticket comment)
+
+Update: as of 2026-07-15T13:09Z the redirect issue appears **resolved**. Repeating the exact same test (Google OAuth via `signInWithOAuth`, `redirect_to=moneyoung://auth/callback`, same project `cohiqclhebywnzmcznoc`), `/auth/v1/callback` now correctly redirects to `moneyoung://auth/callback` as allow-listed, instead of falling back to the Site URL. Log evidence: `/authorize` at `2026-07-15T13:09:13Z` (referer `moneyoung://auth/callback`), `/callback` 302 with successful login at `2026-07-15T13:09:15Z`, and the Android device received the `moneyoung://auth/...` deep link.
+
+Was a fix deployed on your side between 2026-07-14 and 2026-07-15 (e.g. related to auth config propagation after project pause/resume)? If so, this ticket can be closed. Thank you!
+
+**Nota interna (não colar no ticket):** o erro que restou depois disso ("Sessao invalida ou expirada") era do nosso lado — o APK de teste foi buildado antes do `flowType: "pkce"` entrar no cliente, então o GoTrue devolvia tokens no fragment (fluxo implícito) e o app só lia `?code=`. Corrigido no commit `17ee370`; build EAS `d31fa1a0` gerado com o código completo. Evidência: `auth.flow_state` sem linha nova no `/authorize` de 15/07 (sem `code_challenge` enviado) + teste com deep link de código falso gerando `POST /token 400`.
