@@ -1,5 +1,5 @@
-import { Stack, router, SplashScreen } from "expo-router";
-import { useEffect } from "react";
+import { Stack, router, SplashScreen, usePathname } from "expo-router";
+import { useEffect, useRef } from "react";
 import { Platform, View } from "react-native";
 import { useFonts, JosefinSans_700Bold } from "@expo-google-fonts/josefin-sans";
 import { isSupabaseConfigured, supabase } from "../src/services/supabase";
@@ -15,6 +15,9 @@ function hasPendingInvite(): boolean {
 
 export default function Layout() {
   const [fontsLoaded] = useFonts({ JosefinSans_700Bold });
+  const pathname = usePathname();
+  const pathRef = useRef(pathname);
+  pathRef.current = pathname;
 
   useEffect(() => {
     if (fontsLoaded) SplashScreen.hideAsync();
@@ -36,8 +39,11 @@ export default function Layout() {
 
     const isOnLogin = Platform.OS === "web" && window.location.pathname === "/login";
 
+    // rota /auth/* (callback OAuth) cuida da propria navegacao — nao interferir
+    const onAuthRoute = () => pathRef.current?.startsWith("/auth");
+
     hasActiveSession().then(async (active) => {
-      if (!active) { router.replace("/login"); return; }
+      if (!active) { if (!onAuthRoute()) router.replace("/login"); return; }
       if (hasPendingInvite() || isOnLogin) return;
       try {
         const { data: session } = await supabase.auth.getSession();
@@ -50,10 +56,10 @@ export default function Layout() {
         if (profile?.status === "pending") router.replace("/pending-approval");
         else if (profile?.account_type === "sub_business") router.replace("/org-home");
       } catch {}
-    }).catch(() => router.replace("/login"));
+    }).catch(() => { if (!onAuthRoute()) router.replace("/login"); });
 
     const { data } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!session) router.replace("/login");
+      if (!session && !onAuthRoute()) router.replace("/login");
     });
     return () => data.subscription.unsubscribe();
   }, [fontsLoaded]);

@@ -27,13 +27,32 @@ export async function signInWithGoogle() {
 
   const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo);
   if (result.type !== "success") return false;
+
   const url = new URL(result.url);
   const code = url.searchParams.get("code");
-  if (!code) throw new Error("Codigo OAuth nao retornado.");
+  if (code) {
+    const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+    if (exchangeError) {
+      // a rota /auth/callback pode ter trocado o mesmo codigo primeiro
+      const { data: sess } = await supabase.auth.getSession();
+      if (!sess.session) throw exchangeError;
+    }
+    return true;
+  }
 
-  const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
-  if (exchangeError) throw exchangeError;
-  return true;
+  // fallback: fluxo implicito (tokens no fragment #access_token=...)
+  const hash = url.hash.startsWith("#") ? url.hash.slice(1) : url.hash;
+  const hashParams = new URLSearchParams(hash);
+  const access_token = hashParams.get("access_token");
+  const refresh_token = hashParams.get("refresh_token");
+  if (access_token && refresh_token) {
+    const { error: sessionError } = await supabase.auth.setSession({ access_token, refresh_token });
+    if (sessionError) throw sessionError;
+    return true;
+  }
+
+  const errDesc = url.searchParams.get("error_description") ?? hashParams.get("error_description");
+  throw new Error(errDesc ?? "Codigo OAuth nao retornado.");
 }
 
 export async function hasActiveSession() {
